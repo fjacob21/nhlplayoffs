@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>Matrox NHL Playoffs pool</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <!-- Bootstrap theme -->
+        <link href="css/bootstrap-theme.min.css" rel="stylesheet">
+
+        <!-- Custom styles for this template -->
+        <link href="css/theme.css" rel="stylesheet">
+    </head>
+
+    <body role="document">
+        <!-- Fixed navbar -->
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <table><tr><th>
+                            <img width="30" height="30" src="http://cdn.nhle.com/projects/ice3-ui/com.nhl.ice3.ui.t5.components/GlobalPageImports/images/nhl_shield.png"/>
+                    </th><th><a class="navbar-brand" href="#">NHL Playoffs Pool</a>
+                    </th></tr></table>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active" id="nav-home"><a href="#">Series</a></li>
+                        <li id="nav-result"><a href="#">Results</a></li>
+                        <li id="nav-about"><a href="#about">About</a></li>
+                        <li id="nav-contact"><a href="#contact">Contact</a></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div>
+        </div>
+
+        <div class="container theme-showcase" role="main" id="home">
+                
+          <div class="panel panel-primary">
+              <div class="panel-heading">
+                  <h3 class="panel-title">Series Management</h3>
+              </div>
+              <div class="panel-body">
+                  <table class="table table-hover">
+                      <thead>
+                          <tr>
+                              <th>round</th>
+                              <th>Home</th>
+                              <th>Visitor</th>
+                              <th>Home wins</th>
+                              <th>Visitor wins</th>
+                          </tr>
+                      </thead>
+                      <tbody class="list-group" id="series_list">
+                      </tbody>
+                  </table>
+                  <button id="bt_apply" type="button" class="btn btn-default btn-sm">Apply</button>
+              </div>
+          </div>
+            <!-- Footer -->
+            <div>
+                <span class="copyright">&copy; Frederic Jacob Ing.</span>
+            </div>
+        </div>
+        <div class="container theme-showcase" role="main" id="result" style="display:none">
+            <div class="well">
+                <p>
+                    Super result page!!! :)
+                </p>
+            </div>
+        </div>
+        <div class="container theme-showcase" role="main" id="about" style="display:none">
+            <div class="well">
+                <p>
+                    Matrox NHL Playoffs pool V1.0 </br>
+                    This is website to manage the unofficial NHL playoffs pool.
+                </p>
+            </div>
+        </div>
+        <div class="container theme-showcase" role="main" id="contact" style="display:none">
+            <table>
+                <tr style="height:2px"><th style="background-color:red"></th><th style="background-color:orange"></th><th style="background-color:green"></th><th style="background-color:purple"></th></tr>
+                <tr><th>Frederic Jacob Ing. </th><th>| Matrox Imaging </th><th>| <a href="mailto:fjacob@matrox.com">fjacob@matrox.com </a></th><th>| 514-620-8000:7901</th></tr>
+            </table>
+            </br>
+            <span class="copyright">&copy;Frederic Jacob Ing.</span>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="series_modal" tabindex="-1" role="dialog" aria-labelledby="series_modal_label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="modal_login_label">Add series</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form" id="add_series_form">
+                            <div class="form-group">
+                                <label for="home_team">Home</label>
+                                <input type="text" class="form-control" id="home_team" placeholder="Home team id">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="btlogin">Login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="js/jquery.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/series.js"></script>
+        <script>
+            $(document).ready(function () {
+                Main();
+            });
+        </script>
+    </body>
+</html>

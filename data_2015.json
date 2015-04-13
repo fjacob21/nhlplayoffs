@@ -1,0 +1,236 @@
+{
+    "current_round": 1, 
+    "predictions": [
+        {
+            "home": "mtl", 
+            "player": "fred", 
+            "visitor": "pit", 
+            "win_games": 7, 
+            "win_team": "mtl"
+        }, 
+        {
+            "home": "ana", 
+            "player": "fred", 
+            "visitor": "wpg", 
+            "win_games": "7", 
+            "win_team": "wpg"
+        }, 
+        {
+            "home": "stl", 
+            "player": "fred", 
+            "visitor": "min", 
+            "win_games": "5", 
+            "win_team": "stl"
+        }, 
+        {
+            "home": "nsh", 
+            "player": "fred", 
+            "visitor": "chi", 
+            "win_games": "6", 
+            "win_team": "chi"
+        }, 
+        {
+            "home": "van", 
+            "player": "fred", 
+            "visitor": "cgy", 
+            "win_games": "7", 
+            "win_team": "cgy"
+        }, 
+        {
+            "home": "nyr", 
+            "player": "fred", 
+            "visitor": "pit", 
+            "win_games": "7", 
+            "win_team": "pit"
+        }, 
+        {
+            "home": "mtl", 
+            "player": "fred", 
+            "visitor": "ott", 
+            "win_games": "6", 
+            "win_team": "mtl"
+        }, 
+        {
+            "home": "tbl", 
+            "player": "fred", 
+            "visitor": "det", 
+            "win_games": "6", 
+            "win_team": "det"
+        }, 
+        {
+            "home": "wsh", 
+            "player": "fred", 
+            "visitor": "nyi", 
+            "win_games": "5", 
+            "win_team": "nyi"
+        }
+    ], 
+    "series": [
+        {
+            "home": "mtl", 
+            "home_win": 0, 
+            "round": 1, 
+            "visitor": "ott", 
+            "visitor_win": 0
+        }, 
+        {
+            "home": "tbl", 
+            "home_win": 0, 
+            "round": 1, 
+            "visitor": "det", 
+            "visitor_win": 0
+        }, 
+        {
+            "home": "nyr", 
+            "home_win": 0, 
+            "round": 1, 
+            "visitor": "pit", 
+            "visitor_win": 0
+        }, 
+        {
+            "home": "wsh", 
+            "home_win": 0, 
+            "round": 1, 
+            "visitor": "nyi", 
+            "visitor_win": 0
+        }, 
+        {
+            "home": "stl", 
+            "home_win": 0, 
+            "round": 1, 
+            "visitor": "min", 
+            "visitor_win": 0
+        }, 
+        {
+            "home": "nsh", 
+            "home_win": 0, 
+            "round": 1, 
+            "visitor": "chi", 
+            "visitor_win": 0
+        }, 
+        {
+            "home": "ana", 
+            "home_win": 0, 
+            "round": 1, 
+            "visitor": "wpg", 
+            "visitor_win": 0
+        }, 
+        {
+            "home": "van", 
+            "home_win": 0, 
+            "round": 1, 
+            "visitor": "cgy", 
+            "visitor_win": 0
+        }
+    ], 
+    "teams": [
+        {
+            "division": "east", 
+            "id": "nyr", 
+            "name": "Rangers", 
+            "rank": 1
+        }, 
+        {
+            "division": "east", 
+            "id": "mtl", 
+            "name": "Canadiens", 
+            "rank": 2
+        }, 
+        {
+            "division": "east", 
+            "id": "tbl", 
+            "name": "Lightning", 
+            "rank": 3
+        }, 
+        {
+            "division": "east", 
+            "id": "wsh", 
+            "name": "Capitals", 
+            "rank": 4
+        }, 
+        {
+            "division": "east", 
+            "id": "nyi", 
+            "name": "Islanders", 
+            "rank": 5
+        }, 
+        {
+            "division": "east", 
+            "id": "pit", 
+            "name": "Penguins", 
+            "rank": 8
+        }, 
+        {
+            "division": "east", 
+            "id": "det", 
+            "name": "RedWings", 
+            "rank": 6
+        }, 
+        {
+            "division": "east", 
+            "id": "bos", 
+            "name": "Bruins", 
+            "rank": 9
+        }, 
+        {
+            "division": "east", 
+            "id": "ott", 
+            "name": "Senators", 
+            "rank": 7
+        }, 
+        {
+            "division": "west", 
+            "id": "ana", 
+            "name": "Ducks", 
+            "rank": 1
+        }, 
+        {
+            "division": "west", 
+            "id": "nsh", 
+            "name": "Predators", 
+            "rank": 3
+        }, 
+        {
+            "division": "west", 
+            "id": "stl", 
+            "name": "Blues", 
+            "rank": 2
+        }, 
+        {
+            "division": "west", 
+            "id": "chi", 
+            "name": "Blackhawks", 
+            "rank": 4
+        }, 
+        {
+            "division": "west", 
+            "id": "min", 
+            "name": "Wild", 
+            "rank": 6
+        }, 
+        {
+            "division": "west", 
+            "id": "van", 
+            "name": "Canucks", 
+            "rank": 5
+        }, 
+        {
+            "division": "west", 
+            "id": "wpg", 
+            "name": "Jets", 
+            "rank": 7
+        }, 
+        {
+            "division": "west", 
+            "id": "cgy", 
+            "name": "Flames", 
+            "rank": 8
+        }, 
+        {
+            "division": "west", 
+            "id": "lak", 
+            "name": "Kings", 
+            "rank": 9
+        }
+    ]
+}
