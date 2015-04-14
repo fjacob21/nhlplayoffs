@@ -5,6 +5,7 @@ var series;
 var predictions=[];
 var current_round=0;
 var predictions_table;
+var winner_predictions;
 
 function build_request_url(request){
         return "/nhlplayoffs/api/v1.0/" + year + "/"+request;
@@ -72,7 +73,7 @@ function get_winner_predictions() {
             type: "GET",
             dataType: "json",
             success: function (json) {
-                    winner_predictions_table = json.winner_predictions;
+              winner_predictions = json.winner_predictions;
             },
             error: function (xhr, status, errorThrown) {
                 //alert("Sorry, there was a problem!");
@@ -211,8 +212,21 @@ function apply_predictions(){
 }
 
 function apply_winner_predictions(){
-        set_winner_predictions($("#winner_prediction").val());
+        if(!set_winner_predictions($("#winner_prediction").val()))
+            display_error("Cannot submit Stanley cup winner prediction, try again :(");
+        else
+            display_success("Stanley cup winner prediction submited with success");
         return true;
+}
+
+function find_winner_prediction(){
+  for (var i = 0; i < winner_predictions.length; i++) {
+          prediction = winner_predictions[i];
+          if(prediction.player == active_player){
+                  return prediction;
+          }
+  }
+  return null;
 }
 
 function find_prediction(home, visitor){
@@ -237,20 +251,37 @@ function display_winner_prediction(){
         series_html = "";
         series_html += "<tr class='active'>";
         series_html += "<th>";
-        series_html += "<select class='form-control' id='winner_prediction'>";
-        for (var i = 0; i < teams.length; i++) {
-                team = teams[i]
-                if(team.rank < 9){
-                        series_html += "<option value='"+ team.id+"'>"+ team.name +"</option>";
-                }
-        }
-        series_html += "</th>";
-        series_html += "</tr>";
-        $("#winner_predictions_list").append(series_html);
 
-        $("#bt_winner_apply").click(function () {
-                apply_winner_predictions();
-        });
+        if(current_round == 1){
+          series_html += "<select class='form-control' id='winner_prediction'>";
+          for (var i = 0; i < teams.length; i++) {
+                  team = teams[i]
+                  if(team.rank < 9){
+                          series_html += "<option value='"+ team.id+"'>"+ team.name +"</option>";
+                  }
+          }
+          series_html += "</th>";
+          series_html += "</tr>";
+          $("#winner_predictions_list").append(series_html);
+          winner_prediction = find_winner_prediction();
+          if(winner_prediction != null)
+            $("#winner_prediction").val(winner_prediction.winner)
+
+          $("#bt_winner_apply").click(function () {
+            apply_winner_predictions();
+          });
+        }
+        else{
+          winner_prediction = find_winner_prediction();
+          if(winner_prediction != null){
+            team = get_team_info(winner_prediction.winner);
+            series_html += "<img src='http://cdn.nhle.com/nhl/images/logos/teams/"+ team.name.toLowerCase() + "_logo.svgz'>" + team.name;
+            series_html += "</th>";
+            series_html += "</tr>";
+            $("#winner_predictions_list").append(series_html);
+            $("#bt_winner_apply").hide();
+          }
+        }
 }
 
 function display_series(){
@@ -297,16 +328,14 @@ function display_series(){
 
 function display_error(msg){
         $("#error-alert").html(msg);
-        $("#error-alert").fadeTo(2000, 500).slideUp(500, function(){
-          $("#error-alert").alert('close');
-      });
+        $("#error-alert").show();
+        $("#error-alert").fadeTo(2000, 500).slideUp(500);
 }
 
 function display_success(msg){
         $("#success-alert").html(msg);
-        $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
-          $("#success-alert").alert('close');
-      });
+        $("#success-alert").show();
+        $("#success-alert").fadeTo(2000, 500).slideUp(500);
 }
 
 function login_submit(){

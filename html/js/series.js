@@ -31,27 +31,20 @@ function get_request(request, result){
 }
 
 function set_series(round, home, visitor, home_wins, visitor_win) {
-        data ={"round":round, "home":home, "visitor":visitor, "home_win":home_wins, "visitor_win":visitor_win};
-        //$.postJSON(build_request_url("predictions"), data);
-        $.ajax({
-            url: build_request_url("series"),
-            type: "POST",
-            dataType: "json",
-            contentType: 'application/json; charset=utf-8',
-            data: JSON.stringify(data),
-            success: function (json) {
-                    result = json.prediction;
-            },
-            error: function (xhr, status, errorThrown) {
-                //alert("Sorry, there was a problem!");
-                console.log("Error: " + errorThrown);
-                console.log("Status: " + status);
-                console.dir(xhr);
-            },
-            complete: function (xhr, status) {
-                //alert("The request is complete!");
-            }
+    data ={"round":round, "home":home, "visitor":visitor, "home_win":home_wins, "visitor_win":visitor_win};
+
+    var result = $.ajax({
+        url: build_request_url("series"),
+        type: "POST",
+        dataType: "json",
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(data),
+        async: false
     });
+    if(result.status != 201 )
+            return false;
+    return true;
+
 }
 
 function get_teams() {
@@ -130,6 +123,8 @@ function apply_series(){
                 serie.visitor_win = visitor_win;
                 set_series(serie.round, serie.home, serie.visitor, serie.home_win, serie.visitor_win);
         }
+        display_success("All series submited with success");
+        return true;
 }
 
 function find_prediction(home, visitor){
@@ -177,6 +172,18 @@ function display_series(){
             $("#bt_apply").click(function () {
                     apply_series();
                 });
+}
+
+function display_error(msg){
+        $("#error-alert").html(msg);
+        $("#error-alert").show();
+        $("#error-alert").fadeTo(2000, 500).slideUp(500);
+}
+
+function display_success(msg){
+        $("#success-alert").html(msg);
+        $("#success-alert").show();
+        $("#success-alert").fadeTo(2000, 500).slideUp(500);
 }
 
 function SetSelectedNav(selectednav) {
