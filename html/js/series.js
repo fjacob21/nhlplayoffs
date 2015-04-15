@@ -1,153 +1,34 @@
 var active_player = "";
 var year = "2015";
-var teams;
-var series;
-var predictions=[];
-var current_round=0;
-var predictions_table;
+var year = 2015;
+var db = new data(year);
 
-function build_request_url(request){
-        return "/nhlplayoffs/api/v1.0/" + year + "/"+request;
-}
-
-function get_request(request, result){
-        $.ajax({
-            url: build_request_url(request),
-            type: "GET",
-            dataType: "json",
-            success: function (json) {
-                result = json;
-            },
-            error: function (xhr, status, errorThrown) {
-                //alert("Sorry, there was a problem!");
-                console.log("Error: " + errorThrown);
-                console.log("Status: " + status);
-                console.dir(xhr);
-            },
-            complete: function (xhr, status) {
-                //alert("The request is complete!");
-            }
-        });
-}
-
-function set_series(round, home, visitor, home_wins, visitor_win) {
-    data ={"round":round, "home":home, "visitor":visitor, "home_win":home_wins, "visitor_win":visitor_win};
-
-    var result = $.ajax({
-        url: build_request_url("series"),
-        type: "POST",
-        dataType: "json",
-        contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify(data),
-        async: false
-    });
-    if(result.status != 201 )
-            return false;
-    return true;
-
-}
-
-function get_teams() {
-        $.ajax({
-            url: build_request_url("teams"),
-            type: "GET",
-            dataType: "json",
-            success: function (json) {
-                teams = json.teams;
-            },
-            error: function (xhr, status, errorThrown) {
-                //alert("Sorry, there was a problem!");
-                console.log("Error: " + errorThrown);
-                console.log("Status: " + status);
-                console.dir(xhr);
-            },
-            complete: function (xhr, status) {
-                //alert("The request is complete!");
-            }
-        });
-}
-
-function get_current_round() {
-    $.ajax({
-        url: build_request_url("current_round"),
-        type: "GET",
-        dataType: "json",
-        success: function (json) {
-          current_round = json.current_round;
-        },
-        error: function (xhr, status, errorThrown) {
-            //alert("Sorry, there was a problem!");
-            console.log("Error: " + errorThrown);
-            console.log("Status: " + status);
-            console.dir(xhr);
-        },
-        complete: function (xhr, status) {
-            //alert("The request is complete!");
-        }
-    });
-}
-
-function get_series() {
-    $.ajax({
-        url: build_request_url("series"),
-        type: "GET",
-        dataType: "json",
-        success: function (json) {
-            series = json.series;
-            display_series();
-        },
-        error: function (xhr, status, errorThrown) {
-            //alert("Sorry, there was a problem!");
-            console.log("Error: " + errorThrown);
-            console.log("Status: " + status);
-            console.dir(xhr);
-        },
-        complete: function (xhr, status) {
-            //alert("The request is complete!");
-        }
-    });
-}
 function apply_series(){
-        for (var i = 0; i < series.length; i++) {
-                serie = series[i]
-                round = $("#" + serie.home+serie.visitor + "_round").val();
-                home = $("#" + serie.home+serie.visitor + "_home").val();
-                visitor = $("#" + serie.home+serie.visitor + "_visitor").val();
-                home_win = $("#" + serie.home+serie.visitor + "_home_win").val();
-                visitor_win = $("#" + serie.home+serie.visitor + "_visitor_win").val();
+        for (var i = 0; i < db.series.length; i++) {
+                var serie = db.series[i]
+                var round = $("#" + serie.home+serie.visitor + "_round").val();
+                var home = $("#" + serie.home+serie.visitor + "_home").val();
+                var visitor = $("#" + serie.home+serie.visitor + "_visitor").val();
+                var home_win = $("#" + serie.home+serie.visitor + "_home_win").val();
+                var visitor_win = $("#" + serie.home+serie.visitor + "_visitor_win").val();
 
                 serie.round = round;
                 serie.home = home;
                 serie.visitor = visitor;
                 serie.home_win = home_win;
                 serie.visitor_win = visitor_win;
-                set_series(serie.round, serie.home, serie.visitor, serie.home_win, serie.visitor_win);
+                db.set_series(serie.round, serie.home, serie.visitor, serie.home_win, serie.visitor_win);
         }
+        db.calculate_pts();
+        display_results();
         display_success("All series submited with success");
         return true;
 }
 
-function find_prediction(home, visitor){
-        for (var i = 0; i < predictions_table.length; i++) {
-                prediction = predictions_table[i];
-                if(prediction.player == active_player && prediction.home == home && prediction.visitor == visitor){
-                        return prediction;
-                }
-        }
-        return null;
-}
-
-function get_team_info(team_id){
-  for (var i = 0; i < teams.length; i++) {
-      if(teams[i].id == team_id)
-        return teams[i];
-  }
-  return null;
-}
-
 function display_series(){
-  for (var i = 0; i < series.length; i++) {
-                serie = series[i]
+  $("#series_list").empty();
+  for (var i = 0; i < db.series.length; i++) {
+                var serie = db.series[i]
 
                 series_html = "";
                 series_html += "<tr class='active'>";
@@ -172,6 +53,27 @@ function display_series(){
             $("#bt_apply").click(function () {
                     apply_series();
                 });
+}
+
+function display_results(){
+  $("#results_list").empty();
+  for (var i = 0; i < db.players.length; i++) {
+                var player = db.players[i]
+                var team = db.get_team_info(player.winner);
+                series_html = "";
+                series_html += "<tr class='active'>";
+                series_html += "<th>";
+                series_html += player.name;
+                series_html += "</th>";
+                series_html += "<th>";
+                series_html += "<img src='http://cdn.nhle.com/nhl/images/logos/teams/"+ team.name.toLowerCase() + "_logo.svgz'>";
+                series_html += "</th>";
+                series_html += "<th>";
+                series_html += player.pts;
+                series_html += "</th>";
+                series_html += "</tr>";
+                $("#results_list").append(series_html);
+            }
 }
 
 function display_error(msg){
@@ -234,7 +136,9 @@ function RegisterMenuAction() {
 
 function Main() {
   RegisterMenuAction();
-  get_current_round();
-  get_teams();
-  get_series();
+  db.onDataLoaded = function(){
+    db.build_players();
+    display_series();
+    display_results();};
+  db.update();
 }
