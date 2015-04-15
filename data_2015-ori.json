@@ -116,11 +116,7 @@
                 "home_win":0,
                 "visitor_win":0}
         ],
-        "predictions":[{"player":"fred",
-                        "home":"mtl",
-                    "visitor":"pit",
-                    "win_team":"mtl",
-                    "win_games":7}],
+        "predictions":[],
         "current_round":1,
         "winner_predictions":[]
 }
