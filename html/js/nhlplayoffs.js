@@ -150,9 +150,10 @@ function display_reviews(){
                              var serie = db.series[j];
                              var prediction = find_player_serie(player.predictions,serie.home,serie.visitor);
 
-                             series_html += "<th style='background-color: " + round_color[serie.round-1] + "'>";
+                             series_html += "<th style='vertical-align: middle;background-color: " + round_color[serie.round-1] + "'>";
                              if(prediction!=null && serie.round < db.round){
                                 var team = db.get_team_info(prediction.win_team);
+                                series_html += prediction.win_games;
                                 series_html += "<img  height='42' width='42' title='"+ team.name + "' src='"+ team_img(team) + "'>";
                              }
                              else
