@@ -1,18 +1,25 @@
 function compare_predictions(a,b) {
-  if(a.home.division != b.home.division){
-    if(a.home.division == "west")
-      return -1;
-    else
-      return 1;
-  }
-  else {
-    if (a.home.rank < b.home.rank)
-       return -1;
-    if (a.home.rank > b.home.rank)
-      return 1;
-    return 0;
-  }
+        if(a.round<b.round)
+                return -1;
+        else if(a.round>b.round)
+                return 1;
+        else{
+          if(a.home.division != b.home.division){
+            if(a.home.division == "west")
+              return -1;
+            else
+              return 1;
+          }
+          else {
+            if (a.home.rank < b.home.rank)
+               return -1;
+            if (a.home.rank > b.home.rank)
+              return 1;
+            return 0;
+          }
+        }
 }
+
 function compare_players(a,b) {
   if(a.pts > b.pts)
       return -1;
