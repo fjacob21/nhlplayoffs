@@ -150,8 +150,11 @@ function data(current_year){
             if(serie.visitor_win == 4)winner = serie.visitor;
 
             if(prediction.win_team == winner ) {
+                var winner_team = this.get_team_info(winner);
                 pts+=5;
+                pts+=winner_team.rank;
                 if(parseInt(prediction.win_games) == (parseInt(serie.home_win)+parseInt(serie.visitor_win))) pts+=10;
+
             }
           }
           player.pts=pts;
