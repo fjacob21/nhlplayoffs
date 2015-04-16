@@ -129,10 +129,21 @@ function display_reviews(){
                 var serie = db.series[i];
                 var home = db.get_team_info(serie.home);
                 var visitor = db.get_team_info(serie.visitor);
+                var winner = "";
+                var home_effect = "";
+                var visitor_effect = "";
+                var home_wins = "";
+                var visitor_wins = "";
+                if(serie.home_win == 4){winner = serie.home;visitor_effect="opacity:0.1;";}
+                if(serie.visitor_win == 4){winner = serie.visitor;home_effect="opacity:0.1;";};
+                if(winner!=""){
+                        home_wins = " :" + serie.home_win;
+                        visitor_wins = " :" + serie.visitor_win;
+                }
                 var series_html = "";
                 series_html += "<th style='background-color: #404040'>";
-                series_html += "<img  height='20' width='20' title='"+ home.name + "' src='"+ team_img(home) + "'>";
-                series_html += "<img  height='20' width='20' title='"+ visitor.name + "' src='"+ team_img(visitor) + "'>";
+                series_html += "<img style='"+home_effect+"' height='20' width='20' title='"+ home.rank +"-"+ home.name + home_wins +"' src='"+ team_img(home) + "'>";
+                series_html += "<img style='"+visitor_effect+"' height='20' width='20' title='"+ visitor.rank +"-"+visitor.name + visitor_wins + "' src='"+ team_img(visitor) + "'>";
                 series_html += "</th>";
                 $("#review_series").append(series_html);
         }
@@ -149,15 +160,22 @@ function display_reviews(){
                       for(var j=0;j<db.series.length;j++){
                              var serie = db.series[j];
                              var prediction = find_player_serie(player.predictions,serie.home,serie.visitor);
+                             var winner="";
+                             if(serie.home_win == 4){winner = serie.home;visitor_effect="opacity:0.1;";}
+                             if(serie.visitor_win == 4){winner = serie.visitor;home_effect="opacity:0.1;";};
 
                              series_html += "<th style='vertical-align: middle;background-color: " + round_color[serie.round-1] + "'>";
                              if(prediction!=null && serie.round < db.round){
                                 var team = db.get_team_info(prediction.win_team);
-                                series_html += prediction.win_games;
-                                series_html += "<img  height='42' width='42' title='"+ team.name + "' src='"+ team_img(team) + "'>";
+                                var wins_color="";
+                                if(prediction.win_team == winner){
+                                        wins_color =  "color='green'";
+                                }
+                                series_html += "<font "+wins_color+">" + prediction.win_games + "</font>";
+                                series_html += "<img height='42' width='42' title='"+ team.rank +"-"+ team.name + "' src='"+ team_img(team) + "'>";
                              }
                              else
-                                series_html += "?";
+                             series_html += "?";
                              series_html += "</th>";
                       }
                       series_html += "<th style='vertical-align: middle'>";
