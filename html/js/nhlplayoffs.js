@@ -136,14 +136,18 @@ function display_reviews(){
                 var visitor_wins = "";
                 if(serie.home_win == 4){winner = serie.home;visitor_effect="opacity:0.1;";}
                 if(serie.visitor_win == 4){winner = serie.visitor;home_effect="opacity:0.1;";};
-                if(winner!=""){
-                        home_wins = " :" + serie.home_win;
-                        visitor_wins = " :" + serie.visitor_win;
-                }
+
                 var series_html = "";
                 series_html += "<th style='background-color: #404040'>";
-                series_html += "<img style='"+home_effect+"' height='20' width='20' title='"+ home.rank +"-"+ home.name + home_wins +"' src='"+ team_img(home) + "'>";
-                series_html += "<img style='"+visitor_effect+"' height='20' width='20' title='"+ visitor.rank +"-"+visitor.name + visitor_wins + "' src='"+ team_img(visitor) + "'>";
+                series_html += "<table>"
+                series_html += "<tr>";
+                series_html += "<th><img style='"+home_effect+"' height='20' width='20' title='"+ home.rank +"-"+ home.name + home_wins +"' src='"+ team_img(home) + "'></th>";
+                series_html += "<th><img style='"+visitor_effect+"' height='20' width='20' title='"+ visitor.rank +"-"+visitor.name + visitor_wins + "' src='"+ team_img(visitor) + "'></th>";
+                series_html += "</tr>";
+                series_html += "<tr>";
+                series_html += "<th style='color:white;text-align:center'>"+serie.home_win+"</th>";
+                series_html += "<th style='color:white;text-align:center'>"+serie.visitor_win+"</th>";
+                series_html += "</tr>";
                 series_html += "</th>";
                 $("#review_series").append(series_html);
         }
