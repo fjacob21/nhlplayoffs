@@ -125,6 +125,7 @@ var round_color = ['#B0B0B0', '#A0A0A0', '#909090', '#808080', '#707070'];
 function display_reviews(){
         $("#review_series").empty();
         $("#review_series").append("<th>Player</th>");
+        $("#review_series").append("<th><img height='42' width='42' title='Stanley cup winner' src='http://www.nhl.com/nhl/en/v3/images/playoffs/stanley-cup-playoffs-logo.svgz'></th>");
         for(var i=0;i<db.series.length;i++){
                 var serie = db.series[i];
                 var home = db.get_team_info(serie.home);
@@ -156,10 +157,14 @@ function display_reviews(){
         $("#review_list").empty();
         for (var i = 0; i < db.players.length; i++) {
                       var player = db.players[i]
+                      var win_team = db.get_team_info(player.winner);
                       var series_html = "";
                       series_html += "<tr class='active'>";
                       series_html += "<th style='vertical-align: middle'>";
                       series_html += player.name;
+                      series_html += "</th>";
+                      series_html += "<th style='vertical-align: middle'>";
+                      series_html += "<img height='42' width='42' title='"+ win_team.name +"' src='"+ team_img(win_team) + "'>";
                       series_html += "</th>";
                       for(var j=0;j<db.series.length;j++){
                              var serie = db.series[j];
