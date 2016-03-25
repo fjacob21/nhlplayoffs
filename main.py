@@ -1,15 +1,20 @@
-#!flask/bin/python
+#!/usr/bin/python
 from flask import Flask, jsonify, abort, request, send_from_directory, redirect, url_for
 import json
+import os
+import psycopg2
+import urlparse
 
-app = Flask(__name__, static_url_path='')
+application = Flask(__name__, static_url_path='')
 
 #with open("data_2015.json") as data:
-with open("data_2015.json") as data:
-    data_2015=json.load(data)
+data = '{"teams":[{"id":"nyr","name":"Rangers","rank":1,"division":"east"},{"id":"mtl", "name":"Canadiens", "rank":2, "division":"east"}, {"id":"tbl", "name":"Lightning", "rank":3, "division":"east"}, {"id":"wsh", "name":"Capitals", "rank":4, "division":"east"}, {"id":"nyi", "name":"Islanders", "rank":5, "division":"east"}, {"id":"pit", "name":"Penguins", "rank":8, "division":"east"}, {"id":"det", "name":"RedWings", "rank":6, "division":"east"}, {"id":"bos", "name":"Bruins", "rank":9, "division":"east"}, {"id":"ott", "name":"Senators", "rank":7, "division":"east"}, {"id":"ana", "name":"Ducks", "rank":1, "division":"west"}, {"id":"nsh", "name":"Predators", "rank":3, "division":"west"}, {"id":"stl", "name":"Blues", "rank":2, "division":"west"}, {"id":"chi", "name":"Blackhawks", "rank":4, "division":"west"}, {"id":"min", "name":"Wild", "rank":6, "division":"west"}, {"id":"van", "name":"Canucks", "rank":5, "division":"west"}, {"id":"wpg", "name":"Jets", "rank":7, "division":"west"}, {"id":"cgy", "name":"Flames", "rank":8, "division":"west"}, {"id":"lak", "name":"Kings", "rank":9, "division":"west"} ], "series":[{"home":"mtl", "visitor":"ott", "round":1, "home_win":0, "visitor_win":0}, {"home":"tbl", "visitor":"det", "round":1, "home_win":0, "visitor_win":0}, {"home":"nyr", "visitor":"pit", "round":1, "home_win":0, "visitor_win":0}, {"home":"wsh", "visitor":"nyi", "round":1, "home_win":0, "visitor_win":0}, {"home":"stl", "visitor":"min", "round":1, "home_win":0, "visitor_win":0}, {"home":"nsh", "visitor":"chi", "round":1, "home_win":0, "visitor_win":0}, {"home":"ana", "visitor":"wpg", "round":1, "home_win":0, "visitor_win":0}, {"home":"van", "visitor":"cgy", "round":1, "home_win":0, "visitor_win":0} ], "predictions":[], "current_round":1, "winner_predictions":[]}'
+
+#with open("data_2016.json") as data:
+data_2016=json.loads(data)
 
 playoffs_data={}
-playoffs_data[2015] = data_2015
+playoffs_data[2016] = data_2016
 
 def write_data_file(year):
     with open('data_' + str(year) + '.json', 'w') as outfile:
@@ -33,29 +38,29 @@ def find_serie(data, home, visitor):
             return serie
     return None
 
-@app.route('/nhlplayoffs/api/v1.0/<int:year>/current_round', methods=['GET'])
+@application.route('/nhlplayoffs/api/v1.0/<int:year>/current_round', methods=['GET'])
 def get_current_round(year):
     return jsonify({"current_round":playoffs_data[year]["current_round"]})
 
-@app.route('/nhlplayoffs/api/v1.0/<int:year>/teams', methods=['GET'])
+@application.route('/nhlplayoffs/api/v1.0/<int:year>/teams', methods=['GET'])
 def get_teams(year):
     return jsonify({"teams":playoffs_data[year]["teams"]})
 
-@app.route('/nhlplayoffs/api/v1.0/<int:year>/teams/<string:team_id>', methods=['GET'])
+@application.route('/nhlplayoffs/api/v1.0/<int:year>/teams/<string:team_id>', methods=['GET'])
 def get_team(year,team_id):
     team = [team for team in playoffs_data[year]["teams"] if team['id'] == team_id]
     return jsonify({"team":team[0]})
 
-@app.route('/nhlplayoffs/api/v1.0/<int:year>/series', methods=['GET'])
+@application.route('/nhlplayoffs/api/v1.0/<int:year>/series', methods=['GET'])
 def get_series(year):
     return jsonify({"series":playoffs_data[year]["series"]})
 
-@app.route('/nhlplayoffs/api/v1.0/<int:year>/series/<int:series_id>', methods=['GET'])
+@application.route('/nhlplayoffs/api/v1.0/<int:year>/series/<int:series_id>', methods=['GET'])
 def get_serie(year,series_id):
     serie = [serie for serie in playoffs_data[year]["serie"] if serie['id'] == series_id]
     return jsonify({"serie":serie[0]})
 
-@app.route('/nhlplayoffs/api/v1.0/<int:year>/series', methods=['POST'])
+@application.route('/nhlplayoffs/api/v1.0/<int:year>/series', methods=['POST'])
 def create_serie(year):
     if not request.json:
         abort(400)
@@ -82,16 +87,16 @@ def create_serie(year):
 
     return jsonify({'serie': serie, "result":"success"}), 201
 
-@app.route('/nhlplayoffs/api/v1.0/<int:year>/predictions', methods=['GET'])
+@application.route('/nhlplayoffs/api/v1.0/<int:year>/predictions', methods=['GET'])
 def get_predictions(year):
     return jsonify({"predictions":playoffs_data[year]["predictions"]})
 
-@app.route('/nhlplayoffs/api/v1.0/<int:year>/predictions/<int:series_id>', methods=['GET'])
+@application.route('/nhlplayoffs/api/v1.0/<int:year>/predictions/<int:series_id>', methods=['GET'])
 def get_prediction(year,series_id):
     prediction = [prediction for prediction in playoffs_data[year]["predictions"] if prediction['id'] == series_id]
     return jsonify({"prediction":prediction[0]})
 
-@app.route('/nhlplayoffs/api/v1.0/<int:year>/predictions', methods=['POST'])
+@application.route('/nhlplayoffs/api/v1.0/<int:year>/predictions', methods=['POST'])
 def create_prediction(year):
     if not request.json:
         abort(400)
@@ -118,11 +123,11 @@ def create_prediction(year):
 
     return jsonify({'prediction': prediction, "result":"success"}), 201
 
-@app.route('/nhlplayoffs/api/v1.0/<int:year>/winner_predictions', methods=['GET'])
+@application.route('/nhlplayoffs/api/v1.0/<int:year>/winner_predictions', methods=['GET'])
 def get_winner_predictions(year):
     return jsonify({"winner_predictions":playoffs_data[year]["winner_predictions"]})
 
-@app.route('/nhlplayoffs/api/v1.0/<int:year>/winner_predictions', methods=['POST'])
+@application.route('/nhlplayoffs/api/v1.0/<int:year>/winner_predictions', methods=['POST'])
 def set_winner_predictions(year):
     if not request.json:
         abort(400)
@@ -143,13 +148,13 @@ def set_winner_predictions(year):
 
     return jsonify({'winner_prediction': winner_prediction, "result":"success"}), 201
 
-@app.route('/html/<path:path>')
+@application.route('/html/<path:path>')
 def send_js(path):
     return send_from_directory('html', path)
 
-@app.route('/')
+@application.route('/')
 def root():
     return redirect('/html/nhlplayoffs.html')
 
 if __name__ == '__main__':
-    app.run(debug=True,host='0.0.0.0', port=5000)
+    application.run(debug=True,host='0.0.0.0', port=5000)
