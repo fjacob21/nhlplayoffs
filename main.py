@@ -4,6 +4,7 @@ import json
 import os
 import psycopg2
 import urlparse
+import players
 
 application = Flask(__name__, static_url_path='')
 
@@ -147,6 +148,63 @@ def set_winner_predictions(year):
     write_data_file(year)
 
     return jsonify({'winner_prediction': winner_prediction, "result":"success"}), 201
+
+@application.route('/nhlplayoffs/api/v2.0/players', methods=['GET'])
+def get_all_players():
+    return jsonify({'players':players.get_all()})
+
+@application.route('/nhlplayoffs/api/v2.0/players', methods=['POST'])
+def add_player():
+    if not request.json:
+        abort(400)
+
+    if "name" not in request.json or "psw" not in request.json:
+        abort(400)
+
+    name = request.json["name"]
+    psw = request.json["psw"]
+    email = ''
+    if "email" in request.json:
+        email = request.json["email"]
+    admin = False
+    if "admin" in request.json:
+        admin = request.json["admin"]
+    if not players.add(name, psw, email, admin):
+        abort(400)
+    return jsonify(players.get(name))
+
+@application.route('/nhlplayoffs/api/v2.0/players/<string:player>', methods=['GET'])
+def get_player(player):
+    p = players.get(player)
+    if p is None:
+        abort(400)
+    return jsonify(p)
+
+@application.route('/nhlplayoffs/api/v2.0/players/<string:player>', methods=['PUT'])
+def update_player(player):
+    if not request.json:
+        abort(400)
+    return ""
+
+@application.route('/nhlplayoffs/api/v2.0/players/<string:player>', methods=['DELETE'])
+def delete_player(player):
+    if not players.remove(player):
+        abort(400)
+
+    return ""
+
+@application.route('/nhlplayoffs/api/v2.0/players/<string:player>/login', methods=['POST'])
+def login_player(player):
+    if not request.json:
+        abort(400)
+
+    if "psw" not in request.json:
+        abort(400)
+    psw = request.json["psw"]
+    result = players.login(player, psw)
+    if result is None:
+        abort(400)
+    return jsonify({'user':result})
 
 @application.route('/html/<path:path>')
 def send_js(path):
