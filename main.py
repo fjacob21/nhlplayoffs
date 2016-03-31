@@ -2,12 +2,13 @@
 from flask import Flask, jsonify, abort, request, send_from_directory, redirect, url_for
 import json
 import os
-import psycopg2
 import urlparse
 import players
+from postgres_store import postgres_store
 
 application = Flask(__name__, static_url_path='')
-
+#db = postgres_store('dc7m5co1u7n7ka', 'vfumyroepkgfsd', 'AsRCUy1JTkf500s_2pfXZK9qwR', 'ec2-107-22-246-250.compute-1.amazonaws.com', 5432)
+db = postgres_store('dc7m5co1u7n7ka', 'vfumyroepkgfsd', 'AsRCUy1JTkf500s_2pfXZK9qwR', 'ec2-107-22-246-250.compute-1.amazonaws.com', 5432)
 #with open("data_2015.json") as data:
 data = '{"teams":[{"id":"nyr","name":"Rangers","rank":1,"division":"east"},{"id":"mtl", "name":"Canadiens", "rank":2, "division":"east"}, {"id":"tbl", "name":"Lightning", "rank":3, "division":"east"}, {"id":"wsh", "name":"Capitals", "rank":4, "division":"east"}, {"id":"nyi", "name":"Islanders", "rank":5, "division":"east"}, {"id":"pit", "name":"Penguins", "rank":8, "division":"east"}, {"id":"det", "name":"RedWings", "rank":6, "division":"east"}, {"id":"bos", "name":"Bruins", "rank":9, "division":"east"}, {"id":"ott", "name":"Senators", "rank":7, "division":"east"}, {"id":"ana", "name":"Ducks", "rank":1, "division":"west"}, {"id":"nsh", "name":"Predators", "rank":3, "division":"west"}, {"id":"stl", "name":"Blues", "rank":2, "division":"west"}, {"id":"chi", "name":"Blackhawks", "rank":4, "division":"west"}, {"id":"min", "name":"Wild", "rank":6, "division":"west"}, {"id":"van", "name":"Canucks", "rank":5, "division":"west"}, {"id":"wpg", "name":"Jets", "rank":7, "division":"west"}, {"id":"cgy", "name":"Flames", "rank":8, "division":"west"}, {"id":"lak", "name":"Kings", "rank":9, "division":"west"} ], "series":[{"home":"mtl", "visitor":"ott", "round":1, "home_win":0, "visitor_win":0}, {"home":"tbl", "visitor":"det", "round":1, "home_win":0, "visitor_win":0}, {"home":"nyr", "visitor":"pit", "round":1, "home_win":0, "visitor_win":0}, {"home":"wsh", "visitor":"nyi", "round":1, "home_win":0, "visitor_win":0}, {"home":"stl", "visitor":"min", "round":1, "home_win":0, "visitor_win":0}, {"home":"nsh", "visitor":"chi", "round":1, "home_win":0, "visitor_win":0}, {"home":"ana", "visitor":"wpg", "round":1, "home_win":0, "visitor_win":0}, {"home":"van", "visitor":"cgy", "round":1, "home_win":0, "visitor_win":0} ], "predictions":[], "current_round":1, "winner_predictions":[]}'
 
