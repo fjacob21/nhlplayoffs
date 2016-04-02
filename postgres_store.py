@@ -3,16 +3,16 @@
 import json
 import psycopg2
 
-class postgres_store(object, db, user, psw, host, port):
+class postgres_store(object):
 
-    def __init__(self, features):
+    def __init__(self, db, user, psw, host, port):
         self._db = db
         self._user = user
         self._psw = psw
         self._host = host
         self._port = port
 
-    def connect():
+    def connect(self):
         con = None
         try:
             con = psycopg2.connect(database=self._db,
@@ -26,12 +26,70 @@ class postgres_store(object, db, user, psw, host, port):
 
         return con
 
-    def store(table, id, data):
-        con = connect()
+    def table_exist(self, table):
+        con = self.connect()
         if con :
             try:
                 cur = con.cursor()
-                cur.execute('UPDATE ' + table + ' SET data=\''+ data +'\' WHERE ID=' + str(id))
+                cur.execute("SELECT * FROM information_schema.tables WHERE table_name='" + table + "';")
+            except Exception as e:
+                print(e)
+                return False
+
+            con.close()
+            return bool(cur.rowcount)
+        return False
+
+    def row_exist(self, table, id):
+        con = self.connect()
+        if con :
+            try:
+                cur = con.cursor()
+                cur.execute("SELECT * FROM " + table + " WHERE ID='" + str(id) + "';")
+            except Exception as e:
+                print(e)
+                return False
+
+            con.close()
+            return bool(cur.rowcount)
+        return False
+
+    def create_table(self, table):
+        con = self.connect()
+        if con :
+            try:
+                cur = con.cursor()
+                cur.execute('CREATE TABLE ' + table + '(ID INT PRIMARY KEY NOT NULL, data TEXT NOT NULL)')
+                con.commit()
+            except Exception as e:
+                print(e)
+                return False
+
+            con.close()
+            return True
+        return False
+
+    def create_row(self, table, id, data):
+        con = self.connect()
+        if con :
+            try:
+                cur = con.cursor()
+                cur.execute("INSERT INTO " + table + "(ID,data) " + "VALUES("+ str(id) + ", '"+ json.dumps(data) + "')" )
+                con.commit()
+            except Exception as e:
+                print('row',e)
+                return False
+
+            con.close()
+            return True
+        return False
+
+    def delete_table(self, table):
+        con = self.connect()
+        if con :
+            try:
+                cur = con.cursor()
+                cur.execute('DROP TABLE ' + table)
                 con.commit()
             except Exception as e:
                 return False
@@ -40,8 +98,30 @@ class postgres_store(object, db, user, psw, host, port):
             return True
         return False
 
-    def restore(table, id):
-        con = connect()
+    def store(self, table, id, data):
+        if not self.table_exist(table):
+            self.create_table(table)
+        if not self.row_exist(table, id):
+            self.create_row(table, id, data)
+
+        con = self.connect()
+        if con :
+            try:
+                cur = con.cursor()
+                cur.execute('UPDATE ' + table + ' SET data=\''+ json.dumps(data) +'\' WHERE ID=' + str(id))
+                con.commit()
+            except Exception as e:
+                return False
+
+            con.close()
+            return True
+        return False
+
+    def restore(self, table, id):
+        if not self.table_exist(table) or not self.row_exist(table, id):
+            return ''
+
+        con = self.connect()
         if con :
             try:
                 cur = con.cursor()
