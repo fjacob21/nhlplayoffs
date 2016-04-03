@@ -3,6 +3,7 @@ from flask import Flask, jsonify, abort, request, send_from_directory, redirect,
 import json
 import os
 import urlparse
+import matchups
 import players
 from postgres_store import postgres_store
 
@@ -206,6 +207,26 @@ def login_player(player):
     if result is None:
         abort(400)
     return jsonify({'user':result})
+
+@application.route('/nhlplayoffs/api/v2.0/<int:year>/data', methods=['GET'])
+def get_data(year):
+    return jsonify(matchups.get(year))
+
+@application.route('/nhlplayoffs/api/v2.0/<int:year>/data', methods=['POST'])
+def update_data(year):
+    if not request.json:
+        abort(400)
+    print(request.json)
+    matchups.update(year,request.json)
+    return ''
+
+@application.route('/nhlplayoffs/api/v2.0/<int:year>/currentround', methods=['GET'])
+def get_current_roundv2(year):
+    return jsonify({'current_round':matchups.get_current_round(year)})
+
+@application.route('/nhlplayoffs/api/v2.0/<int:year>/matchups', methods=['GET'])
+def get_matchups(year):
+    return jsonify(matchups.get_matchups(year))
 
 @application.route('/html/<path:path>')
 def send_js(path):

@@ -5,9 +5,18 @@ import requests
 
 app = Flask(__name__, static_url_path='')
 
-year = 2015
-data = {"matchups":{},
-       "current_round":0}
+year = 2014
+#data = {"matchups":{},
+#       "current_round":0}
+
+def fetch_data(server, year):
+    data = requests.get('http://' + server + '/nhlplayoffs/api/v2.0/' + str(year) + '/data').json()
+    return data
+
+def update_data(server, year, data):
+    url = 'http://' + server + '/nhlplayoffs/api/v2.0/' + str(year) + '/data'
+    headers = {'content-type': 'application/json'}
+    requests.post(url, data = json.dumps(data), headers=headers)
 
 def get_teams_stats():
     teams = requests.get('http://www.nhl.com/stats/rest/grouped/teams/season/teamsummary?cayenneExp=seasonId=20152016%20and%20gameTypeId=2')
@@ -101,11 +110,11 @@ def get_playoff_schedule(team, year=2014):
     return team_schedule.json()
 
 #matchups ====================================
-def get_matchup_result(match):
+def get_matchup_result(match, year):
     result = {}
     home_id = match['home']['team']['id']
     away_id = match['away']['team']['id']
-    s = get_playoff_schedule(int(home_id), 2015)
+    s = get_playoff_schedule(int(home_id), year)
     home_win = 0
     away_win = 0
     for date in s['dates']:
@@ -217,41 +226,42 @@ def update_matchup(matchups):
             finished = False
     return finished
 
-def update():
+def update(data):
     #Look which round we are in
     if data['current_round'] == 0:
         matchups, finished = get_round1_matchups(year)
         if finished:
-            data['matchups'][1] = matchups
-            print_matchups(data['matchups'][1])
+            data['matchups']["1"] = matchups
+            print_matchups(data['matchups']["1"])
             data['current_round'] = 1
         else:
             print('Season not finished')
             print_matchups(matchups)
     elif data['current_round'] == 1:
         #Get round 1 results
-        finished = update_matchup(data['matchups'][1])
+        finished = update_matchup(data['matchups']["1"])
         if finished:
-            data['matchups'][2] = get_round2_matchups(data['matchups'][1])
-            print_matchups(data['matchups'][2])
+            data['matchups']["2"] = get_round2_matchups(data['matchups']["1"])
+            print_matchups(data['matchups']["2"])
             data['current_round'] = 2
     elif data['current_round'] == 2:
-        finished = update_matchup(data['matchups'][2])
+        finished = update_matchup(data['matchups']["2"])
         if finished:
-            data['matchups'][3] = get_round3_matchups(data['matchups'][2])
-            print_matchups(data['matchups'][3])
+            data['matchups']["3"] = get_round3_matchups(data['matchups']["2"])
+            print_matchups(data['matchups']["3"])
             data['current_round'] = 3
     elif data['current_round'] == 3:
-        finished = update_matchup(data['matchups'][3])
+        finished = update_matchup(data['matchups']["3"])
         if finished:
-            data['matchups'][4] = get_round4_matchups(data['matchups'][3])
-            print_matchups(data['matchups'][4])
+            data['matchups']["4"] = get_round4_matchups(data['matchups']["3"])
+            print_matchups(data['matchups']["4"])
             data['current_round'] = 4
     elif data['current_round'] == 4:
-        finished = update_matchup(data['matchups'][4])
+        finished = update_matchup(data['matchups']["4"])
         if finished:
-            winner = get_matchup_winner(data['matchups'][4][0])
+            winner = get_matchup_winner(data['matchups']["4"][0])
             print('Winner:', winner['team']['name'])
+    return data
 
 teams = get_teams()
 players = get_players()
@@ -272,5 +282,9 @@ def root():
     #return redirect('/html/nhlplayoffs.html')
 
 if __name__ == '__main__':
-    update()
+    #global data
+    data = fetch_data('localhost:5000', 2014)
+    print(data['matchups'])
+    data = update(data)
+    update_data('localhost:5000', 2014, data)
     #app.run(debug=True,host='0.0.0.0', port=5000)
