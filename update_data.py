@@ -5,7 +5,7 @@ import requests
 
 app = Flask(__name__, static_url_path='')
 
-year = 2014
+#year = 2014
 #data = {"matchups":{},
 #       "current_round":0}
 
@@ -39,9 +39,13 @@ def get_matchup_winner(matchup):
 
 def create_matchup(t1,t2):
     if int(t1['leagueRank']) <  int(t2['leagueRank']):
-        return {'home':t1, 'away':t2}
+        matchup = {'home':t1, 'away':t2}
     else:
-        return {'home':t2, 'away':t1}
+        matchup = {'home':t2, 'away':t1}
+    start = get_matchup_start(matchup, year)
+    if start is not None:
+        matchup['start'] = start
+    return matchup
 
 def get_conference_matchups(matchups, conference):
     matchs = []
@@ -60,7 +64,7 @@ def get_division_matchups(matchups, division):
     return matchs
 
 #teams ======================================
-def get_teams(year = 2015):
+def get_teams(year):
     ystr = str(year) + str(year+1)
     url = 'https://statsapi.web.nhl.com/api/v1/standings?season=' + ystr
     print(url)
@@ -99,12 +103,12 @@ def get_standings(teams):
     return standings
 
 #schedules ==================================
-def get_schedule(team, year=2014):
+def get_schedule(team, year):
     url = 'https://statsapi.web.nhl.com/api/v1/schedule?startDate=' + str(year) + '-10-01&endDate=' + str(year+1) + '-06-29&expand=schedule.teams,schedule.linescore,schedule.broadcasts,schedule.ticket,schedule.game.content.media.epg&leaderCategories=&site=en_nhlCA&teamId=' + str(team)
     team_schedule = requests.get(url)
     return team_schedule.json()
 
-def get_playoff_schedule(team, year=2014):
+def get_playoff_schedule(team, year):
     url = 'https://statsapi.web.nhl.com/api/v1/schedule?startDate=' + str(year+1) + '-04-01&endDate=' + str(year+1) + '-06-29&expand=schedule.teams,&site=en_nhlCA&teamId=' + str(team)
     team_schedule = requests.get(url)
     return team_schedule.json()
@@ -139,6 +143,19 @@ def get_matchup_result(match, year):
     result['away_win'] = away_win
     return result
 
+def get_matchup_start(matchup, year):
+    home_id = matchup['home']['team']['id']
+    away_id = matchup['away']['team']['id']
+    s = get_playoff_schedule(int(home_id), year)
+    for date in s['dates']:
+        game = date['games'][0]
+        game_home_id = game['teams']['home']['team']['id']
+        game_away_id = game['teams']['away']['team']['id']
+        if game['gameType'] == 'P':
+            if game_home_id == away_id or game_away_id == away_id:
+                return game['gameDate']
+    return None
+
 def get_round1_matchups(year):
     teams = get_teams(year)
     standings = get_standings(teams)
@@ -166,26 +183,28 @@ def get_round1_matchups(year):
             w2wild = team
     matchups = []
     if int(ealeader['conferenceRank']) < int(emleader['conferenceRank']):
-        matchups.append({'home':ealeader, 'away':e2wild})
-        matchups.append({'home':standings['Eastern']['Atlantic'][1], 'away':standings['Eastern']['Atlantic'][2]})
-        matchups.append({'home':emleader, 'away':e1wild})
-        matchups.append({'home':standings['Eastern']['Metropolitan'][1], 'away':standings['Eastern']['Metropolitan'][2]})
+        matchups.append(create_matchup(ealeader, e2wild))
+        matchups.append(create_matchup(standings['Eastern']['Atlantic'][1], standings['Eastern']['Atlantic'][2]))
+        matchups.append(create_matchup(emleader, e1wild))
+        matchups.append(create_matchup(standings['Eastern']['Metropolitan'][1], standings['Eastern']['Metropolitan'][2]))
+
     elif int(ealeader['conferenceRank']) > int(emleader['conferenceRank']):
-        matchups.append({'home':emleader, 'away':e2wild})
-        matchups.append({'home':standings['Eastern']['Metropolitan'][1], 'away':standings['Eastern']['Metropolitan'][2]})
-        matchups.append({'home':ealeader, 'away':e1wild})
-        matchups.append({'home':standings['Eastern']['Atlantic'][1], 'away':standings['Eastern']['Atlantic'][2]})
+        matchups.append(create_matchup(emleader, e2wild))
+        matchups.append(create_matchup(standings['Eastern']['Metropolitan'][1], standings['Eastern']['Metropolitan'][2]))
+        matchups.append(create_matchup(ealeader, e1wild))
+        matchups.append(create_matchup(standings['Eastern']['Atlantic'][1], standings['Eastern']['Atlantic'][2]))
 
     if int(wcleader['conferenceRank']) < int(wpleader['conferenceRank']):
-        matchups.append({'home':wcleader, 'away':w2wild})
-        matchups.append({'home':standings['Western']['Central'][1], 'away':standings['Western']['Central'][2]})
-        matchups.append({'home':wpleader, 'away':w1wild})
-        matchups.append({'home':standings['Western']['Pacific'][1], 'away':standings['Western']['Pacific'][2]})
+        matchups.append(create_matchup(wcleader, w2wild))
+        matchups.append(create_matchup(standings['Western']['Central'][1], standings['Western']['Central'][2]))
+        matchups.append(create_matchup(wpleader, w1wild))
+        matchups.append(create_matchup(standings['Western']['Pacific'][1], standings['Western']['Pacific'][2]))
+
     elif int(wcleader['conferenceRank']) > int(wpleader['conferenceRank']):
-        matchups.append({'home':wpleader, 'away':w2wild})
-        matchups.append({'home':standings['Western']['Pacific'][1], 'away':standings['Western']['Pacific'][2]})
-        matchups.append({'home':wcleader, 'away':w1wild})
-        matchups.append({'home':standings['Western']['Central'][1], 'away':standings['Western']['Central'][2]})
+        matchups.append(create_matchup(wpleader, w2wild))
+        matchups.append(create_matchup(standings['Western']['Pacific'][1], standings['Western']['Pacific'][2]))
+        matchups.append(create_matchup(wcleader, w1wild))
+        matchups.append(create_matchup(standings['Western']['Central'][1], standings['Western']['Central'][2]))
     return matchups, finished
 
 def get_round2_matchups(round1_matchup):
@@ -217,16 +236,19 @@ def get_round4_matchups(round3_matchup):
     matchups.append(create_matchup(get_matchup_winner(em[0]), get_matchup_winner(wm[0])))
     return matchups
 
-def update_matchup(matchups):
+def update_matchup(matchups, year):
     finished = True
     for match in matchups:
         result = get_matchup_result(match, year)
+        if 'start' not in match:
+            start = get_matchup_start(match, year)
+            match['start'] = start
         match['result'] = result
         if result['home_win'] != 4 and  result['away_win'] != 4:
             finished = False
     return finished
 
-def update(data):
+def update(data, year):
     #Look which round we are in
     if data['current_round'] == 0:
         matchups, finished = get_round1_matchups(year)
@@ -239,32 +261,32 @@ def update(data):
             print_matchups(matchups)
     elif data['current_round'] == 1:
         #Get round 1 results
-        finished = update_matchup(data['matchups']["1"])
+        finished = update_matchup(data['matchups']["1"], year)
         if finished:
             data['matchups']["2"] = get_round2_matchups(data['matchups']["1"])
             print_matchups(data['matchups']["2"])
             data['current_round'] = 2
     elif data['current_round'] == 2:
-        finished = update_matchup(data['matchups']["2"])
+        finished = update_matchup(data['matchups']["2"], year)
         if finished:
             data['matchups']["3"] = get_round3_matchups(data['matchups']["2"])
             print_matchups(data['matchups']["3"])
             data['current_round'] = 3
     elif data['current_round'] == 3:
-        finished = update_matchup(data['matchups']["3"])
+        finished = update_matchup(data['matchups']["3"], year)
         if finished:
             data['matchups']["4"] = get_round4_matchups(data['matchups']["3"])
             print_matchups(data['matchups']["4"])
             data['current_round'] = 4
     elif data['current_round'] == 4:
-        finished = update_matchup(data['matchups']["4"])
+        finished = update_matchup(data['matchups']["4"], year)
         if finished:
             winner = get_matchup_winner(data['matchups']["4"][0])
             print('Winner:', winner['team']['name'])
     return data
 
-teams = get_teams()
-players = get_players()
+#teams = get_teams()
+#players = get_players()
 
 @app.route('/html/<path:path>')
 def send_js(path):
@@ -283,8 +305,9 @@ def root():
 
 if __name__ == '__main__':
     #global data
-    data = fetch_data('localhost:5000', 2014)
+    year = 2014
+    data = fetch_data('localhost:5000', year)
     print(data['matchups'])
-    data = update(data)
-    update_data('localhost:5000', 2014, data)
+    data = update(data, year)
+    update_data('localhost:5000', year, data)
     #app.run(debug=True,host='0.0.0.0', port=5000)

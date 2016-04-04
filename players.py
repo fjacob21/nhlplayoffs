@@ -95,6 +95,10 @@ def get(player):
     del p['psw']
     return p
 
+def is_valid_player(hplayer):
+    players = restore_db()
+    return players.has_key(hplayer):
+
 def login(player, psw):
     players = restore_db()
     hname = userhash(player)
