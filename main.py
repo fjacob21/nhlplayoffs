@@ -4,6 +4,7 @@ import json
 import os
 import urlparse
 import matchups
+import predictions
 import players
 from postgres_store import postgres_store
 
@@ -216,7 +217,6 @@ def get_data(year):
 def update_data(year):
     if not request.json:
         abort(400)
-    print(request.json)
     matchups.update(year,request.json)
     return ''
 
@@ -227,6 +227,35 @@ def get_current_roundv2(year):
 @application.route('/nhlplayoffs/api/v2.0/<int:year>/matchups', methods=['GET'])
 def get_matchups(year):
     return jsonify(matchups.get_matchups(year))
+
+
+@application.route('/nhlplayoffs/api/v2.0/<int:year>/predictions', methods=['GET'])
+def get_predictionsv2(year):
+    p = predictions.get_all(year)
+    print(p)
+    return jsonify({'predictions':p})
+
+@application.route('/nhlplayoffs/api/v2.0/<int:year>/predictions', methods=['POST'])
+def add_prediction(year):
+    if not request.json:
+        abort(400)
+
+    if ("player" not in request.json or
+       "round" not in request.json or
+       "home" not in request.json or
+       "away" not in request.json or
+       "winner" not in request.json or
+       "games" not in request.json):
+        abort(400)
+    player = request.json["player"]
+    round = request.json["round"]
+    home = request.json["home"]
+    away = request.json["away"]
+    winner = request.json["winner"]
+    games = request.json["games"]
+
+
+    return jsonify({"result":predictions.add(player, year, round, home, away, winner, games)})
 
 @application.route('/html/<path:path>')
 def send_js(path):

@@ -1,6 +1,8 @@
 # Matchups management module
 #
 from postgres_store import postgres_store
+from datetime import datetime
+from dateutil import tz
 
 _db = postgres_store('fred', 'fred', '763160', 'localhost', 5432)
 
@@ -32,6 +34,17 @@ def get_matchups(year, round=0):
         return data['matchups']
     return data['matchups'][str(round)]
 
+def get_matchup(year, home, away):
+    matchups = get_matchups(year, 0)
+
+    for round in list(matchups.values()):
+        for matchup in round:
+            print(matchup)
+            if matchup['home']['team']['id'] == int(home) and matchup['away']['team']['id'] == int(away):
+                print('found')
+                return matchup
+    return None
+
 def parse_time(timestamp):
     from_zone = tz.gettz('UTC')
     to_zone = tz.gettz('America/New_York')
@@ -50,11 +63,19 @@ def now():
 
 def is_round_started(year, round):
     matchups = get_matchups(year, round)
-    now = now()
+    n = now()
 
     for matchup in matchups:
-        start = get_start()
+        start = get_start(matchup)
         if start is not None:
-            if now > start:
+            if n > start:
                 return True
+    return False
+
+def is_matchup_started(matchup):
+    n = now()
+    start = get_start(matchup)
+    if start is not None:
+        if n > start:
+            return True
     return False

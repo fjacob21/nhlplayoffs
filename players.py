@@ -18,6 +18,7 @@ def pswhash(name, psw):
     return hash.hexdigest()
 
 def pswcheck(player, psw):
+    players = _db.restore('players', 1)
     hname = userhash(player)
     if not players.has_key(hname):
         return False
@@ -97,7 +98,7 @@ def get(player):
 
 def is_valid_player(hplayer):
     players = restore_db()
-    return players.has_key(hplayer):
+    return hplayer in players
 
 def login(player, psw):
     players = restore_db()
