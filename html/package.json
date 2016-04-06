@@ -2,10 +2,12 @@
   "name": "nhlplayoffs",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "./js/main.js",
   "scripts": {
     "start": "webpack-dev-server",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node_modules/webpack/bin/webpack.js",
+    "watch": "node_modules/webpack/bin/webpack.js -w"
   },
   "author": "",
   "license": "ISC",
