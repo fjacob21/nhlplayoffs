@@ -49,6 +49,7 @@ def add(player, year, round, home, away, winner, games):
     if matchup is None:
         return False
 
+    ####################################################
     #if matchups.is_matchup_started(matchup):
     #    return False
 

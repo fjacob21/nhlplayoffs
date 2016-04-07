@@ -6,11 +6,9 @@ var AddUser = require('./AddUser');
 var Results = require('./Results');
 var Predictions = require('./Predictions');
 
-
 import React from 'react'
 import { render } from 'react-dom'
 import { Router, Route, Link } from 'react-router'
-
 render((
   <Router>
     <Route path="/" component={Login} />
@@ -22,4 +20,4 @@ render((
       <Route path="/main/results" component={Results} />
     </Route>
   </Router>
-), document.body)
+), document.getElementById('app'))

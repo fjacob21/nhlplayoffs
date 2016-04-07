@@ -18,8 +18,8 @@ const App = React.createClass({
   onNavbarToggle: function(event)  {
     this.setState({ navExpanded: ! this.state.navExpanded });
         },
-
         render() {
+        var username = document.login_user.name;
         return (
                 <div>
                          <Navbar inverse expanded={ this.state.navExpanded } onToggle={ this.onNavbarToggle } >
@@ -43,7 +43,7 @@ const App = React.createClass({
                                          </Nav>
                                          <Nav pullRight>
                                                  <LinkContainer to="/main/about"><NavItem eventKey={4} onClick={ this.onNavItemClick }>About</NavItem></LinkContainer>
-                                                 <NavItem eventKey={5} onClick={ this.onLogout }>Logout</NavItem>
+                                                 <NavItem eventKey={5} onClick={ this.onLogout }>{username} Logout</NavItem>
                                          </Nav>
                                  </Navbar.Collapse>
                          </Navbar>

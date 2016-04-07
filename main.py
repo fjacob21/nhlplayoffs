@@ -199,9 +199,11 @@ def delete_player(player):
 @application.route('/nhlplayoffs/api/v2.0/players/<string:player>/login', methods=['POST'])
 def login_player(player):
     if not request.json:
+        print('not json')
         abort(400)
 
     if "psw" not in request.json:
+        print('no psw')
         abort(400)
     psw = request.json["psw"]
     result = players.login(player, psw)
@@ -263,7 +265,7 @@ def send_js(path):
 
 @application.route('/')
 def root():
-    return redirect('/html/nhlplayoffs.html')
+    return redirect('/html/index.html')
 
 if __name__ == '__main__':
     application.run(debug=True,host='0.0.0.0', port=5000)
