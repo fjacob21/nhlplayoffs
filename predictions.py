@@ -1,10 +1,10 @@
 # Predictions management module
 #
-from postgres_store import postgres_store
+import postgres_store
 import matchups
 import players
 
-_db = postgres_store('fred', 'fred', '763160', 'localhost', 5432)
+_db = postgres_store.get_default()
 
 def restore_db(year):
     predictions = _db.restore('predictions', year)
@@ -20,23 +20,42 @@ def store_db(year, predictions):
 def add_winner(player, year, winner):
     predictions = restore_db(year)
     #check if round 1 is started
-    if matchups.is_round_started(year, 1) or not players.is_valid_player(player):
+    if matchups.is_round_started(year, 1):
         return False
-    prediction = {'player':player, 'winner':winner}
-    predictions['winners'].append(prediction)
+
+    if not players.is_valid_player(player):
+        return False
+
+    prediction_index = get_winner_index(player, year)
+    if prediction_index == -1:
+        prediction = {'player':player, 'winner':winner}
+        predictions['winners'].append(prediction)
+    else:
+        predictions['winners'][prediction_index]['winner'] = winner
+
     #Store in DB
     return store_db(year, predictions)
 
-def get_winners(year, round=0):
+def get_winners(year):
     predictions = restore_db(year)
-    matchups = predictions['matchups']
-    if round == 0:
-        return matchups
-    result = []
-    for matchup in matchups:
-        if matchup['round'] == round:
-            result.append(matchup)
-    return result
+    winners = predictions['winners']
+    return winners
+
+def get_winner(player, year):
+    winners = get_winners(year)
+    for winner in winners:
+        if winner['player'] == player:
+            return winner
+    return None
+
+def get_winner_index(player, year):
+    winners = get_winners(year)
+    i = 0
+    for winner in winners:
+        if winner['player'] == player:
+            return i
+        i = i + 1
+    return -1
 
 #add prediction
 def add(player, year, round, home, away, winner, games):
@@ -53,8 +72,8 @@ def add(player, year, round, home, away, winner, games):
     #if matchups.is_matchup_started(matchup):
     #    return False
 
-    prediction = get_prediction(player, year, round, home, away)
-    if prediction is not None:
+    prediction_index = get_prediction_index(player, year, round, home, away)
+    if prediction_index != -1:
         return update(player, year, round, home, away, winner, games)
 
     prediction = {'player':player, 'round':round, 'home':home, 'away':away, 'winner':winner, 'games':games}
@@ -74,15 +93,15 @@ def update(player, year, round, home, away, winner, games):
     if matchup is None:
         return False
 
-    if matchups.is_matchup_started(matchup):
+    #if matchups.is_matchup_started(matchup):
+    #    return False
+
+    prediction_index = get_prediction_index(player, year, round, home, away)
+    if prediction_index == -1:
         return False
 
-    prediction = get_prediction(player, year, round, home, away)
-    if prediction is None:
-        return False
-
-    prediction['winner'] = winner
-    prediction['games'] = games
+    predictions['matchups'][prediction_index]['winner'] = winner
+    predictions['matchups'][prediction_index]['games'] = games
 
     #Store in DB
     return store_db(year, predictions)
@@ -98,3 +117,13 @@ def get_prediction(player, year, round, home, away):
         matchup['home'] == home and matchup['away'] == away):
             return matchup
     return None
+
+def get_prediction_index(player, year, round, home, away):
+    matchups = get_all(year)
+    i = 0
+    for matchup in matchups:
+        if (matchup['player'] == player and matchup['round'] == round and
+        matchup['home'] == home and matchup['away'] == away):
+            return i
+        i = i + 1
+    return -1

@@ -1,11 +1,10 @@
 # Players management module
 #
 import hashlib
-from postgres_store import postgres_store
+import postgres_store
 
-#players = {}
 salt = 'superhero'
-_db = postgres_store('fred', 'fred', '763160', 'localhost', 5432)
+_db = postgres_store.get_default()
 
 def userhash(name):
     hash = hashlib.sha256()

@@ -1,10 +1,10 @@
 # Matchups management module
 #
-from postgres_store import postgres_store
+import postgres_store
 from datetime import datetime
 from dateutil import tz
 
-_db = postgres_store('fred', 'fred', '763160', 'localhost', 5432)
+_db = postgres_store.get_default()
 
 def restore_db(year):
     data = _db.restore('data', year)
@@ -39,9 +39,7 @@ def get_matchup(year, home, away):
 
     for round in list(matchups.values()):
         for matchup in round:
-            print(matchup)
             if matchup['home']['team']['id'] == int(home) and matchup['away']['team']['id'] == int(away):
-                print('found')
                 return matchup
     return None
 
@@ -69,7 +67,9 @@ def is_round_started(year, round):
         start = get_start(matchup)
         if start is not None:
             if n > start:
+                print('Started')
                 return True
+    print('not Started')
     return False
 
 def is_matchup_started(matchup):

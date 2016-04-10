@@ -10,7 +10,7 @@ from postgres_store import postgres_store
 
 application = Flask(__name__, static_url_path='')
 #db = postgres_store('dc7m5co1u7n7ka', 'vfumyroepkgfsd', 'AsRCUy1JTkf500s_2pfXZK9qwR', 'ec2-107-22-246-250.compute-1.amazonaws.com', 5432)
-db = postgres_store('dc7m5co1u7n7ka', 'vfumyroepkgfsd', 'AsRCUy1JTkf500s_2pfXZK9qwR', 'ec2-107-22-246-250.compute-1.amazonaws.com', 5432)
+#db = postgres_store('dc7m5co1u7n7ka', 'vfumyroepkgfsd', 'AsRCUy1JTkf500s_2pfXZK9qwR', 'ec2-107-22-246-250.compute-1.amazonaws.com', 5432)
 #with open("data_2015.json") as data:
 data = '{"teams":[{"id":"nyr","name":"Rangers","rank":1,"division":"east"},{"id":"mtl", "name":"Canadiens", "rank":2, "division":"east"}, {"id":"tbl", "name":"Lightning", "rank":3, "division":"east"}, {"id":"wsh", "name":"Capitals", "rank":4, "division":"east"}, {"id":"nyi", "name":"Islanders", "rank":5, "division":"east"}, {"id":"pit", "name":"Penguins", "rank":8, "division":"east"}, {"id":"det", "name":"RedWings", "rank":6, "division":"east"}, {"id":"bos", "name":"Bruins", "rank":9, "division":"east"}, {"id":"ott", "name":"Senators", "rank":7, "division":"east"}, {"id":"ana", "name":"Ducks", "rank":1, "division":"west"}, {"id":"nsh", "name":"Predators", "rank":3, "division":"west"}, {"id":"stl", "name":"Blues", "rank":2, "division":"west"}, {"id":"chi", "name":"Blackhawks", "rank":4, "division":"west"}, {"id":"min", "name":"Wild", "rank":6, "division":"west"}, {"id":"van", "name":"Canucks", "rank":5, "division":"west"}, {"id":"wpg", "name":"Jets", "rank":7, "division":"west"}, {"id":"cgy", "name":"Flames", "rank":8, "division":"west"}, {"id":"lak", "name":"Kings", "rank":9, "division":"west"} ], "series":[{"home":"mtl", "visitor":"ott", "round":1, "home_win":0, "visitor_win":0}, {"home":"tbl", "visitor":"det", "round":1, "home_win":0, "visitor_win":0}, {"home":"nyr", "visitor":"pit", "round":1, "home_win":0, "visitor_win":0}, {"home":"wsh", "visitor":"nyi", "round":1, "home_win":0, "visitor_win":0}, {"home":"stl", "visitor":"min", "round":1, "home_win":0, "visitor_win":0}, {"home":"nsh", "visitor":"chi", "round":1, "home_win":0, "visitor_win":0}, {"home":"ana", "visitor":"wpg", "round":1, "home_win":0, "visitor_win":0}, {"home":"van", "visitor":"cgy", "round":1, "home_win":0, "visitor_win":0} ], "predictions":[], "current_round":1, "winner_predictions":[]}'
 
@@ -174,7 +174,8 @@ def add_player():
         admin = request.json["admin"]
     if not players.add(name, psw, email, admin):
         abort(400)
-    return jsonify(players.get(name))
+    result = players.login(name, psw)
+    return jsonify({'user':result})
 
 @application.route('/nhlplayoffs/api/v2.0/players/<string:player>', methods=['GET'])
 def get_player(player):
@@ -231,10 +232,29 @@ def get_matchups(year):
     return jsonify(matchups.get_matchups(year))
 
 
+@application.route('/nhlplayoffs/api/v2.0/<int:year>/winners', methods=['GET'])
+def get_winnersv2(year):
+    p = predictions.get_winners(year)
+    return jsonify({'winners':p})
+
+@application.route('/nhlplayoffs/api/v2.0/<int:year>/winners', methods=['POST'])
+def add_winner(year):
+    if not request.json:
+        abort(400)
+
+    if ("player" not in request.json or
+       "winner" not in request.json):
+        abort(400)
+    player = request.json["player"]
+    winner = request.json["winner"]
+
+    if not predictions.add_winner(player, year, winner):
+        abort(400)
+    return jsonify({"result":True})
+
 @application.route('/nhlplayoffs/api/v2.0/<int:year>/predictions', methods=['GET'])
 def get_predictionsv2(year):
     p = predictions.get_all(year)
-    print(p)
     return jsonify({'predictions':p})
 
 @application.route('/nhlplayoffs/api/v2.0/<int:year>/predictions', methods=['POST'])
@@ -242,6 +262,7 @@ def add_prediction(year):
     if not request.json:
         abort(400)
 
+    print(request.json)
     if ("player" not in request.json or
        "round" not in request.json or
        "home" not in request.json or
@@ -256,8 +277,9 @@ def add_prediction(year):
     winner = request.json["winner"]
     games = request.json["games"]
 
-
-    return jsonify({"result":predictions.add(player, year, round, home, away, winner, games)})
+    if not predictions.add(player, year, round, home, away, winner, games):
+        abort(400)
+    return jsonify({"result":True})
 
 @application.route('/html/<path:path>')
 def send_js(path):

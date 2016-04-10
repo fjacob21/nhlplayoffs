@@ -17,9 +17,12 @@ var Login = module.exports = React.createClass({
    var data = {psw:this.refs.psw.getValue()};
    $.ajax({
     type: 'POST',
-    url: "http://localhost:5000/nhlplayoffs/api/v2.0/players/"+user+"/login",
+    url: "/nhlplayoffs/api/v2.0/players/"+user+"/login",
     data: JSON.stringify (data),
-    success: function(data) {  document.login_user={id:data.user,name:user};this.props.history.push('/main'); }.bind(this),
+    success: function(data) {
+            sessionStorage.setItem('userId', data.user);
+            sessionStorage.setItem('user', user);
+            this.props.history.push('/main/home'); }.bind(this),
     error: function(data) {  this.setState({error: true}); }.bind(this),
     contentType: "application/json",
     dataType: 'json'

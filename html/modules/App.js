@@ -5,11 +5,16 @@ import { Nav, Navbar, NavItem, NavDropdown, MenuItem } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
 const App = React.createClass({
+  componentDidMount: function(){
+        if(!sessionStorage.user)
+                this.props.history.push('/')
+  },
   getInitialState: function() {
     return {navExpanded: false};
   },
   onLogout: function(event)  {
           event.preventDefault();
+          sessionStorage.clear();
           this.props.history.push('/')
         },
   onNavItemClick: function(event)  {
@@ -19,7 +24,9 @@ const App = React.createClass({
     this.setState({ navExpanded: ! this.state.navExpanded });
         },
         render() {
-        var username = document.login_user.name;
+        var username = "";
+        if(sessionStorage.user)
+                username = sessionStorage.user;
         return (
                 <div>
                          <Navbar inverse expanded={ this.state.navExpanded } onToggle={ this.onNavbarToggle } >

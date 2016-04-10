@@ -3,16 +3,11 @@ import { Navbar, NavItem, NavDropdown, MenuItem, Nav } from 'react-bootstrap';
 
 const Home = React.createClass({
   render() {
-    return <table id="table">
-    <thead>
-    <tr>
-        <th data-field="name">Name</th>
-        <th data-field="stargazers_count">Stars</th>
-        <th data-field="forks_count">Forks</th>
-        <th data-field="description">Description</th>
-    </tr>
-    </thead>
-</table>
+    return (
+            <div>
+                    Welcome to the 2016 NHL playoffs pool 🏒🏒🏒
+            </div>
+    )
   }
 })
 

@@ -64,6 +64,11 @@ def get_division_matchups(matchups, division):
     return matchs
 
 #teams ======================================
+def get_team(id):
+    url = 'https://statsapi.web.nhl.com/api/v1/teams/' + str(id)
+    team = requests.get(url).json()
+    return team['teams'][0]
+
 def get_teams(year):
     ystr = str(year) + str(year+1)
     url = 'https://statsapi.web.nhl.com/api/v1/standings?season=' + ystr
@@ -72,6 +77,9 @@ def get_teams(year):
     teams = []
     for record in standings["records"]:
         for team in record['teamRecords']:
+            info = get_team(team['team']['id'])
+            if info is not None:
+                team['team'] = info
             team['conference'] = record['conference']
             team['division'] = record['division']
             teams.append(team)
