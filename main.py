@@ -3,7 +3,8 @@ from flask import Flask, jsonify, abort, request, send_from_directory, redirect,
 import json
 import os
 import urlparse
-import matchups
+import postgres_store
+#import matchups
 #import predictions
 #import players
 #from postgres_store import postgres_store
