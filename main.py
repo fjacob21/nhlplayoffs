@@ -4,7 +4,7 @@ import json
 import os
 import urlparse
 import matchups
-#import predictions
+import predictions
 import players
 #from postgres_store import postgres_store
 
@@ -213,74 +213,74 @@ def login_player(player):
         abort(400)
     return jsonify({'user':result})
 
-# @application.route('/nhlplayoffs/api/v2.0/<int:year>/data', methods=['GET'])
-# def get_data(year):
-#     return jsonify(matchups.get(year))
-#
-# @application.route('/nhlplayoffs/api/v2.0/<int:year>/data', methods=['POST'])
-# def update_data(year):
-#     if not request.json:
-#         abort(400)
-#     matchups.update(year,request.json)
-#     return ''
-#
-# @application.route('/nhlplayoffs/api/v2.0/<int:year>/currentround', methods=['GET'])
-# def get_current_roundv2(year):
-#     return jsonify({'current_round':matchups.get_current_round(year)})
-#
-# @application.route('/nhlplayoffs/api/v2.0/<int:year>/matchups', methods=['GET'])
-# def get_matchups(year):
-#     return jsonify(matchups.get_matchups(year))
-#
-#
-# @application.route('/nhlplayoffs/api/v2.0/<int:year>/winners', methods=['GET'])
-# def get_winnersv2(year):
-#     p = predictions.get_winners(year)
-#     return jsonify({'winners':p})
-#
-# @application.route('/nhlplayoffs/api/v2.0/<int:year>/winners', methods=['POST'])
-# def add_winner(year):
-#     if not request.json:
-#         abort(400)
-#
-#     if ("player" not in request.json or
-#        "winner" not in request.json):
-#         abort(400)
-#     player = request.json["player"]
-#     winner = request.json["winner"]
-#
-#     if not predictions.add_winner(player, year, winner):
-#         abort(400)
-#     return jsonify({"result":True})
-#
-# @application.route('/nhlplayoffs/api/v2.0/<int:year>/predictions', methods=['GET'])
-# def get_predictionsv2(year):
-#     p = predictions.get_all(year)
-#     return jsonify({'predictions':p})
-#
-# @application.route('/nhlplayoffs/api/v2.0/<int:year>/predictions', methods=['POST'])
-# def add_prediction(year):
-#     if not request.json:
-#         abort(400)
-#
-#     print(request.json)
-#     if ("player" not in request.json or
-#        "round" not in request.json or
-#        "home" not in request.json or
-#        "away" not in request.json or
-#        "winner" not in request.json or
-#        "games" not in request.json):
-#         abort(400)
-#     player = request.json["player"]
-#     round = request.json["round"]
-#     home = request.json["home"]
-#     away = request.json["away"]
-#     winner = request.json["winner"]
-#     games = request.json["games"]
-#
-#     if not predictions.add(player, year, round, home, away, winner, games):
-#         abort(400)
-#     return jsonify({"result":True})
+@application.route('/nhlplayoffs/api/v2.0/<int:year>/data', methods=['GET'])
+def get_data(year):
+    return jsonify(matchups.get(year))
+
+@application.route('/nhlplayoffs/api/v2.0/<int:year>/data', methods=['POST'])
+def update_data(year):
+    if not request.json:
+        abort(400)
+    matchups.update(year,request.json)
+    return ''
+
+@application.route('/nhlplayoffs/api/v2.0/<int:year>/currentround', methods=['GET'])
+def get_current_roundv2(year):
+    return jsonify({'current_round':matchups.get_current_round(year)})
+
+@application.route('/nhlplayoffs/api/v2.0/<int:year>/matchups', methods=['GET'])
+def get_matchups(year):
+    return jsonify(matchups.get_matchups(year))
+
+
+@application.route('/nhlplayoffs/api/v2.0/<int:year>/winners', methods=['GET'])
+def get_winnersv2(year):
+    p = predictions.get_winners(year)
+    return jsonify({'winners':p})
+
+@application.route('/nhlplayoffs/api/v2.0/<int:year>/winners', methods=['POST'])
+def add_winner(year):
+    if not request.json:
+        abort(400)
+
+    if ("player" not in request.json or
+       "winner" not in request.json):
+        abort(400)
+    player = request.json["player"]
+    winner = request.json["winner"]
+
+    if not predictions.add_winner(player, year, winner):
+        abort(400)
+    return jsonify({"result":True})
+
+@application.route('/nhlplayoffs/api/v2.0/<int:year>/predictions', methods=['GET'])
+def get_predictionsv2(year):
+    p = predictions.get_all(year)
+    return jsonify({'predictions':p})
+
+@application.route('/nhlplayoffs/api/v2.0/<int:year>/predictions', methods=['POST'])
+def add_prediction(year):
+    if not request.json:
+        abort(400)
+
+    print(request.json)
+    if ("player" not in request.json or
+       "round" not in request.json or
+       "home" not in request.json or
+       "away" not in request.json or
+       "winner" not in request.json or
+       "games" not in request.json):
+        abort(400)
+    player = request.json["player"]
+    round = request.json["round"]
+    home = request.json["home"]
+    away = request.json["away"]
+    winner = request.json["winner"]
+    games = request.json["games"]
+
+    if not predictions.add(player, year, round, home, away, winner, games):
+        abort(400)
+    return jsonify({"result":True})
 
 @application.route('/html/<path:path>')
 def send_js(path):
