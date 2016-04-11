@@ -29,7 +29,10 @@ def get_players():
 #utils ======================================
 def print_matchups(matchups):
     for match in matchups:
-        print(match['home']['team']['name'],match['home']['leagueRank'], match['away']['team']['name'],match['away']['leagueRank'])
+        start = ''
+        if 'start' in match:
+            start = match['start']
+        print(match['home']['team']['name'],match['home']['leagueRank'], match['away']['team']['name'],match['away']['leagueRank'],start, match['season'])
 
 def get_matchup_winner(matchup):
     if int(matchup['result']['home_win']) == 4:
@@ -37,14 +40,31 @@ def get_matchup_winner(matchup):
     else:
         return matchup['away']
 
+def get_matchup_season_result(home, away, year):
+    result = {'home_win':0, 'away_win':0}
+    schedule = get_schedule(home, year)
+    for date in schedule['dates']:
+        game = date['games'][0]
+        game_home_id = game['teams']['home']['team']['id']
+        game_away_id = game['teams']['away']['team']['id']
+        if game_home_id == away or game_away_id == away:
+            if int(game['teams']['home']['score']) > int(game['teams']['away']['score']):
+                result['home_win'] = result['home_win'] + 1
+            else:
+                result['away_win'] = result['away_win'] + 1
+    return result
+
 def create_matchup(t1,t2):
     if int(t1['leagueRank']) <  int(t2['leagueRank']):
         matchup = {'home':t1, 'away':t2}
+        matchup['season'] = get_matchup_season_result(t1['team']['id'], t2['team']['id'], year)
     else:
         matchup = {'home':t2, 'away':t1}
+        matchup['season'] = get_matchup_season_result(t2['team']['id'], t1['team']['id'], year)
     start = get_matchup_start(matchup, year)
     if start is not None:
         matchup['start'] = start
+
     return matchup
 
 def get_conference_matchups(matchups, conference):
@@ -112,6 +132,7 @@ def get_standings(teams):
 
 #schedules ==================================
 def get_schedule(team, year):
+    print('Get schedule for ' + str(team))
     url = 'https://statsapi.web.nhl.com/api/v1/schedule?startDate=' + str(year) + '-10-01&endDate=' + str(year+1) + '-06-29&expand=schedule.teams,schedule.linescore,schedule.broadcasts,schedule.ticket,schedule.game.content.media.epg&leaderCategories=&site=en_nhlCA&teamId=' + str(team)
     team_schedule = requests.get(url)
     return team_schedule.json()
@@ -120,6 +141,15 @@ def get_playoff_schedule(team, year):
     url = 'https://statsapi.web.nhl.com/api/v1/schedule?startDate=' + str(year+1) + '-04-01&endDate=' + str(year+1) + '-06-29&expand=schedule.teams,&site=en_nhlCA&teamId=' + str(team)
     team_schedule = requests.get(url)
     return team_schedule.json()
+
+def get_matchups_schedule(year, matchups):
+    schedules = {}
+    for matchup in matchups:
+        home = matchup['home']['team']['id']
+        away = matchup['away']['team']['id']
+        schedules[home] = get_schedule(home, year)
+        schedules[away] = get_schedule(away, year)
+    return schedules
 
 #matchups ====================================
 def get_matchup_result(match, year):
@@ -264,6 +294,7 @@ def update(data, year):
             data['matchups']["1"] = matchups
             print_matchups(data['matchups']["1"])
             data['current_round'] = 1
+            #data['schedule'] = get_matchups_schedule(year, matchups)
         else:
             print('Season not finished')
             print_matchups(matchups)
@@ -313,7 +344,7 @@ def root():
 
 if __name__ == '__main__':
     #global data
-    year = 2014
+    year = 2015
     #server = 'localhost:5000'
     server = 'nhlpool.herokuapp.com/'
     data = fetch_data(server, year)
