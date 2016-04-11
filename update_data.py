@@ -314,8 +314,10 @@ def root():
 if __name__ == '__main__':
     #global data
     year = 2014
-    data = fetch_data('localhost:5000', year)
+    #server = 'localhost:5000'
+    server = 'nhlpool.herokuapp.com/'
+    data = fetch_data(server, year)
     print(data['matchups'])
     data = update(data, year)
-    update_data('localhost:5000', year, data)
+    update_data(server, year, data)
     #app.run(debug=True,host='0.0.0.0', port=5000)
