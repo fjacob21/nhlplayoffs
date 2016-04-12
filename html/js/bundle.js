@@ -43444,7 +43444,10 @@
 	                        var matchup = store.getMatchup(prediction.home, prediction.away, prediction.round);
 	                        var start = new Date(matchup.start);
 	                        var now = new Date(Date.now());
-	                        var diff = new Date(start - now);
+	                        var diff = start - now;
+	                        var diffDay = Math.floor((start - now) / (1000 * 60 * 60 * 24));
+	                        var diffHour = Math.floor((start - now - diffDay * (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+	                        var diffMin = Math.floor((start - now - diffDay * (1000 * 60 * 60 * 24) - diffHour * (1000 * 60 * 60)) / (1000 * 60));
 	                        start = start.toLocaleString();
 	                        return React.createElement(
 	                                'tr',
@@ -43489,7 +43492,7 @@
 	                                React.createElement(
 	                                        'th',
 	                                        null,
-	                                        diff.getDay() + ' days ' + diff.getHours() + 'h' + diff.getMinutes() + 'm'
+	                                        diffDay + ' days ' + diffHour + 'h' + diffMin + 'm'
 	                                ),
 	                                React.createElement(
 	                                        'th',
