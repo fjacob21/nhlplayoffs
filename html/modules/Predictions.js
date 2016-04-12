@@ -18,9 +18,17 @@ var Predictions = React.createClass({
                                 "currentround":store.currentround
                         };
                         this.setState(state);
+                        this.timer = setInterval(this.tick, 60000);
                 }.bind(this),function() {
                         alert('Error!!!');
                 }.bind(this));
+        },
+        componentWillUnmount: function(){
+                clearInterval(this.timer);
+        },
+
+        tick: function(){
+                this.setState(this.state);
         },
         getInitialState: function() {
           return {predictions: [], teams:[], winner:null, currentround:0};
@@ -63,30 +71,45 @@ var Predictions = React.createClass({
                         awayClass += 'active';
                 var homeUrl = 'https://www-league.nhlstatic.com/builds/site-core/284dc4ec70e4bee8802842e5e700157f45660a48_1457473228/images/team/logo/current/' + store.getTeam(prediction.home).team.id + '_dark.svg';
                 var awayUrl = 'https://www-league.nhlstatic.com/builds/site-core/284dc4ec70e4bee8802842e5e700157f45660a48_1457473228/images/team/logo/current/' + store.getTeam(prediction.away).team.id + '_dark.svg';
+                var homeTeam = store.getTeam(prediction.home);
+                var awayTeam = store.getTeam(prediction.away);
+                var matchup = store.getMatchup(prediction.home, prediction.away, prediction.round);
+                var start  = new Date(matchup.start);
+                var now = new Date(Date.now());
+                var diff = new Date(start-now);
+                start = start.toLocaleString()
                 return (
                         <tr key={i}>
                                 <th>
                                         <div  data-toggle='buttons'>
-                                                <label className={homeClass} data-value={prediction.home} style={{width:'200px'}}>
+                                                <label className={homeClass} data-value={prediction.home} style={{width:'150px'}}>
+                                                        {homeTeam.conferenceRank + '-' }
                                                         <img style={{width: '50px'}} src={homeUrl} />
                                                         <input type="radio" name={'predcit' + String(i)}
                                                            id={i}
                                                            value={prediction.home}
                                                            checked={prediction.winner==prediction.home}
-                                                           onChange={this.predictionChange} />{store.getTeam(prediction.home).team.name}
+                                                           onChange={this.predictionChange} />{homeTeam.team.teamName + ' ' + matchup.season.home_win}
                                                 </label>
-                                                <label className={awayClass} data-value={prediction.away} style={{width:'200px'}}>
+                                                <label className={awayClass} data-value={prediction.away} style={{width:'150px'}}>
+                                                        {awayTeam.conferenceRank + '-' }
                                                         <img style={{width: '50px'}} src={awayUrl} />
                                                         <input type="radio" name={'predcit' + String(i)}
                                                            value={prediction.away}
                                                            id={i}
                                                            checked={prediction.winner==prediction.away}
-                                                           onChange={this.predictionChange} />{store.getTeam(prediction.away).team.name}
+                                                           onChange={this.predictionChange} />{awayTeam.team.teamName + ' ' + matchup.season.away_win}
                                                 </label>
                                         </div>
                                 </th>
                                 <th>
-                                        <select className='form-control' value={prediction.games} id={i} onChange={this.gamesChange}>
+                                        {start}
+                                </th>
+                                <th>
+                                        {diff.getDay() + ' days ' + diff.getHours()+'h'+diff.getMinutes() +'m'}
+                                </th>
+                                <th>
+                                        <select className='form-control' style={{width:'60px'}} value={prediction.games} id={i} onChange={this.gamesChange}>
                                                 <option value={4} >4</option>
                                                 <option value={5}>5</option>
                                                 <option value={6}>6</option>
@@ -103,6 +126,8 @@ var Predictions = React.createClass({
                                 <thead>
                                     <tr>
                                         <th>Winning team</th>
+                                        <th>Start</th>
+                                        <th>Time for prediction</th>
                                         <th>Number of games</th>
                                     </tr>
                                 </thead>

@@ -60,6 +60,13 @@ class Store {
                         success,
                         error);
         }
+        getMatchup(home, away, round){
+                for(var matchup of this.matchups[round]){
+                        if(matchup.home.team.id == home && matchup.away.team.id == away)
+                                return matchup;
+                }
+                return null;
+        }
 
         getTeams(){
                 var results = [];

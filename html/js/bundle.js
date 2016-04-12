@@ -43381,9 +43381,17 @@
 	                                "currentround": store.currentround
 	                        };
 	                        this.setState(state);
+	                        this.timer = setInterval(this.tick, 60000);
 	                }.bind(this), function () {
 	                        alert('Error!!!');
 	                }.bind(this));
+	        },
+	        componentWillUnmount: function componentWillUnmount() {
+	                clearInterval(this.timer);
+	        },
+
+	        tick: function tick() {
+	                this.setState(this.state);
 	        },
 	        getInitialState: function getInitialState() {
 	                return { predictions: [], teams: [], winner: null, currentround: 0 };
@@ -43431,6 +43439,13 @@
 	                        if (prediction.winner == prediction.home) homeClass += 'active';else if (prediction.winner == prediction.away) awayClass += 'active';
 	                        var homeUrl = 'https://www-league.nhlstatic.com/builds/site-core/284dc4ec70e4bee8802842e5e700157f45660a48_1457473228/images/team/logo/current/' + store.getTeam(prediction.home).team.id + '_dark.svg';
 	                        var awayUrl = 'https://www-league.nhlstatic.com/builds/site-core/284dc4ec70e4bee8802842e5e700157f45660a48_1457473228/images/team/logo/current/' + store.getTeam(prediction.away).team.id + '_dark.svg';
+	                        var homeTeam = store.getTeam(prediction.home);
+	                        var awayTeam = store.getTeam(prediction.away);
+	                        var matchup = store.getMatchup(prediction.home, prediction.away, prediction.round);
+	                        var start = new Date(matchup.start);
+	                        var now = new Date(Date.now());
+	                        var diff = new Date(start - now);
+	                        start = start.toLocaleString();
 	                        return React.createElement(
 	                                'tr',
 	                                { key: i },
@@ -43442,34 +43457,46 @@
 	                                                { 'data-toggle': 'buttons' },
 	                                                React.createElement(
 	                                                        'label',
-	                                                        { className: homeClass, 'data-value': prediction.home, style: { width: '200px' } },
+	                                                        { className: homeClass, 'data-value': prediction.home, style: { width: '150px' } },
+	                                                        homeTeam.conferenceRank + '-',
 	                                                        React.createElement('img', { style: { width: '50px' }, src: homeUrl }),
 	                                                        React.createElement('input', { type: 'radio', name: 'predcit' + String(i),
 	                                                                id: i,
 	                                                                value: prediction.home,
 	                                                                checked: prediction.winner == prediction.home,
 	                                                                onChange: this.predictionChange }),
-	                                                        store.getTeam(prediction.home).team.name
+	                                                        homeTeam.team.teamName + ' ' + matchup.season.home_win
 	                                                ),
 	                                                React.createElement(
 	                                                        'label',
-	                                                        { className: awayClass, 'data-value': prediction.away, style: { width: '200px' } },
+	                                                        { className: awayClass, 'data-value': prediction.away, style: { width: '150px' } },
+	                                                        awayTeam.conferenceRank + '-',
 	                                                        React.createElement('img', { style: { width: '50px' }, src: awayUrl }),
 	                                                        React.createElement('input', { type: 'radio', name: 'predcit' + String(i),
 	                                                                value: prediction.away,
 	                                                                id: i,
 	                                                                checked: prediction.winner == prediction.away,
 	                                                                onChange: this.predictionChange }),
-	                                                        store.getTeam(prediction.away).team.name
+	                                                        awayTeam.team.teamName + ' ' + matchup.season.away_win
 	                                                )
 	                                        )
 	                                ),
 	                                React.createElement(
 	                                        'th',
 	                                        null,
+	                                        start
+	                                ),
+	                                React.createElement(
+	                                        'th',
+	                                        null,
+	                                        diff.getDay() + ' days ' + diff.getHours() + 'h' + diff.getMinutes() + 'm'
+	                                ),
+	                                React.createElement(
+	                                        'th',
+	                                        null,
 	                                        React.createElement(
 	                                                'select',
-	                                                { className: 'form-control', value: prediction.games, id: i, onChange: this.gamesChange },
+	                                                { className: 'form-control', style: { width: '60px' }, value: prediction.games, id: i, onChange: this.gamesChange },
 	                                                React.createElement(
 	                                                        'option',
 	                                                        { value: 4 },
@@ -43522,6 +43549,16 @@
 	                                                        'th',
 	                                                        null,
 	                                                        'Winning team'
+	                                                ),
+	                                                React.createElement(
+	                                                        'th',
+	                                                        null,
+	                                                        'Start'
+	                                                ),
+	                                                React.createElement(
+	                                                        'th',
+	                                                        null,
+	                                                        'Time for prediction'
 	                                                ),
 	                                                React.createElement(
 	                                                        'th',
@@ -43684,21 +43721,17 @@
 	                        this.post(String(this.year) + "/predictions", prediction, success, error);
 	                }
 	        }, {
-	                key: 'getTeams',
-	                value: function getTeams() {
-	                        var results = [];
+	                key: 'getMatchup',
+	                value: function getMatchup(home, away, round) {
 	                        var _iteratorNormalCompletion4 = true;
 	                        var _didIteratorError4 = false;
 	                        var _iteratorError4 = undefined;
 
 	                        try {
-	                                for (var _iterator4 = this.matchups[1][Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+	                                for (var _iterator4 = this.matchups[round][Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
 	                                        var matchup = _step4.value;
 
-	                                        var home = matchup.home;
-	                                        var away = matchup.away;
-	                                        results.push(home);
-	                                        results.push(away);
+	                                        if (matchup.home.team.id == home && matchup.away.team.id == away) return matchup;
 	                                }
 	                        } catch (err) {
 	                                _didIteratorError4 = true;
@@ -43715,21 +43748,24 @@
 	                                }
 	                        }
 
-	                        return results;
+	                        return null;
 	                }
 	        }, {
-	                key: 'getTeam',
-	                value: function getTeam(id) {
-	                        var teams = this.getTeams();
+	                key: 'getTeams',
+	                value: function getTeams() {
+	                        var results = [];
 	                        var _iteratorNormalCompletion5 = true;
 	                        var _didIteratorError5 = false;
 	                        var _iteratorError5 = undefined;
 
 	                        try {
-	                                for (var _iterator5 = teams[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-	                                        var team = _step5.value;
+	                                for (var _iterator5 = this.matchups[1][Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+	                                        var matchup = _step5.value;
 
-	                                        if (team.team.id == id) return team;
+	                                        var home = matchup.home;
+	                                        var away = matchup.away;
+	                                        results.push(home);
+	                                        results.push(away);
 	                                }
 	                        } catch (err) {
 	                                _didIteratorError5 = true;
@@ -43742,6 +43778,37 @@
 	                                } finally {
 	                                        if (_didIteratorError5) {
 	                                                throw _iteratorError5;
+	                                        }
+	                                }
+	                        }
+
+	                        return results;
+	                }
+	        }, {
+	                key: 'getTeam',
+	                value: function getTeam(id) {
+	                        var teams = this.getTeams();
+	                        var _iteratorNormalCompletion6 = true;
+	                        var _didIteratorError6 = false;
+	                        var _iteratorError6 = undefined;
+
+	                        try {
+	                                for (var _iterator6 = teams[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+	                                        var team = _step6.value;
+
+	                                        if (team.team.id == id) return team;
+	                                }
+	                        } catch (err) {
+	                                _didIteratorError6 = true;
+	                                _iteratorError6 = err;
+	                        } finally {
+	                                try {
+	                                        if (!_iteratorNormalCompletion6 && _iterator6.return) {
+	                                                _iterator6.return();
+	                                        }
+	                                } finally {
+	                                        if (_didIteratorError6) {
+	                                                throw _iteratorError6;
 	                                        }
 	                                }
 	                        }

@@ -41,17 +41,26 @@ def get_matchup_winner(matchup):
         return matchup['away']
 
 def get_matchup_season_result(home, away, year):
-    result = {'home_win':0, 'away_win':0}
+    result = {'home_win':0, 'away_win':0, 'matchs':[]}
     schedule = get_schedule(home, year)
     for date in schedule['dates']:
         game = date['games'][0]
         game_home_id = game['teams']['home']['team']['id']
         game_away_id = game['teams']['away']['team']['id']
-        if game_home_id == away or game_away_id == away:
+        if game_home_id == away:
+            print(game['gameDate'],game['teams']['away']['score'],game['teams']['home']['score'])
+            if int(game['teams']['home']['score']) > int(game['teams']['away']['score']):
+                result['away_win'] = result['away_win'] + 1
+            elif int(game['teams']['home']['score']) < int(game['teams']['away']['score']):
+                result['home_win'] = result['home_win'] + 1
+            result['matchs'].append({'home': int(game['teams']['away']['score']), 'away': int(game['teams']['home']['score'])})
+        if game_away_id == away:
+            print(game['gameDate'],game['teams']['home']['score'],game['teams']['away']['score'])
             if int(game['teams']['home']['score']) > int(game['teams']['away']['score']):
                 result['home_win'] = result['home_win'] + 1
-            else:
+            elif int(game['teams']['home']['score']) < int(game['teams']['away']['score']):
                 result['away_win'] = result['away_win'] + 1
+            result['matchs'].append({'home': int(game['teams']['home']['score']), 'away': int(game['teams']['away']['score'])})
     return result
 
 def create_matchup(t1,t2):
