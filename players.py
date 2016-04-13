@@ -76,6 +76,17 @@ def change_psw(player, old, new):
     #Store in DB
     return store_db(players)
 
+def get_all_admin():
+    players = restore_db()
+    l = list(players.items())
+    result = []
+    for player in l:
+        p = player[1].copy()
+        del p['psw']
+        p['id'] = player[0]
+        result.append(p)
+    return result
+
 def get_all():
     players = restore_db()
     l = list(players.values())

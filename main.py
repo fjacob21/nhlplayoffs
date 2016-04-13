@@ -6,6 +6,7 @@ import urlparse
 import matchups
 import predictions
 import players
+import results
 
 application = Flask(__name__, static_url_path='')
 
@@ -119,7 +120,6 @@ def add_prediction(year):
     if not request.json:
         abort(400)
 
-    print(request.json)
     if ("player" not in request.json or
        "round" not in request.json or
        "home" not in request.json or
@@ -137,6 +137,18 @@ def add_prediction(year):
     if not predictions.add(player, year, round, home, away, winner, games):
         abort(400)
     return jsonify({"result":True})
+
+@application.route('/nhlplayoffs/api/v2.0/<int:year>/results', methods=['POST'])
+def get_results(year):
+    if not request.json:
+        abort(400)
+
+    if "player" not in request.json:
+        abort(400)
+    player = request.json["player"]
+
+    r = results.get(player, year)
+    return jsonify({"results": r})
 
 @application.route('/html/<path:path>')
 def send_js(path):
