@@ -43369,16 +43369,13 @@
 	                                state.teams = store.getTeams();
 	                                state.winner = store.getWinner(sessionStorage.userId);
 	                                state.currentround = store.currentround;
-	                                this.setState(state);
-	                        }.bind(this), function () {
-	                                alert('Error!!!');
-	                        }.bind(this));
-
-	                        store.loadResults(sessionStorage.userId, function (data) {
-	                                var state = this.state;
-	                                state.results = store.results;
-	                                this.setState(state);
-	                                console.debug(state.results);
+	                                store.loadResults(sessionStorage.userId, function (data) {
+	                                        var state = this.state;
+	                                        state.results = store.results;
+	                                        this.setState(state);
+	                                }.bind(this), function () {
+	                                        alert('Error!!!');
+	                                }.bind(this));
 	                        }.bind(this), function () {
 	                                alert('Error!!!');
 	                        }.bind(this));
