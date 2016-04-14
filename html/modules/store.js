@@ -10,6 +10,7 @@ class Store {
                 this.predictions = [];
                 this.winners = [];
                 this.currentround = 0;
+                this.results = [];
         }
 
         getWinner(player){
@@ -60,12 +61,17 @@ class Store {
                         success,
                         error);
         }
+
         getMatchup(home, away, round){
                 for(var matchup of this.matchups[round]){
                         if(matchup.home.team.id == home && matchup.away.team.id == away)
                                 return matchup;
                 }
                 return null;
+        }
+
+        getMatchups(round){
+                return this.matchups[round];
         }
 
         getTeams(){
@@ -112,7 +118,6 @@ class Store {
         }
 
         load(success, error){
-
                 this.get(String(this.year) + "/data",
                         function(data) {
                                 this.matchups = data.matchups;
@@ -128,6 +133,17 @@ class Store {
                                                         error);
                                         }.bind(this),
                                         error);
+                        }.bind(this),
+                        error);
+        }
+
+        loadResults(player, success, error){
+                var data = {'player':player};
+                this.post(String(this.year) + "/results",
+                        data,
+                        function(data) {
+                                this.results = data.results;
+                                success();
                         }.bind(this),
                         error);
         }

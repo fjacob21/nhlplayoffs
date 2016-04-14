@@ -62,7 +62,7 @@
 	var Login = __webpack_require__(478);
 	var AddUser = __webpack_require__(479);
 	var Results = __webpack_require__(480);
-	var Predictions = __webpack_require__(481);
+	var Predictions = __webpack_require__(482);
 
 	(0, _reactDom.render)(_react2.default.createElement(
 	  _reactRouter.Router,
@@ -43327,31 +43327,422 @@
 
 	'use strict';
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _reactBootstrap = __webpack_require__(219);
 
 	var _reactRouterBootstrap = __webpack_require__(473);
 
 	var _reactRouter = __webpack_require__(159);
 
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 	var React = __webpack_require__(1);
 
+	var Store = __webpack_require__(481);
 
-	var Results = React.createClass({
-	  displayName: 'Results',
+	var store = new Store();
 
-	  render: function render() {
-	    return React.createElement(
-	      'div',
-	      null,
-	      'Results'
-	    );
-	  }
-	});
+	var Results = function (_React$Component) {
+	        _inherits(Results, _React$Component);
+
+	        function Results(props) {
+	                _classCallCheck(this, Results);
+
+	                var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Results).call(this, props));
+
+	                _this.state = { matchups: {}, results: [], teams: [], winner: null, currentround: 0 };
+	                return _this;
+	        }
+
+	        _createClass(Results, [{
+	                key: 'componentDidMount',
+	                value: function componentDidMount() {
+	                        if (!sessionStorage.user) this.props.history.push('/');
+	                        store.load(function (data) {
+	                                var state = this.state;
+	                                state.matchups = store.matchups;
+	                                state.teams = store.getTeams();
+	                                state.winner = store.getWinner(sessionStorage.userId);
+	                                state.currentround = store.currentround;
+	                                this.setState(state);
+	                        }.bind(this), function () {
+	                                alert('Error!!!');
+	                        }.bind(this));
+
+	                        store.loadResults(sessionStorage.userId, function (data) {
+	                                var state = this.state;
+	                                state.results = store.results;
+	                                this.setState(state);
+	                                console.debug(state.results);
+	                        }.bind(this), function () {
+	                                alert('Error!!!');
+	                        }.bind(this));
+	                }
+	        }, {
+	                key: 'render',
+	                value: function render() {
+	                        var rounds = [1, 2, 3, 4];
+	                        var results = this.state.results.map(function (result, i) {
+	                                var t = rounds.map(function (d, i) {
+	                                        if (this.state.matchups[i] != undefined) {
+	                                                var m = this.state.matchups[i].map(function (matchup) {
+	                                                        //Get player predictions
+	                                                        return React.createElement(
+	                                                                'th',
+	                                                                null,
+	                                                                matchup.home.team.name
+	                                                        );
+	                                                }.bind(this));
+	                                        }
+	                                        return m;
+	                                }.bind(this));
+
+	                                return React.createElement(
+	                                        'tr',
+	                                        null,
+	                                        React.createElement(
+	                                                'th',
+	                                                { style: { width: '50px' } },
+	                                                result.player
+	                                        ),
+	                                        React.createElement(
+	                                                'th',
+	                                                { style: { width: '50px' } },
+	                                                result.pts
+	                                        )
+	                                );
+	                        }.bind(this));
+	                        console.debug(results);
+	                        return React.createElement(
+	                                'table',
+	                                { className: 'table table-hover' },
+	                                React.createElement(
+	                                        'thead',
+	                                        null,
+	                                        React.createElement(
+	                                                'tr',
+	                                                null,
+	                                                React.createElement(
+	                                                        'th',
+	                                                        null,
+	                                                        'Player'
+	                                                ),
+	                                                React.createElement(
+	                                                        'th',
+	                                                        null,
+	                                                        'Pts'
+	                                                )
+	                                        )
+	                                ),
+	                                React.createElement(
+	                                        'tbody',
+	                                        { className: 'list-group' },
+	                                        results
+	                                )
+	                        );
+	                }
+	        }]);
+
+	        return Results;
+	}(React.Component);
 
 	module.exports = Results;
 
 /***/ },
 /* 481 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Store = function () {
+	        function Store(server, year) {
+	                _classCallCheck(this, Store);
+
+	                if (server == undefined) server = '';
+	                if (year == undefined) year = 2014;
+	                this.year = year;
+	                this.server = server;
+	                this.matchups = {};
+	                this.predictions = [];
+	                this.winners = [];
+	                this.currentround = 0;
+	                this.results = [];
+	        }
+
+	        _createClass(Store, [{
+	                key: 'getWinner',
+	                value: function getWinner(player) {
+	                        var _iteratorNormalCompletion = true;
+	                        var _didIteratorError = false;
+	                        var _iteratorError = undefined;
+
+	                        try {
+	                                for (var _iterator = this.winners[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                                        var winner = _step.value;
+
+	                                        if (winner.player == player) return winner.winner;
+	                                }
+	                        } catch (err) {
+	                                _didIteratorError = true;
+	                                _iteratorError = err;
+	                        } finally {
+	                                try {
+	                                        if (!_iteratorNormalCompletion && _iterator.return) {
+	                                                _iterator.return();
+	                                        }
+	                                } finally {
+	                                        if (_didIteratorError) {
+	                                                throw _iteratorError;
+	                                        }
+	                                }
+	                        }
+
+	                        return null;
+	                }
+	        }, {
+	                key: 'setWinner',
+	                value: function setWinner(player, winner, success, error) {
+	                        this.post(String(this.year) + "/winners", { 'player': player, 'winner': winner }, success, error);
+	                }
+	        }, {
+	                key: 'getPredictions',
+	                value: function getPredictions(player, round) {
+	                        if (round == undefined) round = this.currentround;
+	                        var results = [];
+	                        var _iteratorNormalCompletion2 = true;
+	                        var _didIteratorError2 = false;
+	                        var _iteratorError2 = undefined;
+
+	                        try {
+	                                for (var _iterator2 = this.matchups[round][Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	                                        var matchup = _step2.value;
+
+	                                        var home = matchup.home.team.id;
+	                                        var away = matchup.away.team.id;
+	                                        var prediction = this.getPrediction(player, round, home, away);
+	                                        if (prediction == null) prediction = { 'player': player, 'round': round, 'home': home, 'away': away, 'winner': 0, 'games': 4 };
+	                                        results.push(prediction);
+	                                }
+	                        } catch (err) {
+	                                _didIteratorError2 = true;
+	                                _iteratorError2 = err;
+	                        } finally {
+	                                try {
+	                                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	                                                _iterator2.return();
+	                                        }
+	                                } finally {
+	                                        if (_didIteratorError2) {
+	                                                throw _iteratorError2;
+	                                        }
+	                                }
+	                        }
+
+	                        return results;
+	                }
+	        }, {
+	                key: 'getPrediction',
+	                value: function getPrediction(player, round, home, away) {
+	                        var _iteratorNormalCompletion3 = true;
+	                        var _didIteratorError3 = false;
+	                        var _iteratorError3 = undefined;
+
+	                        try {
+	                                for (var _iterator3 = this.predictions[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+	                                        var prediction = _step3.value;
+
+	                                        if (prediction.player == player && prediction.round == round && prediction.home == home && prediction.away == away) return prediction;
+	                                }
+	                        } catch (err) {
+	                                _didIteratorError3 = true;
+	                                _iteratorError3 = err;
+	                        } finally {
+	                                try {
+	                                        if (!_iteratorNormalCompletion3 && _iterator3.return) {
+	                                                _iterator3.return();
+	                                        }
+	                                } finally {
+	                                        if (_didIteratorError3) {
+	                                                throw _iteratorError3;
+	                                        }
+	                                }
+	                        }
+
+	                        return null;
+	                }
+	        }, {
+	                key: 'setPrediction',
+	                value: function setPrediction(player, round, home, away, winner, games, success, error) {
+	                        var prediction = { 'player': player, 'round': round, 'home': home, 'away': away, 'winner': winner, 'games': games };
+	                        this.post(String(this.year) + "/predictions", prediction, success, error);
+	                }
+	        }, {
+	                key: 'getMatchup',
+	                value: function getMatchup(home, away, round) {
+	                        var _iteratorNormalCompletion4 = true;
+	                        var _didIteratorError4 = false;
+	                        var _iteratorError4 = undefined;
+
+	                        try {
+	                                for (var _iterator4 = this.matchups[round][Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+	                                        var matchup = _step4.value;
+
+	                                        if (matchup.home.team.id == home && matchup.away.team.id == away) return matchup;
+	                                }
+	                        } catch (err) {
+	                                _didIteratorError4 = true;
+	                                _iteratorError4 = err;
+	                        } finally {
+	                                try {
+	                                        if (!_iteratorNormalCompletion4 && _iterator4.return) {
+	                                                _iterator4.return();
+	                                        }
+	                                } finally {
+	                                        if (_didIteratorError4) {
+	                                                throw _iteratorError4;
+	                                        }
+	                                }
+	                        }
+
+	                        return null;
+	                }
+	        }, {
+	                key: 'getMatchups',
+	                value: function getMatchups(round) {
+	                        return this.matchups[round];
+	                }
+	        }, {
+	                key: 'getTeams',
+	                value: function getTeams() {
+	                        var results = [];
+	                        var _iteratorNormalCompletion5 = true;
+	                        var _didIteratorError5 = false;
+	                        var _iteratorError5 = undefined;
+
+	                        try {
+	                                for (var _iterator5 = this.matchups[1][Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+	                                        var matchup = _step5.value;
+
+	                                        var home = matchup.home;
+	                                        var away = matchup.away;
+	                                        results.push(home);
+	                                        results.push(away);
+	                                }
+	                        } catch (err) {
+	                                _didIteratorError5 = true;
+	                                _iteratorError5 = err;
+	                        } finally {
+	                                try {
+	                                        if (!_iteratorNormalCompletion5 && _iterator5.return) {
+	                                                _iterator5.return();
+	                                        }
+	                                } finally {
+	                                        if (_didIteratorError5) {
+	                                                throw _iteratorError5;
+	                                        }
+	                                }
+	                        }
+
+	                        return results;
+	                }
+	        }, {
+	                key: 'getTeam',
+	                value: function getTeam(id) {
+	                        var teams = this.getTeams();
+	                        var _iteratorNormalCompletion6 = true;
+	                        var _didIteratorError6 = false;
+	                        var _iteratorError6 = undefined;
+
+	                        try {
+	                                for (var _iterator6 = teams[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+	                                        var team = _step6.value;
+
+	                                        if (team.team.id == id) return team;
+	                                }
+	                        } catch (err) {
+	                                _didIteratorError6 = true;
+	                                _iteratorError6 = err;
+	                        } finally {
+	                                try {
+	                                        if (!_iteratorNormalCompletion6 && _iterator6.return) {
+	                                                _iterator6.return();
+	                                        }
+	                                } finally {
+	                                        if (_didIteratorError6) {
+	                                                throw _iteratorError6;
+	                                        }
+	                                }
+	                        }
+
+	                        return null;
+	                }
+	        }, {
+	                key: 'post',
+	                value: function post(verb, data, success, error) {
+	                        $.ajax({
+	                                type: 'POST',
+	                                url: this.server + "/nhlplayoffs/api/v2.0/" + verb,
+	                                data: JSON.stringify(data),
+	                                success: success,
+	                                error: error,
+	                                contentType: "application/json",
+	                                dataType: 'json'
+	                        });
+	                }
+	        }, {
+	                key: 'get',
+	                value: function get(verb, success, error) {
+	                        $.ajax({
+	                                type: 'GET',
+	                                url: this.server + "/nhlplayoffs/api/v2.0/" + verb,
+	                                success: success,
+	                                error: error,
+	                                contentType: "application/json",
+	                                dataType: 'json'
+	                        });
+	                }
+	        }, {
+	                key: 'load',
+	                value: function load(success, error) {
+	                        this.get(String(this.year) + "/data", function (data) {
+	                                this.matchups = data.matchups;
+	                                this.currentround = data.current_round;
+	                                this.get(String(this.year) + "/predictions", function (data) {
+	                                        this.predictions = data.predictions;
+	                                        this.get(String(this.year) + "/winners", function (data) {
+	                                                this.winners = data.winners;
+	                                                success();
+	                                        }.bind(this), error);
+	                                }.bind(this), error);
+	                        }.bind(this), error);
+	                }
+	        }, {
+	                key: 'loadResults',
+	                value: function loadResults(player, success, error) {
+	                        var data = { 'player': player };
+	                        this.post(String(this.year) + "/results", data, function (data) {
+	                                this.results = data.results;
+	                                success();
+	                        }.bind(this), error);
+	                }
+	        }]);
+
+	        return Store;
+	}();
+
+	module.exports = Store;
+
+/***/ },
+/* 482 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -43364,7 +43755,7 @@
 
 	var React = __webpack_require__(1);
 
-	var Store = __webpack_require__(482);
+	var Store = __webpack_require__(481);
 
 	var store = new Store();
 
@@ -43591,280 +43982,6 @@
 	});
 
 	module.exports = Predictions;
-
-/***/ },
-/* 482 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var Store = function () {
-	        function Store(server, year) {
-	                _classCallCheck(this, Store);
-
-	                if (server == undefined) server = '';
-	                if (year == undefined) year = 2015;
-	                this.year = year;
-	                this.server = server;
-	                this.matchups = {};
-	                this.predictions = [];
-	                this.winners = [];
-	                this.currentround = 0;
-	        }
-
-	        _createClass(Store, [{
-	                key: 'getWinner',
-	                value: function getWinner(player) {
-	                        var _iteratorNormalCompletion = true;
-	                        var _didIteratorError = false;
-	                        var _iteratorError = undefined;
-
-	                        try {
-	                                for (var _iterator = this.winners[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	                                        var winner = _step.value;
-
-	                                        if (winner.player == player) return winner.winner;
-	                                }
-	                        } catch (err) {
-	                                _didIteratorError = true;
-	                                _iteratorError = err;
-	                        } finally {
-	                                try {
-	                                        if (!_iteratorNormalCompletion && _iterator.return) {
-	                                                _iterator.return();
-	                                        }
-	                                } finally {
-	                                        if (_didIteratorError) {
-	                                                throw _iteratorError;
-	                                        }
-	                                }
-	                        }
-
-	                        return null;
-	                }
-	        }, {
-	                key: 'setWinner',
-	                value: function setWinner(player, winner, success, error) {
-	                        this.post(String(this.year) + "/winners", { 'player': player, 'winner': winner }, success, error);
-	                }
-	        }, {
-	                key: 'getPredictions',
-	                value: function getPredictions(player, round) {
-	                        if (round == undefined) round = this.currentround;
-	                        var results = [];
-	                        var _iteratorNormalCompletion2 = true;
-	                        var _didIteratorError2 = false;
-	                        var _iteratorError2 = undefined;
-
-	                        try {
-	                                for (var _iterator2 = this.matchups[round][Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-	                                        var matchup = _step2.value;
-
-	                                        var home = matchup.home.team.id;
-	                                        var away = matchup.away.team.id;
-	                                        var prediction = this.getPrediction(player, round, home, away);
-	                                        if (prediction == null) prediction = { 'player': player, 'round': round, 'home': home, 'away': away, 'winner': 0, 'games': 4 };
-	                                        results.push(prediction);
-	                                }
-	                        } catch (err) {
-	                                _didIteratorError2 = true;
-	                                _iteratorError2 = err;
-	                        } finally {
-	                                try {
-	                                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
-	                                                _iterator2.return();
-	                                        }
-	                                } finally {
-	                                        if (_didIteratorError2) {
-	                                                throw _iteratorError2;
-	                                        }
-	                                }
-	                        }
-
-	                        return results;
-	                }
-	        }, {
-	                key: 'getPrediction',
-	                value: function getPrediction(player, round, home, away) {
-	                        var _iteratorNormalCompletion3 = true;
-	                        var _didIteratorError3 = false;
-	                        var _iteratorError3 = undefined;
-
-	                        try {
-	                                for (var _iterator3 = this.predictions[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-	                                        var prediction = _step3.value;
-
-	                                        if (prediction.player == player && prediction.round == round && prediction.home == home && prediction.away == away) return prediction;
-	                                }
-	                        } catch (err) {
-	                                _didIteratorError3 = true;
-	                                _iteratorError3 = err;
-	                        } finally {
-	                                try {
-	                                        if (!_iteratorNormalCompletion3 && _iterator3.return) {
-	                                                _iterator3.return();
-	                                        }
-	                                } finally {
-	                                        if (_didIteratorError3) {
-	                                                throw _iteratorError3;
-	                                        }
-	                                }
-	                        }
-
-	                        return null;
-	                }
-	        }, {
-	                key: 'setPrediction',
-	                value: function setPrediction(player, round, home, away, winner, games, success, error) {
-	                        var prediction = { 'player': player, 'round': round, 'home': home, 'away': away, 'winner': winner, 'games': games };
-	                        this.post(String(this.year) + "/predictions", prediction, success, error);
-	                }
-	        }, {
-	                key: 'getMatchup',
-	                value: function getMatchup(home, away, round) {
-	                        var _iteratorNormalCompletion4 = true;
-	                        var _didIteratorError4 = false;
-	                        var _iteratorError4 = undefined;
-
-	                        try {
-	                                for (var _iterator4 = this.matchups[round][Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-	                                        var matchup = _step4.value;
-
-	                                        if (matchup.home.team.id == home && matchup.away.team.id == away) return matchup;
-	                                }
-	                        } catch (err) {
-	                                _didIteratorError4 = true;
-	                                _iteratorError4 = err;
-	                        } finally {
-	                                try {
-	                                        if (!_iteratorNormalCompletion4 && _iterator4.return) {
-	                                                _iterator4.return();
-	                                        }
-	                                } finally {
-	                                        if (_didIteratorError4) {
-	                                                throw _iteratorError4;
-	                                        }
-	                                }
-	                        }
-
-	                        return null;
-	                }
-	        }, {
-	                key: 'getTeams',
-	                value: function getTeams() {
-	                        var results = [];
-	                        var _iteratorNormalCompletion5 = true;
-	                        var _didIteratorError5 = false;
-	                        var _iteratorError5 = undefined;
-
-	                        try {
-	                                for (var _iterator5 = this.matchups[1][Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-	                                        var matchup = _step5.value;
-
-	                                        var home = matchup.home;
-	                                        var away = matchup.away;
-	                                        results.push(home);
-	                                        results.push(away);
-	                                }
-	                        } catch (err) {
-	                                _didIteratorError5 = true;
-	                                _iteratorError5 = err;
-	                        } finally {
-	                                try {
-	                                        if (!_iteratorNormalCompletion5 && _iterator5.return) {
-	                                                _iterator5.return();
-	                                        }
-	                                } finally {
-	                                        if (_didIteratorError5) {
-	                                                throw _iteratorError5;
-	                                        }
-	                                }
-	                        }
-
-	                        return results;
-	                }
-	        }, {
-	                key: 'getTeam',
-	                value: function getTeam(id) {
-	                        var teams = this.getTeams();
-	                        var _iteratorNormalCompletion6 = true;
-	                        var _didIteratorError6 = false;
-	                        var _iteratorError6 = undefined;
-
-	                        try {
-	                                for (var _iterator6 = teams[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-	                                        var team = _step6.value;
-
-	                                        if (team.team.id == id) return team;
-	                                }
-	                        } catch (err) {
-	                                _didIteratorError6 = true;
-	                                _iteratorError6 = err;
-	                        } finally {
-	                                try {
-	                                        if (!_iteratorNormalCompletion6 && _iterator6.return) {
-	                                                _iterator6.return();
-	                                        }
-	                                } finally {
-	                                        if (_didIteratorError6) {
-	                                                throw _iteratorError6;
-	                                        }
-	                                }
-	                        }
-
-	                        return null;
-	                }
-	        }, {
-	                key: 'post',
-	                value: function post(verb, data, success, error) {
-	                        $.ajax({
-	                                type: 'POST',
-	                                url: this.server + "/nhlplayoffs/api/v2.0/" + verb,
-	                                data: JSON.stringify(data),
-	                                success: success,
-	                                error: error,
-	                                contentType: "application/json",
-	                                dataType: 'json'
-	                        });
-	                }
-	        }, {
-	                key: 'get',
-	                value: function get(verb, success, error) {
-	                        $.ajax({
-	                                type: 'GET',
-	                                url: this.server + "/nhlplayoffs/api/v2.0/" + verb,
-	                                success: success,
-	                                error: error,
-	                                contentType: "application/json",
-	                                dataType: 'json'
-	                        });
-	                }
-	        }, {
-	                key: 'load',
-	                value: function load(success, error) {
-
-	                        this.get(String(this.year) + "/data", function (data) {
-	                                this.matchups = data.matchups;
-	                                this.currentround = data.current_round;
-	                                this.get(String(this.year) + "/predictions", function (data) {
-	                                        this.predictions = data.predictions;
-	                                        this.get(String(this.year) + "/winners", function (data) {
-	                                                this.winners = data.winners;
-	                                                success();
-	                                        }.bind(this), error);
-	                                }.bind(this), error);
-	                        }.bind(this), error);
-	                }
-	        }]);
-
-	        return Store;
-	}();
-
-	module.exports = Store;
 
 /***/ }
 /******/ ]);
