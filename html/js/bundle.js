@@ -43468,7 +43468,7 @@
 	                _classCallCheck(this, Store);
 
 	                if (server == undefined) server = '';
-	                if (year == undefined) year = 2014;
+	                if (year == undefined) year = 2015;
 	                this.year = year;
 	                this.server = server;
 	                this.matchups = {};
