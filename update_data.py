@@ -182,7 +182,7 @@ def get_matchup_result(match, year):
                     home_score = game['teams']['home']['score']
                 if home_score > away_score:
                     home_win = home_win + 1
-                else:
+                elif home_score < away_score:
                     away_win = away_win + 1
                 #print(match['home']['team']['name'], home_score, match['away']['team']['name'], away_score)
                 #print(game['teams']['home']['team']['name'],game['teams']['home']['score'],match['away']['team']['name'],game['teams']['away']['score'])
