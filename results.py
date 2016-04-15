@@ -7,7 +7,7 @@ import predictions
 def get_player_prediction(player_id, preds):
     result=[]
     for prediction in preds:
-        if prediction['player'] == player_id:
+        if prediction['player'] == player_id and int(prediction['winner']) > 0:
             p = prediction.copy()
             del p['player']
             result.append(p)
@@ -82,7 +82,7 @@ def filter_predictions(preds, matchups):
         home = pred['home']
         away = pred['away']
         matchup = get_matchup(matchups, home, away)
-        if not matchups_store.is_matchup_started(matchup):
+        if matchups_store.is_matchup_started(matchup):
             results.append(pred)
     return results
 
@@ -96,6 +96,6 @@ def get(player_id, year):
             pts = calculate_pts(player['id'], get_player_prediction(player_id, preds), m)
             oldpts = calculate_pts_old(player['id'], get_player_prediction(player_id, preds), m)
             if player['id'] != player_id:
-                player_preds = filter_predictions(player_preds)
+                player_preds = filter_predictions(player_preds, m)
             result.append({'player':player['name'], 'pts':pts, 'oldpts':oldpts, 'predictions':player_preds})
     return result
