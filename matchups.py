@@ -57,7 +57,7 @@ def get_start(matchup):
 
 def now():
     to_zone = tz.gettz('America/New_York')
-    return datetime.now(tz.tzlocal()).replace(tzinfo=to_zone)
+    return datetime.now(tz.tzlocal()).astimezone(to_zone)
 
 def is_round_started(year, round):
     matchups = get_matchups(year, round)
