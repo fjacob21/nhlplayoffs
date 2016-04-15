@@ -67,9 +67,7 @@ def is_round_started(year, round):
         start = get_start(matchup)
         if start is not None:
             if n > start:
-                print('Started')
                 return True
-    print('not Started')
     return False
 
 def is_matchup_started(matchup):
@@ -77,6 +75,5 @@ def is_matchup_started(matchup):
     start = get_start(matchup)
     if start is not None:
         if n > start:
-            print(start,n)
             return True
     return False
