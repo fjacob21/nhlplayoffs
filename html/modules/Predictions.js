@@ -77,10 +77,13 @@ var Predictions = React.createClass({
                 var start  = new Date(matchup.start);
                 var now = new Date(Date.now());
                 var diff = start-now;
-                var diffDay = Math.floor((start-now)/(1000*60*60*24));
-                var diffHour = Math.floor((start-now - (diffDay*(1000*60*60*24)))/(1000*60*60));
-                var diffMin = Math.floor((start-now - (diffDay*(1000*60*60*24)) - (diffHour*(1000*60*60)))/(1000*60));
+                var diffDay = Math.max(0, Math.floor((start-now)/(1000*60*60*24)));
+                var diffHour = Math.max(0, Math.floor((start-now - (diffDay*(1000*60*60*24)))/(1000*60*60)));
+                var diffMin = Math.max(0, Math.floor((start-now - (diffDay*(1000*60*60*24)) - (diffHour*(1000*60*60)))/(1000*60)));
                 start = start.toLocaleString()
+                var diffStr = diffDay + ' days ' + diffHour+'h'+diffMin +'m';
+                if(diffDay==0 && diffHour==0 && diffMin==0)
+                        diffStr = 'Started';
                 return (
                         <tr key={i}>
                                 <th>
@@ -109,7 +112,7 @@ var Predictions = React.createClass({
                                         {start}
                                 </th>
                                 <th>
-                                        {diffDay + ' days ' + diffHour+'h'+diffMin +'m'}
+                                        {diffStr}
                                 </th>
                                 <th>
                                         <select className='form-control' style={{width:'60px'}} value={prediction.games} id={i} onChange={this.gamesChange}>

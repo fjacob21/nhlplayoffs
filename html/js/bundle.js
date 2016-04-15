@@ -43898,10 +43898,12 @@
 	                        var start = new Date(matchup.start);
 	                        var now = new Date(Date.now());
 	                        var diff = start - now;
-	                        var diffDay = Math.floor((start - now) / (1000 * 60 * 60 * 24));
-	                        var diffHour = Math.floor((start - now - diffDay * (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-	                        var diffMin = Math.floor((start - now - diffDay * (1000 * 60 * 60 * 24) - diffHour * (1000 * 60 * 60)) / (1000 * 60));
+	                        var diffDay = Math.max(0, Math.floor((start - now) / (1000 * 60 * 60 * 24)));
+	                        var diffHour = Math.max(0, Math.floor((start - now - diffDay * (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+	                        var diffMin = Math.max(0, Math.floor((start - now - diffDay * (1000 * 60 * 60 * 24) - diffHour * (1000 * 60 * 60)) / (1000 * 60)));
 	                        start = start.toLocaleString();
+	                        var diffStr = diffDay + ' days ' + diffHour + 'h' + diffMin + 'm';
+	                        if (diffDay == 0 && diffHour == 0 && diffMin == 0) diffStr = 'Started';
 	                        return React.createElement(
 	                                'tr',
 	                                { key: i },
@@ -43945,7 +43947,7 @@
 	                                React.createElement(
 	                                        'th',
 	                                        null,
-	                                        diffDay + ' days ' + diffHour + 'h' + diffMin + 'm'
+	                                        diffStr
 	                                ),
 	                                React.createElement(
 	                                        'th',
