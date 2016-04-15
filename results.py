@@ -1,17 +1,16 @@
 # Results management module
 #
-import matchups
+import matchups as matchups_store
 import players
 import predictions
 
 def get_player_prediction(player_id, preds):
-
     result=[]
     for prediction in preds:
         if prediction['player'] == player_id:
-            #p = prediction.copy()
-            #del p['player']
-            result.append(prediction)
+            p = prediction.copy()
+            del p['player']
+            result.append(p)
     return result
 
 def get_matchup(matchups, home, away):
@@ -24,7 +23,6 @@ def get_matchup(matchups, home, away):
     return None
 
 def calculate_pts(player_id, preds, matchups):
-    #preds = get_player_prediction(player_id, year)
     pts=0
     for prediction in preds:
         home = prediction['home']
@@ -51,15 +49,14 @@ def calculate_pts(player_id, preds, matchups):
                         pts = pts + 5
     return pts
 
-def calculate_pts_old(player_id, year):
-    preds = get_player_prediction(player_id, year)
+def calculate_pts_old(player_id , preds, matchups):
     pts=0
     for prediction in preds:
         home = prediction['home']
         away = prediction['away']
         winner = prediction['winner']
         games = prediction['games']
-        matchup = matchups.get_matchup(year, home, away)
+        matchup = get_matchup(matchups, home, away)
         if 'result' in matchup:
             result = matchup['result']
             match_winner = ''
@@ -79,13 +76,26 @@ def calculate_pts_old(player_id, year):
                         pts = pts + 10
     return pts
 
+def filter_predictions(preds, matchups):
+    results = []
+    for pred in preds:
+        home = pred['home']
+        away = pred['away']
+        matchup = get_matchup(matchups, home, away)
+        if not matchups_store.is_matchup_started(matchup):
+            results.append(pred)
+    return results
+
 def get(player_id, year):
     result=[]
-    m = matchups.get_matchups(year)
+    m = matchups_store.get_matchups(year)
     preds = predictions.get_all(year)
     for player in players.get_all_admin():
-        pts = 0#calculate_pts(player['id'], get_player_prediction(player_id, preds), m)
-        oldpts = 0#calculate_pts_old(player['id'], year)
-        #preds = get_player_prediction(player['id'], year)
-        result.append({'player':player['name'], 'pts':pts, 'oldpts':oldpts})
+        player_preds = get_player_prediction(player['id'], preds)
+        if len(player_preds) > 0:
+            pts = calculate_pts(player['id'], get_player_prediction(player_id, preds), m)
+            oldpts = calculate_pts_old(player['id'], get_player_prediction(player_id, preds), m)
+            if player['id'] != player_id:
+                player_preds = filter_predictions(player_preds)
+            result.append({'player':player['name'], 'pts':pts, 'oldpts':oldpts, 'predictions':player_preds})
     return result

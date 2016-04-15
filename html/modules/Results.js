@@ -9,7 +9,7 @@ var store = new Store();
 class Results extends React.Component{
         constructor(props) {
                 super(props);
-                this.state = {matchups:{},results: [], teams:[], winner:null, currentround:0};
+                this.state = {matchups:{}, results: [], teams:[], winner:null, currentround:0};
         }
 
         componentDidMount(){
@@ -34,6 +34,13 @@ class Results extends React.Component{
 
 
         }
+        findPrediction(predictions, home, away){
+                for (var prediction of predictions){
+                        if (prediction.home == home && prediction.away == away)
+                                return prediction;
+                }
+                return null;
+        }
 
         render() {
                 var rounds=[1,2,3,4];
@@ -42,20 +49,51 @@ class Results extends React.Component{
                                 if(this.state.matchups[i] != undefined){
                                         var m = this.state.matchups[i].map(function(matchup){
                                                 //Get player predictions
-                                                return (<th>{matchup.home.team.name}</th>);
+                                                var home = matchup.home.team.id;
+                                                var away = matchup.away.team.id;
+                                                var p = this.findPrediction(result.predictions, home, away);
+                                                if(p != null){
+                                                        return (
+                                                                <th style={{width: '10px'}}>
+                                                                        <img src={store.getTeamImgUrl(p.winner)}/>{p.games}
+                                                                </th>);
+                                                } else{
+                                                        return (
+                                                                <th style={{width: '10px'}}>
+
+                                                                </th>);
+                                                }
                                         }.bind(this));
                                 }
                                 return m;
                         }.bind(this));
 
-                        return (<tr><th style={{width: '50px'}}>{result.player}</th><th style={{width: '50px'}}>{result.pts}</th></tr>);
+                        return (<tr><th style={{width: '50px',verticalAlign: 'middle'}}>{result.player}</th>{t}<th style={{width: '50px',verticalAlign: 'middle'}}>{result.pts}</th></tr>);
                 }.bind(this));
-                console.debug(results);
+
+                var matchsHead = rounds.map(function(d,i){
+                        if(this.state.matchups[i] != undefined){
+                                var m = this.state.matchups[i].map(function(matchup){
+                                        //Get player predictions
+                                        var home = matchup.home.team.id;
+                                        var away = matchup.away.team.id;
+                                        var homeWin = matchup.result.home_win;
+                                        var awayWin = matchup.result.away_win;
+                                        return (
+                                                <th style={{width: '10px'}}>
+                                                        <img src={store.getTeamImgUrl(home)} />{homeWin}
+                                                        <img src={store.getTeamImgUrl(away)} />{awayWin}
+                                                </th>);
+                                }.bind(this));
+                        }
+                        return m;
+                }.bind(this));
                 return (
                         <table className='table table-hover'>
                                 <thead>
                                     <tr>
                                         <th>Player</th>
+                                        {matchsHead}
                                         <th>Pts</th>
                                     </tr>
                                 </thead>

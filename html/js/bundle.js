@@ -43381,6 +43381,36 @@
 	                        }.bind(this));
 	                }
 	        }, {
+	                key: 'findPrediction',
+	                value: function findPrediction(predictions, home, away) {
+	                        var _iteratorNormalCompletion = true;
+	                        var _didIteratorError = false;
+	                        var _iteratorError = undefined;
+
+	                        try {
+	                                for (var _iterator = predictions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                                        var prediction = _step.value;
+
+	                                        if (prediction.home == home && prediction.away == away) return prediction;
+	                                }
+	                        } catch (err) {
+	                                _didIteratorError = true;
+	                                _iteratorError = err;
+	                        } finally {
+	                                try {
+	                                        if (!_iteratorNormalCompletion && _iterator.return) {
+	                                                _iterator.return();
+	                                        }
+	                                } finally {
+	                                        if (_didIteratorError) {
+	                                                throw _iteratorError;
+	                                        }
+	                                }
+	                        }
+
+	                        return null;
+	                }
+	        }, {
 	                key: 'render',
 	                value: function render() {
 	                        var rounds = [1, 2, 3, 4];
@@ -43389,11 +43419,19 @@
 	                                        if (this.state.matchups[i] != undefined) {
 	                                                var m = this.state.matchups[i].map(function (matchup) {
 	                                                        //Get player predictions
-	                                                        return React.createElement(
-	                                                                'th',
-	                                                                null,
-	                                                                matchup.home.team.name
-	                                                        );
+	                                                        var home = matchup.home.team.id;
+	                                                        var away = matchup.away.team.id;
+	                                                        var p = this.findPrediction(result.predictions, home, away);
+	                                                        if (p != null) {
+	                                                                return React.createElement(
+	                                                                        'th',
+	                                                                        { style: { width: '10px' } },
+	                                                                        React.createElement('img', { src: store.getTeamImgUrl(p.winner) }),
+	                                                                        p.games
+	                                                                );
+	                                                        } else {
+	                                                                return React.createElement('th', { style: { width: '10px' } });
+	                                                        }
 	                                                }.bind(this));
 	                                        }
 	                                        return m;
@@ -43404,17 +43442,38 @@
 	                                        null,
 	                                        React.createElement(
 	                                                'th',
-	                                                { style: { width: '50px' } },
+	                                                { style: { width: '50px', verticalAlign: 'middle' } },
 	                                                result.player
 	                                        ),
+	                                        t,
 	                                        React.createElement(
 	                                                'th',
-	                                                { style: { width: '50px' } },
+	                                                { style: { width: '50px', verticalAlign: 'middle' } },
 	                                                result.pts
 	                                        )
 	                                );
 	                        }.bind(this));
-	                        console.debug(results);
+
+	                        var matchsHead = rounds.map(function (d, i) {
+	                                if (this.state.matchups[i] != undefined) {
+	                                        var m = this.state.matchups[i].map(function (matchup) {
+	                                                //Get player predictions
+	                                                var home = matchup.home.team.id;
+	                                                var away = matchup.away.team.id;
+	                                                var homeWin = matchup.result.home_win;
+	                                                var awayWin = matchup.result.away_win;
+	                                                return React.createElement(
+	                                                        'th',
+	                                                        { style: { width: '10px' } },
+	                                                        React.createElement('img', { src: store.getTeamImgUrl(home) }),
+	                                                        homeWin,
+	                                                        React.createElement('img', { src: store.getTeamImgUrl(away) }),
+	                                                        awayWin
+	                                                );
+	                                        }.bind(this));
+	                                }
+	                                return m;
+	                        }.bind(this));
 	                        return React.createElement(
 	                                'table',
 	                                { className: 'table table-hover' },
@@ -43429,6 +43488,7 @@
 	                                                        null,
 	                                                        'Player'
 	                                                ),
+	                                                matchsHead,
 	                                                React.createElement(
 	                                                        'th',
 	                                                        null,
@@ -43476,6 +43536,11 @@
 	        }
 
 	        _createClass(Store, [{
+	                key: 'getTeamImgUrl',
+	                value: function getTeamImgUrl(team) {
+	                        return 'https://www-league.nhlstatic.com/builds/site-core/284dc4ec70e4bee8802842e5e700157f45660a48_1457473228/images/team/logo/current/' + team + '_dark.svg';
+	                }
+	        }, {
 	                key: 'getWinner',
 	                value: function getWinner(player) {
 	                        var _iteratorNormalCompletion = true;
