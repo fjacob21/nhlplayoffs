@@ -77,5 +77,6 @@ def is_matchup_started(matchup):
     start = get_start(matchup)
     if start is not None:
         if n > start:
+            print(start,n)
             return True
     return False
