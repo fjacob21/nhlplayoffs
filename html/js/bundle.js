@@ -43889,7 +43889,7 @@
 	                var predictions = this.state.predictions.map(function (prediction, i) {
 	                        var homeClass = 'btn btn-primary ';
 	                        var awayClass = 'btn btn-primary ';
-	                        if (prediction.winner == prediction.home) homeClass += 'active';else if (prediction.winner == prediction.away) awayClass += 'active';
+	                        if (prediction.winner == prediction.home) homeClass += 'active predictionSel';else if (prediction.winner == prediction.away) awayClass += 'active predictionSel';
 	                        var homeUrl = 'https://www-league.nhlstatic.com/builds/site-core/284dc4ec70e4bee8802842e5e700157f45660a48_1457473228/images/team/logo/current/' + store.getTeam(prediction.home).team.id + '_dark.svg';
 	                        var awayUrl = 'https://www-league.nhlstatic.com/builds/site-core/284dc4ec70e4bee8802842e5e700157f45660a48_1457473228/images/team/logo/current/' + store.getTeam(prediction.away).team.id + '_dark.svg';
 	                        var homeTeam = store.getTeam(prediction.home);
