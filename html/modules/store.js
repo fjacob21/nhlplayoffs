@@ -78,6 +78,35 @@ class Store {
                 return this.matchups[round];
         }
 
+        getMatchupTime(matchup){
+                if(matchup.start == undefined)
+                        return null;
+                var start  = new Date(matchup.start);
+                var now = new Date(Date.now());
+                var diff = start-now;
+                var diffDay = Math.max(0, Math.floor((start-now)/(1000*60*60*24)));
+                var diffHour = Math.max(0, Math.floor((start-now - (diffDay*(1000*60*60*24)))/(1000*60*60)));
+                var diffMin = Math.max(0, Math.floor((start-now - (diffDay*(1000*60*60*24)) - (diffHour*(1000*60*60)))/(1000*60)));
+                return {'days': diffDay, 'hours': diffHour, 'minutes': diffMin};
+        }
+
+        isMatchupStarted(matchup){
+                var time = this.getMatchupTime(matchup);
+                if(time == null)
+                        return false;
+                if(time.days == 0 && time.hours == 0 && time.minutes == 0)
+                        return true;
+                return false;
+        }
+
+        isRountStarted(round){
+                for (var matchup of this.matchups[round]){
+                        if(this.isMatchupStarted(matchup))
+                                return true;
+                }
+                return false;
+        }
+
         getTeams(){
                 var results = [];
                 for (var matchup of this.matchups[1]){

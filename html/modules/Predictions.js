@@ -34,20 +34,27 @@ var Predictions = React.createClass({
           return {predictions: [], teams:[], winner:null, currentround:0};
         },
         winnerChange: function(event) {
-            this.state.winner = event.target.value;
+                if (store.isRountStarted(1))
+                        return;
+                alert('should not go there');
+                this.state.winner = event.target.value;
 
-            store.setWinner(sessionStorage.userId, this.state.winner, function(data){this.setState(this.state);}.bind(this), function(){alert('Error!!!');}.bind(this));
-          },
+                store.setWinner(sessionStorage.userId, this.state.winner, function(data){this.setState(this.state);}.bind(this), function(){alert('Error!!!');}.bind(this));
+        },
         predictionChange: function(event) {
+                var prediction = this.state.predictions[event.target.id];
+                if(store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round)))
+                        return;
                 this.state.predictions[event.target.id].winner = Number(event.target.value);
                 this.setState(this.state);
-                var prediction = this.state.predictions[event.target.id];
                 store.setPrediction(sessionStorage.userId, prediction.round, prediction.home, prediction.away, prediction.winner, prediction.games, function(data){}.bind(this), function(){alert('Error!!!');}.bind(this));
         },
         gamesChange: function(event) {
+                var prediction = this.state.predictions[event.target.id];
+                if(store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round)))
+                        return;
                 this.state.predictions[event.target.id].games = Number(event.target.value);
                 this.setState(this.state);
-                var prediction = this.state.predictions[event.target.id];
                 store.setPrediction(sessionStorage.userId, prediction.round, prediction.home, prediction.away, prediction.winner, prediction.games, function(data){}.bind(this), function(){alert('Error!!!');}.bind(this));
         },
         render: function() {

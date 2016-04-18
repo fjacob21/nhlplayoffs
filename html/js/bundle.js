@@ -43683,21 +43683,37 @@
 	                        return this.matchups[round];
 	                }
 	        }, {
-	                key: 'getTeams',
-	                value: function getTeams() {
-	                        var results = [];
+	                key: 'getMatchupTime',
+	                value: function getMatchupTime(matchup) {
+	                        if (matchup.start == undefined) return null;
+	                        var start = new Date(matchup.start);
+	                        var now = new Date(Date.now());
+	                        var diff = start - now;
+	                        var diffDay = Math.max(0, Math.floor((start - now) / (1000 * 60 * 60 * 24)));
+	                        var diffHour = Math.max(0, Math.floor((start - now - diffDay * (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+	                        var diffMin = Math.max(0, Math.floor((start - now - diffDay * (1000 * 60 * 60 * 24) - diffHour * (1000 * 60 * 60)) / (1000 * 60)));
+	                        return { 'days': diffDay, 'hours': diffHour, 'minutes': diffMin };
+	                }
+	        }, {
+	                key: 'isMatchupStarted',
+	                value: function isMatchupStarted(matchup) {
+	                        var time = this.getMatchupTime(matchup);
+	                        if (time == null) return false;
+	                        if (time.days == 0 && time.hours == 0 && time.minutes == 0) return true;
+	                        return false;
+	                }
+	        }, {
+	                key: 'isRountStarted',
+	                value: function isRountStarted(round) {
 	                        var _iteratorNormalCompletion5 = true;
 	                        var _didIteratorError5 = false;
 	                        var _iteratorError5 = undefined;
 
 	                        try {
-	                                for (var _iterator5 = this.matchups[1][Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+	                                for (var _iterator5 = this.matchups[round][Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
 	                                        var matchup = _step5.value;
 
-	                                        var home = matchup.home;
-	                                        var away = matchup.away;
-	                                        results.push(home);
-	                                        results.push(away);
+	                                        if (this.isMatchupStarted(matchup)) return true;
 	                                }
 	                        } catch (err) {
 	                                _didIteratorError5 = true;
@@ -43714,21 +43730,24 @@
 	                                }
 	                        }
 
-	                        return results;
+	                        return false;
 	                }
 	        }, {
-	                key: 'getTeam',
-	                value: function getTeam(id) {
-	                        var teams = this.getTeams();
+	                key: 'getTeams',
+	                value: function getTeams() {
+	                        var results = [];
 	                        var _iteratorNormalCompletion6 = true;
 	                        var _didIteratorError6 = false;
 	                        var _iteratorError6 = undefined;
 
 	                        try {
-	                                for (var _iterator6 = teams[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-	                                        var team = _step6.value;
+	                                for (var _iterator6 = this.matchups[1][Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+	                                        var matchup = _step6.value;
 
-	                                        if (team.team.id == id) return team;
+	                                        var home = matchup.home;
+	                                        var away = matchup.away;
+	                                        results.push(home);
+	                                        results.push(away);
 	                                }
 	                        } catch (err) {
 	                                _didIteratorError6 = true;
@@ -43741,6 +43760,37 @@
 	                                } finally {
 	                                        if (_didIteratorError6) {
 	                                                throw _iteratorError6;
+	                                        }
+	                                }
+	                        }
+
+	                        return results;
+	                }
+	        }, {
+	                key: 'getTeam',
+	                value: function getTeam(id) {
+	                        var teams = this.getTeams();
+	                        var _iteratorNormalCompletion7 = true;
+	                        var _didIteratorError7 = false;
+	                        var _iteratorError7 = undefined;
+
+	                        try {
+	                                for (var _iterator7 = teams[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+	                                        var team = _step7.value;
+
+	                                        if (team.team.id == id) return team;
+	                                }
+	                        } catch (err) {
+	                                _didIteratorError7 = true;
+	                                _iteratorError7 = err;
+	                        } finally {
+	                                try {
+	                                        if (!_iteratorNormalCompletion7 && _iterator7.return) {
+	                                                _iterator7.return();
+	                                        }
+	                                } finally {
+	                                        if (_didIteratorError7) {
+	                                                throw _iteratorError7;
 	                                        }
 	                                }
 	                        }
@@ -43850,6 +43900,8 @@
 	                return { predictions: [], teams: [], winner: null, currentround: 0 };
 	        },
 	        winnerChange: function winnerChange(event) {
+	                if (store.isRountStarted(1)) return;
+	                alert('should not go there');
 	                this.state.winner = event.target.value;
 
 	                store.setWinner(sessionStorage.userId, this.state.winner, function (data) {
@@ -43859,17 +43911,19 @@
 	                }.bind(this));
 	        },
 	        predictionChange: function predictionChange(event) {
+	                var prediction = this.state.predictions[event.target.id];
+	                if (store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round))) return;
 	                this.state.predictions[event.target.id].winner = Number(event.target.value);
 	                this.setState(this.state);
-	                var prediction = this.state.predictions[event.target.id];
 	                store.setPrediction(sessionStorage.userId, prediction.round, prediction.home, prediction.away, prediction.winner, prediction.games, function (data) {}.bind(this), function () {
 	                        alert('Error!!!');
 	                }.bind(this));
 	        },
 	        gamesChange: function gamesChange(event) {
+	                var prediction = this.state.predictions[event.target.id];
+	                if (store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round))) return;
 	                this.state.predictions[event.target.id].games = Number(event.target.value);
 	                this.setState(this.state);
-	                var prediction = this.state.predictions[event.target.id];
 	                store.setPrediction(sessionStorage.userId, prediction.round, prediction.home, prediction.away, prediction.winner, prediction.games, function (data) {}.bind(this), function () {
 	                        alert('Error!!!');
 	                }.bind(this));
