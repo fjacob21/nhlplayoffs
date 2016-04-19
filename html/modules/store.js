@@ -90,6 +90,25 @@ class Store {
                 return {'days': diffDay, 'hours': diffHour, 'minutes': diffMin};
         }
 
+        getMatchupResult(matchup){
+                var result = {'winner': 0, 'games':0, 'isFinish':false};
+
+                if(matchup.result != undefined){
+                        result.games = matchup.result.home_win + matchup.result.away_win;
+
+                        if(result.games > 0){
+                                if(matchup.result.home_win > matchup.result.away_win)
+                                        result.winner = matchup.home.team.id;
+                                else if(matchup.result.home_win < matchup.result.away_win)
+                                        result.winner = matchup.away.team.id;
+                        }
+
+                        if(matchup.result.home_win == 4 || matchup.result.away_win == 4)
+                                result.isFinish = true;
+                }
+                return result;
+        }
+
         isMatchupStarted(matchup){
                 var time = this.getMatchupTime(matchup);
                 if(time == null)

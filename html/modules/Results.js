@@ -51,11 +51,19 @@ class Results extends React.Component{
                                                 //Get player predictions
                                                 var home = matchup.home.team.id;
                                                 var away = matchup.away.team.id;
+                                                var matchupResult = store.getMatchupResult(matchup);
+                                                var predClass = '';
                                                 var p = this.findPrediction(result.predictions, home, away);
                                                 if(p != null){
+                                                        if(matchupResult.winner !=0 && matchupResult.winner != p.winner){
+                                                                if(matchupResult.isFinish)
+                                                                        predClass = 'teamLoser';
+                                                                else
+                                                                        predClass = 'teamLosing';
+                                                        }
                                                         return (
                                                                 <th style={{width: '10px'}}>
-                                                                        <img src={store.getTeamImgUrl(p.winner)}/>{p.games}
+                                                                        <img className={predClass} src={store.getTeamImgUrl(p.winner)}/>{p.games}
                                                                 </th>);
                                                 } else{
                                                         return (
@@ -79,10 +87,19 @@ class Results extends React.Component{
                                         var away = matchup.away.team.id;
                                         var homeWin = matchup.result.home_win;
                                         var awayWin = matchup.result.away_win;
+                                        var result = store.getMatchupResult(matchup);
+                                        var homeClass = '';
+                                        var awayClass = '';
+                                        if(result.isFinish){
+                                                if(result.winner == home)
+                                                        awayClass = 'teamLoser';
+                                                else
+                                                        homeClass = 'teamLoser';
+                                        }
                                         return (
                                                 <th style={{width: '10px'}}>
-                                                        <img src={store.getTeamImgUrl(home)} />{homeWin}
-                                                        <img src={store.getTeamImgUrl(away)} />{awayWin}
+                                                        <img className={homeClass} src={store.getTeamImgUrl(home)} />{homeWin}
+                                                        <img className={awayClass} src={store.getTeamImgUrl(away)} />{awayWin}
                                                 </th>);
                                 }.bind(this));
                         }

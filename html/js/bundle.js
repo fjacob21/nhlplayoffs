@@ -43421,12 +43421,17 @@
 	                                                        //Get player predictions
 	                                                        var home = matchup.home.team.id;
 	                                                        var away = matchup.away.team.id;
+	                                                        var matchupResult = store.getMatchupResult(matchup);
+	                                                        var predClass = '';
 	                                                        var p = this.findPrediction(result.predictions, home, away);
 	                                                        if (p != null) {
+	                                                                if (matchupResult.winner != 0 && matchupResult.winner != p.winner) {
+	                                                                        if (matchupResult.isFinish) predClass = 'teamLoser';else predClass = 'teamLosing';
+	                                                                }
 	                                                                return React.createElement(
 	                                                                        'th',
 	                                                                        { style: { width: '10px' } },
-	                                                                        React.createElement('img', { src: store.getTeamImgUrl(p.winner) }),
+	                                                                        React.createElement('img', { className: predClass, src: store.getTeamImgUrl(p.winner) }),
 	                                                                        p.games
 	                                                                );
 	                                                        } else {
@@ -43462,12 +43467,18 @@
 	                                                var away = matchup.away.team.id;
 	                                                var homeWin = matchup.result.home_win;
 	                                                var awayWin = matchup.result.away_win;
+	                                                var result = store.getMatchupResult(matchup);
+	                                                var homeClass = '';
+	                                                var awayClass = '';
+	                                                if (result.isFinish) {
+	                                                        if (result.winner == home) awayClass = 'teamLoser';else homeClass = 'teamLoser';
+	                                                }
 	                                                return React.createElement(
 	                                                        'th',
 	                                                        { style: { width: '10px' } },
-	                                                        React.createElement('img', { src: store.getTeamImgUrl(home) }),
+	                                                        React.createElement('img', { className: homeClass, src: store.getTeamImgUrl(home) }),
 	                                                        homeWin,
-	                                                        React.createElement('img', { src: store.getTeamImgUrl(away) }),
+	                                                        React.createElement('img', { className: awayClass, src: store.getTeamImgUrl(away) }),
 	                                                        awayWin
 	                                                );
 	                                        }.bind(this));
@@ -43693,6 +43704,22 @@
 	                        var diffHour = Math.max(0, Math.floor((start - now - diffDay * (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
 	                        var diffMin = Math.max(0, Math.floor((start - now - diffDay * (1000 * 60 * 60 * 24) - diffHour * (1000 * 60 * 60)) / (1000 * 60)));
 	                        return { 'days': diffDay, 'hours': diffHour, 'minutes': diffMin };
+	                }
+	        }, {
+	                key: 'getMatchupResult',
+	                value: function getMatchupResult(matchup) {
+	                        var result = { 'winner': 0, 'games': 0, 'isFinish': false };
+
+	                        if (matchup.result != undefined) {
+	                                result.games = matchup.result.home_win + matchup.result.away_win;
+
+	                                if (result.games > 0) {
+	                                        if (matchup.result.home_win > matchup.result.away_win) result.winner = matchup.home.team.id;else if (matchup.result.home_win < matchup.result.away_win) result.winner = matchup.away.team.id;
+	                                }
+
+	                                if (matchup.result.home_win == 4 || matchup.result.away_win == 4) result.isFinish = true;
+	                        }
+	                        return result;
 	                }
 	        }, {
 	                key: 'isMatchupStarted',
