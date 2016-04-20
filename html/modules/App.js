@@ -34,9 +34,14 @@ const App = React.createClass({
                                          <Navbar.Brand>
                                                  <LinkContainer to="/main/home">
                                                          <a href="#">
-                                                                 <table><tr><th>
-                                                                 <img width="30" height="30" src="http://cdn.nhle.com/projects/ice3-ui/com.nhl.ice3.ui.t5.components/GlobalPageImports/images/nhl_shield.png"/>
-                                                                 </th><th>NHL Playoffs pool</th></tr></table>
+                                                                <table>
+                                                                        <tbody>
+                                                                        <tr>
+                                                                                <th><img width="30" height="30" src="http://cdn.nhle.com/projects/ice3-ui/com.nhl.ice3.ui.t5.components/GlobalPageImports/images/nhl_shield.png"/></th>
+                                                                                <th>NHL Playoffs pool</th>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                </table>
                                                          </a>
                                                  </LinkContainer>
                                          </Navbar.Brand>

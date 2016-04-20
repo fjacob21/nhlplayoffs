@@ -66,7 +66,7 @@
 
 	(0, _reactDom.render)(_react2.default.createElement(
 	  _reactRouter.Router,
-	  null,
+	  { history: _reactRouter.hashHistory },
 	  _react2.default.createElement(_reactRouter.Route, { path: '/', component: Login }),
 	  _react2.default.createElement(_reactRouter.Route, { path: '/adduser', component: AddUser }),
 	  _react2.default.createElement(
@@ -25211,17 +25211,21 @@
 	                                                                        'table',
 	                                                                        null,
 	                                                                        _react2.default.createElement(
-	                                                                                'tr',
+	                                                                                'tbody',
 	                                                                                null,
 	                                                                                _react2.default.createElement(
-	                                                                                        'th',
+	                                                                                        'tr',
 	                                                                                        null,
-	                                                                                        _react2.default.createElement('img', { width: '30', height: '30', src: 'http://cdn.nhle.com/projects/ice3-ui/com.nhl.ice3.ui.t5.components/GlobalPageImports/images/nhl_shield.png' })
-	                                                                                ),
-	                                                                                _react2.default.createElement(
-	                                                                                        'th',
-	                                                                                        null,
-	                                                                                        'NHL Playoffs pool'
+	                                                                                        _react2.default.createElement(
+	                                                                                                'th',
+	                                                                                                null,
+	                                                                                                _react2.default.createElement('img', { width: '30', height: '30', src: 'http://cdn.nhle.com/projects/ice3-ui/com.nhl.ice3.ui.t5.components/GlobalPageImports/images/nhl_shield.png' })
+	                                                                                        ),
+	                                                                                        _react2.default.createElement(
+	                                                                                                'th',
+	                                                                                                null,
+	                                                                                                'NHL Playoffs pool'
+	                                                                                        )
 	                                                                                )
 	                                                                        )
 	                                                                )
@@ -43417,7 +43421,7 @@
 	                        var results = this.state.results.map(function (result, i) {
 	                                var t = rounds.map(function (d, i) {
 	                                        if (this.state.matchups[i] != undefined) {
-	                                                var m = this.state.matchups[i].map(function (matchup) {
+	                                                var m = this.state.matchups[i].map(function (matchup, j) {
 	                                                        //Get player predictions
 	                                                        var home = matchup.home.team.id;
 	                                                        var away = matchup.away.team.id;
@@ -43430,12 +43434,20 @@
 	                                                                }
 	                                                                return React.createElement(
 	                                                                        'th',
-	                                                                        { style: { width: '10px' } },
-	                                                                        React.createElement('img', { className: predClass, src: store.getTeamImgUrl(p.winner) }),
-	                                                                        p.games
+	                                                                        { style: { width: '10px' }, key: j },
+	                                                                        React.createElement(
+	                                                                                'div',
+	                                                                                null,
+	                                                                                React.createElement('img', { className: predClass, src: store.getTeamImgUrl(p.winner), style: { width: '100%', height: 'auto' } })
+	                                                                        ),
+	                                                                        React.createElement(
+	                                                                                'div',
+	                                                                                null,
+	                                                                                p.games
+	                                                                        )
 	                                                                );
 	                                                        } else {
-	                                                                return React.createElement('th', { style: { width: '10px' } });
+	                                                                return React.createElement('th', { style: { width: '10px' }, key: j });
 	                                                        }
 	                                                }.bind(this));
 	                                        }
@@ -43444,7 +43456,7 @@
 
 	                                return React.createElement(
 	                                        'tr',
-	                                        null,
+	                                        { key: i },
 	                                        React.createElement(
 	                                                'th',
 	                                                { style: { width: '50px', verticalAlign: 'middle' } },
@@ -43461,7 +43473,7 @@
 
 	                        var matchsHead = rounds.map(function (d, i) {
 	                                if (this.state.matchups[i] != undefined) {
-	                                        var m = this.state.matchups[i].map(function (matchup) {
+	                                        var m = this.state.matchups[i].map(function (matchup, j) {
 	                                                //Get player predictions
 	                                                var home = matchup.home.team.id;
 	                                                var away = matchup.away.team.id;
@@ -43475,10 +43487,10 @@
 	                                                }
 	                                                return React.createElement(
 	                                                        'th',
-	                                                        { style: { width: '10px' } },
-	                                                        React.createElement('img', { className: homeClass, src: store.getTeamImgUrl(home) }),
+	                                                        { style: { width: '10px' }, key: j },
+	                                                        React.createElement('img', { className: homeClass, src: store.getTeamImgUrl(home), style: { width: '100%', height: 'auto' } }),
 	                                                        homeWin,
-	                                                        React.createElement('img', { className: awayClass, src: store.getTeamImgUrl(away) }),
+	                                                        React.createElement('img', { className: awayClass, src: store.getTeamImgUrl(away), style: { width: '100%', height: 'auto' } }),
 	                                                        awayWin
 	                                                );
 	                                        }.bind(this));

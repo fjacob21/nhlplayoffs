@@ -47,7 +47,7 @@ class Results extends React.Component{
                 var results = this.state.results.map(function(result,i){
                         var t = rounds.map(function(d,i){
                                 if(this.state.matchups[i] != undefined){
-                                        var m = this.state.matchups[i].map(function(matchup){
+                                        var m = this.state.matchups[i].map(function(matchup, j){
                                                 //Get player predictions
                                                 var home = matchup.home.team.id;
                                                 var away = matchup.away.team.id;
@@ -62,12 +62,12 @@ class Results extends React.Component{
                                                                         predClass = 'teamLosing';
                                                         }
                                                         return (
-                                                                <th style={{width: '10px'}}>
-                                                                        <img className={predClass} src={store.getTeamImgUrl(p.winner)}/>{p.games}
+                                                                <th style={{width: '10px'}} key={j}>
+                                                                        <div><img className={predClass} src={store.getTeamImgUrl(p.winner)} style={{width: '100%', height: 'auto'}}/></div><div>{p.games}</div>
                                                                 </th>);
                                                 } else{
                                                         return (
-                                                                <th style={{width: '10px'}}>
+                                                                <th style={{width: '10px'}} key={j}>
 
                                                                 </th>);
                                                 }
@@ -76,12 +76,12 @@ class Results extends React.Component{
                                 return m;
                         }.bind(this));
 
-                        return (<tr><th style={{width: '50px',verticalAlign: 'middle'}}>{result.player}</th>{t}<th style={{width: '50px',verticalAlign: 'middle'}}>{result.pts}</th></tr>);
+                        return (<tr key={i}><th style={{width: '50px',verticalAlign: 'middle'}}>{result.player}</th>{t}<th style={{width: '50px',verticalAlign: 'middle'}}>{result.pts}</th></tr>);
                 }.bind(this));
 
                 var matchsHead = rounds.map(function(d,i){
                         if(this.state.matchups[i] != undefined){
-                                var m = this.state.matchups[i].map(function(matchup){
+                                var m = this.state.matchups[i].map(function(matchup, j){
                                         //Get player predictions
                                         var home = matchup.home.team.id;
                                         var away = matchup.away.team.id;
@@ -97,9 +97,9 @@ class Results extends React.Component{
                                                         homeClass = 'teamLoser';
                                         }
                                         return (
-                                                <th style={{width: '10px'}}>
-                                                        <img className={homeClass} src={store.getTeamImgUrl(home)} />{homeWin}
-                                                        <img className={awayClass} src={store.getTeamImgUrl(away)} />{awayWin}
+                                                <th style={{width: '10px'}} key={j}>
+                                                        <img className={homeClass} src={store.getTeamImgUrl(home)} style={{width: '100%', height: 'auto'}} />{homeWin}
+                                                        <img className={awayClass} src={store.getTeamImgUrl(away)} style={{width: '100%', height: 'auto'}} />{awayWin}
                                                 </th>);
                                 }.bind(this));
                         }
