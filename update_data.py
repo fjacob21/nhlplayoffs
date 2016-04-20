@@ -161,11 +161,13 @@ def get_matchups_schedule(year, matchups):
     return schedules
 
 #matchups ====================================
-def get_matchup_result(match, year):
+def get_matchup_result(match, year, schedules=None):
     result = {}
     home_id = match['home']['team']['id']
     away_id = match['away']['team']['id']
-    s = get_playoff_schedule(int(home_id), year)
+    s = schedules
+    if schedules is None:
+        s = get_playoff_schedule(int(home_id), year)
     home_win = 0
     away_win = 0
     for date in s['dates']:
@@ -190,10 +192,12 @@ def get_matchup_result(match, year):
     result['away_win'] = away_win
     return result
 
-def get_matchup_start(matchup, year):
+def get_matchup_start(matchup, year, schedules=None):
     home_id = matchup['home']['team']['id']
     away_id = matchup['away']['team']['id']
-    s = get_playoff_schedule(int(home_id), year)
+    s = schedules
+    if schedules is None:
+        s = get_playoff_schedule(int(home_id), year)
     for date in s['dates']:
         game = date['games'][0]
         game_home_id = game['teams']['home']['team']['id']
@@ -202,6 +206,22 @@ def get_matchup_start(matchup, year):
             if game_home_id == away_id or game_away_id == away_id:
                 return game['gameDate']
     return None
+
+def get_matchup_schedule(matchup, year, schedules=None):
+    home_id = matchup['home']['team']['id']
+    away_id = matchup['away']['team']['id']
+    result = []
+    s = schedules
+    if schedules is None:
+        s = get_playoff_schedule(int(home_id), year)
+    for date in s['dates']:
+        game = date['games'][0]
+        game_home_id = game['teams']['home']['team']['id']
+        game_away_id = game['teams']['away']['team']['id']
+        if game['gameType'] == 'P':
+            if game_home_id == away_id or game_away_id == away_id:
+                result.append(game)
+    return result
 
 def get_round1_matchups(year):
     teams = get_teams(year)
@@ -286,11 +306,14 @@ def get_round4_matchups(round3_matchup):
 def update_matchup(matchups, year):
     finished = True
     for match in matchups:
-        result = get_matchup_result(match, year)
+        home_id = match['home']['team']['id']
+        s = get_playoff_schedule(int(home_id), year)
+        result = get_matchup_result(match, year, s)
         if 'start' not in match:
-            start = get_matchup_start(match, year)
+            start = get_matchup_start(match, year, s)
             match['start'] = start
         match['result'] = result
+        match['schedule'] = get_matchup_schedule(match, year, s)
         if result['home_win'] != 4 and  result['away_win'] != 4:
             finished = False
     return finished
