@@ -93,8 +93,8 @@ def get(player_id, year):
     for player in players.get_all_admin():
         player_preds = get_player_prediction(player['id'], preds)
         if len(player_preds) > 0:
-            pts = calculate_pts(player['id'], get_player_prediction(player_id, preds), m)
-            oldpts = calculate_pts_old(player['id'], get_player_prediction(player_id, preds), m)
+            pts = calculate_pts(player['id'], get_player_prediction(player['id'], preds), m)
+            oldpts = calculate_pts_old(player['id'], get_player_prediction(player['id'], preds), m)
             if player['id'] != player_id:
                 player_preds = filter_predictions(player_preds, m)
             result.append({'player':player['name'], 'pts':pts, 'oldpts':oldpts, 'predictions':player_preds})
