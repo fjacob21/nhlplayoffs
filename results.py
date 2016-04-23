@@ -22,59 +22,70 @@ def get_matchup(matchups, home, away):
                 return matchup
     return None
 
-def calculate_pts(player_id, preds, matchups):
-    pts=0
-    for prediction in preds:
-        home = prediction['home']
-        away = prediction['away']
-        winner = prediction['winner']
-        games = prediction['games']
-        matchup = get_matchup(matchups, home, away)
-        if 'result' in matchup:
-            result = matchup['result']
-            match_winner = ''
-            if result['home_win'] == 4:
-                match_winner = home
-                winner_rank = int(matchup['home']['divisionRank'])
-            elif result['away_win'] == 4:
-                match_winner = away
-                winner_rank = int(matchup['away']['divisionRank'])
-            match_games = int(result['home_win']) + int(result['away_win'])
-            if match_winner != '':
-                if match_winner == winner:
-                    #print(winner_rank,matchup['home']['team']['name'],matchup['away']['team']['name'])
-                    pts = pts + 10
-                    pts = pts + winner_rank
-                    if match_games == games:
-                        pts = pts + 5
+def calculate_pts_old(player_id , preds, matchups):
+    pts = 0
+    results = calculate_results(player_id , preds, matchups)
+    for result in results:
+        if result['has_winner']:
+            pts = pts + 5
+            pts = pts + int(result['winner']['divisionRank'])
+            if result['has_games']:
+                pts = pts + 10
+
     return pts
 
-def calculate_pts_old(player_id , preds, matchups):
-    pts=0
+def calculate_pts(player_id , preds, matchups):
+    pts = 0
+    results = calculate_results(player_id , preds, matchups)
+    for result in results:
+        if result['has_winner']:
+            pts = pts + 10
+            pts = pts + int(result['winner']['divisionRank'])
+            if result['has_games']:
+                pts = pts + 5
+
+    return pts
+
+def calculate_victories(player_id , preds, matchups):
+    pts = {'winner_count': 0, 'games_count': 0}
+    results = calculate_results(player_id , preds, matchups)
+    for result in results:
+        if result['has_winner']:
+            pts['winner_count'] = pts['winner_count']  + 1
+            if result['has_games']:
+                pts['games_count'] = pts['games_count']  + 1
+    return pts
+
+def calculate_results(player_id , preds, matchups):
+    results = []
     for prediction in preds:
         home = prediction['home']
         away = prediction['away']
         winner = prediction['winner']
         games = prediction['games']
         matchup = get_matchup(matchups, home, away)
+        res = {'prediction': prediction, 'has_winner': False, 'has_games': False, 'winner':{}, 'games':0}
         if 'result' in matchup:
             result = matchup['result']
             match_winner = ''
             if result['home_win'] == 4:
                 match_winner = home
+                match_winner_info = matchup['home']
                 winner_rank = int(matchup['home']['divisionRank'])
             elif result['away_win'] == 4:
                 match_winner = away
+                match_winner_info = matchup['away']
                 winner_rank = int(matchup['away']['divisionRank'])
             match_games = int(result['home_win']) + int(result['away_win'])
             if match_winner != '':
+                res['winner'] = match_winner_info
+                res['games'] = match_games
                 if match_winner == winner:
-                    #print(winner_rank,matchup['home']['team']['name'],matchup['away']['team']['name'])
-                    pts = pts + 5
-                    pts = pts + winner_rank
+                    res['has_winner'] = True
                     if match_games == games:
-                        pts = pts + 10
-    return pts
+                        res['has_games'] = True
+            results.append(res)
+    return results
 
 def filter_predictions(preds, matchups):
     results = []
@@ -95,7 +106,8 @@ def get(player_id, year):
         if len(player_preds) > 0:
             pts = calculate_pts(player['id'], get_player_prediction(player['id'], preds), m)
             oldpts = calculate_pts_old(player['id'], get_player_prediction(player['id'], preds), m)
+            victories = calculate_victories(player['id'], get_player_prediction(player['id'], preds), m)
             if player['id'] != player_id:
                 player_preds = filter_predictions(player_preds, m)
-            result.append({'player':player['name'], 'pts':pts, 'oldpts':oldpts, 'predictions':player_preds})
+            result.append({'player':player['name'], 'pts':pts, 'oldpts':oldpts, 'predictions':player_preds, 'victories':victories})
     return result

@@ -13,3 +13,20 @@ html, body {
 
 .teamLoser {
   opacity: 0.1; }
+
+.matchup-table {
+  line-height: 30px;
+  background-color: #eeeeee;
+  height: 100px;
+  width: 300px;
+  margin: 5px;
+  display: table; }
+
+.matchup-row {
+  display: table-row; }
+
+.matchup-cell {
+  display: table-cell;
+  padding: 5px;
+  vertical-align: middle;
+  text-align: center; }

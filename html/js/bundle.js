@@ -58,10 +58,10 @@
 
 	var App = __webpack_require__(218);
 	var Home = __webpack_require__(476);
-	var About = __webpack_require__(477);
-	var Login = __webpack_require__(478);
-	var AddUser = __webpack_require__(479);
-	var Results = __webpack_require__(480);
+	var About = __webpack_require__(478);
+	var Login = __webpack_require__(479);
+	var AddUser = __webpack_require__(480);
+	var Results = __webpack_require__(481);
 	var Predictions = __webpack_require__(482);
 
 	(0, _reactDom.render)(_react2.default.createElement(
@@ -42979,365 +42979,9 @@
 
 	'use strict';
 
-	var _reactBootstrap = __webpack_require__(219);
-
-	var React = __webpack_require__(1);
-
-
-	var Home = React.createClass({
-	  displayName: 'Home',
-	  render: function render() {
-	    return React.createElement(
-	      'div',
-	      null,
-	      'Welcome to the 2016 NHL playoffs pool 🏒🏒🏒'
-	    );
-	  }
-	});
-
-	module.exports = Home;
-
-/***/ },
-/* 477 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _reactBootstrap = __webpack_require__(219);
-
-	var _reactRouterBootstrap = __webpack_require__(473);
-
-	var _reactRouter = __webpack_require__(159);
-
-	var React = __webpack_require__(1);
-
-
-	var About = React.createClass({
-	    displayName: 'About',
-
-	    render: function render() {
-	        return React.createElement(
-	            'div',
-	            null,
-	            React.createElement(
-	                'div',
-	                { className: 'container theme-showcase', role: 'main', id: 'about' },
-	                React.createElement(
-	                    'div',
-	                    { className: 'well' },
-	                    React.createElement(
-	                        'p',
-	                        null,
-	                        'Matrox NHL Playoffs pool V2.0 ',
-	                        React.createElement('br', null),
-	                        'This is website to manage the unofficial NHL playoffs pool.'
-	                    )
-	                )
-	            ),
-	            React.createElement(
-	                'div',
-	                { className: 'container theme-showcase', role: 'main', id: 'contact' },
-	                React.createElement(
-	                    'table',
-	                    null,
-	                    React.createElement(
-	                        'tr',
-	                        { style: { height: '2px' } },
-	                        React.createElement('th', { style: { backgroundColor: 'red' } }),
-	                        React.createElement('th', { style: { backgroundColor: 'orange' } }),
-	                        React.createElement('th', { style: { backgroundColor: 'green' } }),
-	                        React.createElement('th', { style: { backgroundColor: 'purple' } })
-	                    ),
-	                    React.createElement(
-	                        'tr',
-	                        null,
-	                        React.createElement(
-	                            'th',
-	                            null,
-	                            'Frederic Jacob Ing. '
-	                        ),
-	                        React.createElement(
-	                            'th',
-	                            null,
-	                            '| Hacker 🐎 '
-	                        ),
-	                        React.createElement(
-	                            'th',
-	                            null,
-	                            '| ',
-	                            React.createElement(
-	                                'a',
-	                                { href: 'mailto:fjacob21@hotmail.com' },
-	                                'fjacob21@hotmail.com '
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'th',
-	                            null,
-	                            '|'
-	                        )
-	                    )
-	                ),
-	                React.createElement('br', null),
-	                React.createElement(
-	                    'span',
-	                    { className: 'copyright' },
-	                    '©Frederic Jacob Ing.'
-	                )
-	            )
-	        );
-	    }
-	});
-
-	module.exports = About;
-
-/***/ },
-/* 478 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactDom = __webpack_require__(158);
-
-	var _reactBootstrap = __webpack_require__(219);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Navigation = __webpack_require__(159).Navigation;
-
-
-	var Login = module.exports = _react2.default.createClass({
-	        displayName: 'exports',
-
-	        getInitialState: function getInitialState() {
-	                return { error: false };
-	        },
-	        onCreate: function onCreate(event) {
-	                event.preventDefault();
-	                this.props.history.push('/adduser');
-	        },
-	        onLogin: function onLogin(event) {
-	                event.preventDefault();
-	                var user = this.refs.user.getValue();
-	                var data = { psw: this.refs.psw.getValue() };
-	                $.ajax({
-	                        type: 'POST',
-	                        url: "/nhlplayoffs/api/v2.0/players/" + user + "/login",
-	                        data: JSON.stringify(data),
-	                        success: function (data) {
-	                                sessionStorage.setItem('userId', data.user);
-	                                sessionStorage.setItem('user', user);
-	                                this.props.history.push('/main/home');
-	                        }.bind(this),
-	                        error: function (data) {
-	                                this.setState({ error: true });
-	                        }.bind(this),
-	                        contentType: "application/json",
-	                        dataType: 'json'
-	                });
-	        },
-	        handleKeyPress: function handleKeyPress(event) {
-	                if (event.charCode == 13) {
-	                        this.onLogin(event);
-	                }
-	        },
-	        render: function render() {
-	                var err = "";
-	                if (this.state.error) err = _react2.default.createElement(
-	                        _reactBootstrap.Alert,
-	                        { bsStyle: 'danger' },
-	                        'Invalid user or password'
-	                );
-	                return _react2.default.createElement(
-	                        'div',
-	                        { className: 'static-modal' },
-	                        _react2.default.createElement(
-	                                _reactBootstrap.Modal.Dialog,
-	                                null,
-	                                _react2.default.createElement(
-	                                        _reactBootstrap.Modal.Header,
-	                                        null,
-	                                        _react2.default.createElement(
-	                                                _reactBootstrap.Modal.Title,
-	                                                null,
-	                                                'Login'
-	                                        )
-	                                ),
-	                                _react2.default.createElement(
-	                                        _reactBootstrap.Modal.Body,
-	                                        null,
-	                                        _react2.default.createElement(
-	                                                'form',
-	                                                { onKeyPress: this.handleKeyPress },
-	                                                _react2.default.createElement(_reactBootstrap.Input, { autoFocus: true, type: 'user', ref: 'user', label: 'username', placeholder: 'Enter username' }),
-	                                                _react2.default.createElement(_reactBootstrap.Input, { type: 'password', ref: 'psw', label: 'Password' })
-	                                        )
-	                                ),
-	                                _react2.default.createElement(
-	                                        _reactBootstrap.Modal.Footer,
-	                                        null,
-	                                        err,
-	                                        _react2.default.createElement(
-	                                                _reactBootstrap.Button,
-	                                                { onClick: this.onCreate },
-	                                                'Create'
-	                                        ),
-	                                        _react2.default.createElement(
-	                                                _reactBootstrap.Button,
-	                                                { type: 'submit', onClick: this.onLogin, bsStyle: 'primary' },
-	                                                'Login'
-	                                        )
-	                                )
-	                        )
-	                );
-	        }
-	});
-
-/***/ },
-/* 479 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactDom = __webpack_require__(158);
-
-	var _reactBootstrap = __webpack_require__(219);
-
-	var _reactRouterBootstrap = __webpack_require__(473);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Navigation = __webpack_require__(159).Navigation;
-
-
-	var AddUser = module.exports = _react2.default.createClass({
-	        displayName: 'exports',
-
-	        getInitialState: function getInitialState() {
-	                return { error: false, msg: "" };
-	        },
-	        onCreate: function onCreate(event) {
-	                event.preventDefault();
-	                var user = this.refs.user.getValue();
-	                var email = this.refs.email.getValue();
-	                var psw = this.refs.psw.getValue();
-	                var cpsw = this.refs.cpsw.getValue();
-	                if (user == "") {
-	                        this.state.error = true;
-	                        this.state.msg = "Cannot have empty player name";
-	                        this.setState(this.state);
-	                        return;
-	                }
-	                if (psw != cpsw) {
-	                        this.state.error = true;
-	                        this.state.msg = "Cannot confirm password";
-	                        this.setState(this.state);
-	                        return;
-	                }
-	                var data = { 'name': user,
-	                        'psw': this.refs.psw.getValue(),
-	                        'email': email };
-	                $.ajax({
-	                        type: 'POST',
-	                        url: "/nhlplayoffs/api/v2.0/players",
-	                        data: JSON.stringify(data),
-	                        success: function (data) {
-	                                sessionStorage.setItem('userId', data.user);
-	                                sessionStorage.setItem('user', user);
-	                                //document.login_user={id:data.user,name:user};
-	                                this.props.history.push('/main/home');
-	                        }.bind(this),
-	                        error: function (data) {
-	                                this.setState({ error: true, msg: "Cannot create player! Player already exist" });
-	                        }.bind(this),
-	                        contentType: "application/json",
-	                        dataType: 'json'
-	                });
-	        },
-	        onCancel: function onCancel(event) {
-	                event.preventDefault();
-	                this.props.history.push('/');
-	        },
-	        handleKeyPress: function handleKeyPress(event) {
-	                if (event.charCode == 13) {
-	                        this.onCreate(event);
-	                }
-	        },
-	        render: function render() {
-	                var err = "";
-	                if (this.state.error) err = _react2.default.createElement(
-	                        _reactBootstrap.Alert,
-	                        { bsStyle: 'danger' },
-	                        this.state.msg
-	                );
-	                return _react2.default.createElement(
-	                        'div',
-	                        { className: 'static-modal' },
-	                        _react2.default.createElement(
-	                                _reactBootstrap.Modal.Dialog,
-	                                null,
-	                                _react2.default.createElement(
-	                                        _reactBootstrap.Modal.Header,
-	                                        null,
-	                                        _react2.default.createElement(
-	                                                _reactBootstrap.Modal.Title,
-	                                                null,
-	                                                'Login'
-	                                        )
-	                                ),
-	                                _react2.default.createElement(
-	                                        _reactBootstrap.Modal.Body,
-	                                        null,
-	                                        _react2.default.createElement(
-	                                                'form',
-	                                                { onKeyPress: this.handleKeyPress },
-	                                                _react2.default.createElement(_reactBootstrap.Input, { type: 'user', ref: 'user', label: 'username', placeholder: 'Enter username' }),
-	                                                _react2.default.createElement(_reactBootstrap.Input, { type: 'email', ref: 'email', label: 'Email Address', placeholder: 'Enter email' }),
-	                                                _react2.default.createElement(_reactBootstrap.Input, { type: 'password', ref: 'psw', label: 'Password' }),
-	                                                _react2.default.createElement(_reactBootstrap.Input, { type: 'password', ref: 'cpsw', label: 'confirm password' })
-	                                        )
-	                                ),
-	                                _react2.default.createElement(
-	                                        _reactBootstrap.Modal.Footer,
-	                                        null,
-	                                        err,
-	                                        _react2.default.createElement(
-	                                                _reactBootstrap.Button,
-	                                                { onClick: this.onCancel },
-	                                                'Cancel'
-	                                        ),
-	                                        _react2.default.createElement(
-	                                                _reactBootstrap.Button,
-	                                                { onClick: this.onCreate, bsStyle: 'primary' },
-	                                                'Create'
-	                                        )
-	                                )
-	                        )
-	                );
-	        }
-	});
-
-/***/ },
-/* 480 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _reactBootstrap = __webpack_require__(219);
-
-	var _reactRouterBootstrap = __webpack_require__(473);
-
-	var _reactRouter = __webpack_require__(159);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -43347,194 +42991,123 @@
 
 	var React = __webpack_require__(1);
 
-	var Store = __webpack_require__(481);
+	var Store = __webpack_require__(477);
 
 	var store = new Store();
 
-	var Results = function (_React$Component) {
-	        _inherits(Results, _React$Component);
+	var GameInfo = function (_React$Component) {
+	        _inherits(GameInfo, _React$Component);
 
-	        function Results(props) {
-	                _classCallCheck(this, Results);
+	        function GameInfo(props) {
+	                _classCallCheck(this, GameInfo);
 
-	                var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Results).call(this, props));
-
-	                _this.state = { matchups: {}, results: [], teams: [], winner: null, currentround: 0 };
-	                return _this;
+	                return _possibleConstructorReturn(this, Object.getPrototypeOf(GameInfo).call(this, props));
 	        }
 
-	        _createClass(Results, [{
-	                key: 'componentDidMount',
-	                value: function componentDidMount() {
-	                        if (!sessionStorage.user) this.props.history.push('/');
-	                        store.load(function (data) {
-	                                var state = this.state;
-	                                state.matchups = store.matchups;
-	                                state.teams = store.getTeams();
-	                                state.winner = store.getWinner(sessionStorage.userId);
-	                                state.currentround = store.currentround;
-	                                store.loadResults(sessionStorage.userId, function (data) {
-	                                        var state = this.state;
-	                                        state.results = store.results;
-	                                        this.setState(state);
-	                                }.bind(this), function () {
-	                                        alert('Error!!!');
-	                                }.bind(this));
-	                        }.bind(this), function () {
-	                                alert('Error!!!');
-	                        }.bind(this));
-	                }
-	        }, {
-	                key: 'findPrediction',
-	                value: function findPrediction(predictions, home, away) {
-	                        var _iteratorNormalCompletion = true;
-	                        var _didIteratorError = false;
-	                        var _iteratorError = undefined;
-
-	                        try {
-	                                for (var _iterator = predictions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	                                        var prediction = _step.value;
-
-	                                        if (prediction.home == home && prediction.away == away) return prediction;
-	                                }
-	                        } catch (err) {
-	                                _didIteratorError = true;
-	                                _iteratorError = err;
-	                        } finally {
-	                                try {
-	                                        if (!_iteratorNormalCompletion && _iterator.return) {
-	                                                _iterator.return();
-	                                        }
-	                                } finally {
-	                                        if (_didIteratorError) {
-	                                                throw _iteratorError;
-	                                        }
-	                                }
-	                        }
-
-	                        return null;
-	                }
-	        }, {
+	        _createClass(GameInfo, [{
 	                key: 'render',
 	                value: function render() {
-	                        var rounds = [1, 2, 3, 4];
-	                        var results = this.state.results.map(function (result, i) {
-	                                var t = rounds.map(function (d, i) {
-	                                        if (this.state.matchups[i] != undefined) {
-	                                                var m = this.state.matchups[i].map(function (matchup, j) {
-	                                                        //Get player predictions
-	                                                        var home = matchup.home.team.id;
-	                                                        var away = matchup.away.team.id;
-	                                                        var matchupResult = store.getMatchupResult(matchup);
-	                                                        var predClass = '';
-	                                                        var p = this.findPrediction(result.predictions, home, away);
-	                                                        if (p != null) {
-	                                                                if (matchupResult.winner != 0 && matchupResult.winner != p.winner) {
-	                                                                        if (matchupResult.isFinish) predClass = 'teamLoser';else predClass = 'teamLosing';
-	                                                                }
-	                                                                return React.createElement(
-	                                                                        'th',
-	                                                                        { style: { width: '10px' }, key: j },
-	                                                                        React.createElement(
-	                                                                                'div',
-	                                                                                null,
-	                                                                                React.createElement('img', { className: predClass, src: store.getTeamImgUrl(p.winner), style: { width: '100%', height: 'auto' } })
-	                                                                        ),
-	                                                                        React.createElement(
-	                                                                                'div',
-	                                                                                null,
-	                                                                                p.games
-	                                                                        )
-	                                                                );
-	                                                        } else {
-	                                                                return React.createElement('th', { style: { width: '10px' }, key: j });
-	                                                        }
-	                                                }.bind(this));
-	                                        }
-	                                        return m;
-	                                }.bind(this));
-
-	                                return React.createElement(
-	                                        'tr',
-	                                        { key: i },
-	                                        React.createElement(
-	                                                'th',
-	                                                { style: { width: '50px', verticalAlign: 'middle' } },
-	                                                result.player
-	                                        ),
-	                                        t,
-	                                        React.createElement(
-	                                                'th',
-	                                                { style: { width: '50px', verticalAlign: 'middle' } },
-	                                                result.pts
-	                                        )
-	                                );
-	                        }.bind(this));
-
-	                        var matchsHead = rounds.map(function (d, i) {
-	                                if (this.state.matchups[i] != undefined) {
-	                                        var m = this.state.matchups[i].map(function (matchup, j) {
-	                                                //Get player predictions
-	                                                var home = matchup.home.team.id;
-	                                                var away = matchup.away.team.id;
-	                                                var homeWin = matchup.result.home_win;
-	                                                var awayWin = matchup.result.away_win;
-	                                                var result = store.getMatchupResult(matchup);
-	                                                var homeClass = '';
-	                                                var awayClass = '';
-	                                                if (result.isFinish) {
-	                                                        if (result.winner == home) awayClass = 'teamLoser';else homeClass = 'teamLoser';
-	                                                }
-	                                                return React.createElement(
-	                                                        'th',
-	                                                        { style: { width: '10px' }, key: j },
-	                                                        React.createElement('img', { className: homeClass, src: store.getTeamImgUrl(home), style: { width: '100%', height: 'auto' } }),
-	                                                        homeWin,
-	                                                        React.createElement('img', { className: awayClass, src: store.getTeamImgUrl(away), style: { width: '100%', height: 'auto' } }),
-	                                                        awayWin
-	                                                );
-	                                        }.bind(this));
-	                                }
-	                                return m;
-	                        }.bind(this));
 	                        return React.createElement(
-	                                'table',
-	                                { className: 'table table-hover' },
+	                                'div',
+	                                { className: 'matchup-table' },
 	                                React.createElement(
-	                                        'thead',
-	                                        null,
+	                                        'div',
+	                                        { className: 'matchup-row' },
 	                                        React.createElement(
-	                                                'tr',
-	                                                null,
-	                                                React.createElement(
-	                                                        'th',
-	                                                        null,
-	                                                        'Player'
-	                                                ),
-	                                                matchsHead,
-	                                                React.createElement(
-	                                                        'th',
-	                                                        null,
-	                                                        'Pts'
-	                                                )
+	                                                'div',
+	                                                { className: 'matchup-cell' },
+	                                                React.createElement('img', { src: store.getTeamImgUrl(this.props.matchup.home.team.id), style: { width: '100%', height: 'auto' } })
+	                                        ),
+	                                        React.createElement(
+	                                                'div',
+	                                                { className: 'matchup-cell' },
+	                                                'VS'
+	                                        ),
+	                                        React.createElement(
+	                                                'div',
+	                                                { className: 'matchup-cell' },
+	                                                React.createElement('img', { src: store.getTeamImgUrl(this.props.matchup.away.team.id), style: { width: '100%', height: 'auto' } })
 	                                        )
 	                                ),
 	                                React.createElement(
-	                                        'tbody',
-	                                        { className: 'list-group' },
-	                                        results
+	                                        'div',
+	                                        { className: 'matchup-row' },
+	                                        React.createElement(
+	                                                'div',
+	                                                null,
+	                                                'Last game'
+	                                        )
 	                                )
 	                        );
 	                }
 	        }]);
 
-	        return Results;
+	        return GameInfo;
 	}(React.Component);
 
-	module.exports = Results;
+	var Home = function (_React$Component2) {
+	        _inherits(Home, _React$Component2);
+
+	        function Home(props) {
+	                _classCallCheck(this, Home);
+
+	                var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Home).call(this, props));
+
+	                _this2.state = { matchups: {}, currentround: 0 };
+	                return _this2;
+	        }
+
+	        _createClass(Home, [{
+	                key: 'componentDidMount',
+	                value: function componentDidMount() {
+	                        if (!sessionStorage.user) this.props.history.push('/');
+	                        // store.load(function(data) {
+	                        //         var state = this.state;
+	                        //         state.matchups = store.matchups;
+	                        //         state.currentround = store.currentround;
+	                        //         store.loadResults(sessionStorage.userId, function(data) {
+	                        //                 var state = this.state;
+	                        //                 state.results = store.results;
+	                        //                 this.setState(state);
+	                        //         }.bind(this),function() {
+	                        //                 alert('Error!!!');
+	                        //         }.bind(this));
+	                        // }.bind(this),function() {
+	                        //         alert('Error!!!');
+	                        // }.bind(this));
+	                }
+	        }, {
+	                key: 'render',
+	                value: function render() {
+	                        // var rounds=[1,2,3,4];
+	                        // var matchups = rounds.map(function(d,i){
+	                        //         if(this.state.matchups[i] != undefined){
+	                        //                 var m = this.state.matchups[i].map(function(matchup, j){
+	                        //                         return (<GameInfo matchup={matchup} />);
+	                        //                 }.bind(this));
+	                        //         }
+	                        //         return m;
+	                        // }.bind(this));
+
+	                        return React.createElement(
+	                                'div',
+	                                null,
+	                                React.createElement(
+	                                        'div',
+	                                        null,
+	                                        'Welcome to the 2016 NHL playoffs pool 🏒🏒🏒'
+	                                )
+	                        );
+	                }
+	        }]);
+
+	        return Home;
+	}(React.Component);
+
+	module.exports = Home;
 
 /***/ },
-/* 481 */
+/* 477 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -43893,6 +43466,552 @@
 	module.exports = Store;
 
 /***/ },
+/* 478 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _reactBootstrap = __webpack_require__(219);
+
+	var _reactRouterBootstrap = __webpack_require__(473);
+
+	var _reactRouter = __webpack_require__(159);
+
+	var React = __webpack_require__(1);
+
+
+	var About = React.createClass({
+	    displayName: 'About',
+
+	    render: function render() {
+	        return React.createElement(
+	            'div',
+	            null,
+	            React.createElement(
+	                'div',
+	                { className: 'container theme-showcase', role: 'main', id: 'about' },
+	                React.createElement(
+	                    'div',
+	                    { className: 'well' },
+	                    React.createElement(
+	                        'p',
+	                        null,
+	                        'Matrox NHL Playoffs pool V2.0 ',
+	                        React.createElement('br', null),
+	                        'This is website to manage the unofficial NHL playoffs pool.'
+	                    )
+	                )
+	            ),
+	            React.createElement(
+	                'div',
+	                { className: 'container theme-showcase', role: 'main', id: 'contact' },
+	                React.createElement(
+	                    'table',
+	                    null,
+	                    React.createElement(
+	                        'tr',
+	                        { style: { height: '2px' } },
+	                        React.createElement('th', { style: { backgroundColor: 'red' } }),
+	                        React.createElement('th', { style: { backgroundColor: 'orange' } }),
+	                        React.createElement('th', { style: { backgroundColor: 'green' } }),
+	                        React.createElement('th', { style: { backgroundColor: 'purple' } })
+	                    ),
+	                    React.createElement(
+	                        'tr',
+	                        null,
+	                        React.createElement(
+	                            'th',
+	                            null,
+	                            'Frederic Jacob Ing. '
+	                        ),
+	                        React.createElement(
+	                            'th',
+	                            null,
+	                            '| Hacker 🐎 '
+	                        ),
+	                        React.createElement(
+	                            'th',
+	                            null,
+	                            '| ',
+	                            React.createElement(
+	                                'a',
+	                                { href: 'mailto:fjacob21@hotmail.com' },
+	                                'fjacob21@hotmail.com '
+	                            )
+	                        ),
+	                        React.createElement(
+	                            'th',
+	                            null,
+	                            '|'
+	                        )
+	                    )
+	                ),
+	                React.createElement('br', null),
+	                React.createElement(
+	                    'span',
+	                    { className: 'copyright' },
+	                    '©Frederic Jacob Ing.'
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = About;
+
+/***/ },
+/* 479 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(158);
+
+	var _reactBootstrap = __webpack_require__(219);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Navigation = __webpack_require__(159).Navigation;
+
+
+	var Login = module.exports = _react2.default.createClass({
+	        displayName: 'exports',
+
+	        getInitialState: function getInitialState() {
+	                return { error: false };
+	        },
+	        onCreate: function onCreate(event) {
+	                event.preventDefault();
+	                this.props.history.push('/adduser');
+	        },
+	        onLogin: function onLogin(event) {
+	                event.preventDefault();
+	                var user = this.refs.user.getValue();
+	                var data = { psw: this.refs.psw.getValue() };
+	                $.ajax({
+	                        type: 'POST',
+	                        url: "/nhlplayoffs/api/v2.0/players/" + user + "/login",
+	                        data: JSON.stringify(data),
+	                        success: function (data) {
+	                                sessionStorage.setItem('userId', data.user);
+	                                sessionStorage.setItem('user', user);
+	                                this.props.history.push('/main/home');
+	                        }.bind(this),
+	                        error: function (data) {
+	                                this.setState({ error: true });
+	                        }.bind(this),
+	                        contentType: "application/json",
+	                        dataType: 'json'
+	                });
+	        },
+	        handleKeyPress: function handleKeyPress(event) {
+	                if (event.charCode == 13) {
+	                        this.onLogin(event);
+	                }
+	        },
+	        render: function render() {
+	                var err = "";
+	                if (this.state.error) err = _react2.default.createElement(
+	                        _reactBootstrap.Alert,
+	                        { bsStyle: 'danger' },
+	                        'Invalid user or password'
+	                );
+	                return _react2.default.createElement(
+	                        'div',
+	                        { className: 'static-modal' },
+	                        _react2.default.createElement(
+	                                _reactBootstrap.Modal.Dialog,
+	                                null,
+	                                _react2.default.createElement(
+	                                        _reactBootstrap.Modal.Header,
+	                                        null,
+	                                        _react2.default.createElement(
+	                                                _reactBootstrap.Modal.Title,
+	                                                null,
+	                                                'Login'
+	                                        )
+	                                ),
+	                                _react2.default.createElement(
+	                                        _reactBootstrap.Modal.Body,
+	                                        null,
+	                                        _react2.default.createElement(
+	                                                'form',
+	                                                { onKeyPress: this.handleKeyPress },
+	                                                _react2.default.createElement(_reactBootstrap.Input, { autoFocus: true, type: 'user', ref: 'user', label: 'username', placeholder: 'Enter username' }),
+	                                                _react2.default.createElement(_reactBootstrap.Input, { type: 'password', ref: 'psw', label: 'Password' })
+	                                        )
+	                                ),
+	                                _react2.default.createElement(
+	                                        _reactBootstrap.Modal.Footer,
+	                                        null,
+	                                        err,
+	                                        _react2.default.createElement(
+	                                                _reactBootstrap.Button,
+	                                                { onClick: this.onCreate },
+	                                                'Create'
+	                                        ),
+	                                        _react2.default.createElement(
+	                                                _reactBootstrap.Button,
+	                                                { type: 'submit', onClick: this.onLogin, bsStyle: 'primary' },
+	                                                'Login'
+	                                        )
+	                                )
+	                        )
+	                );
+	        }
+	});
+
+/***/ },
+/* 480 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(158);
+
+	var _reactBootstrap = __webpack_require__(219);
+
+	var _reactRouterBootstrap = __webpack_require__(473);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Navigation = __webpack_require__(159).Navigation;
+
+
+	var AddUser = module.exports = _react2.default.createClass({
+	        displayName: 'exports',
+
+	        getInitialState: function getInitialState() {
+	                return { error: false, msg: "" };
+	        },
+	        onCreate: function onCreate(event) {
+	                event.preventDefault();
+	                var user = this.refs.user.getValue();
+	                var email = this.refs.email.getValue();
+	                var psw = this.refs.psw.getValue();
+	                var cpsw = this.refs.cpsw.getValue();
+	                if (user == "") {
+	                        this.state.error = true;
+	                        this.state.msg = "Cannot have empty player name";
+	                        this.setState(this.state);
+	                        return;
+	                }
+	                if (psw != cpsw) {
+	                        this.state.error = true;
+	                        this.state.msg = "Cannot confirm password";
+	                        this.setState(this.state);
+	                        return;
+	                }
+	                var data = { 'name': user,
+	                        'psw': this.refs.psw.getValue(),
+	                        'email': email };
+	                $.ajax({
+	                        type: 'POST',
+	                        url: "/nhlplayoffs/api/v2.0/players",
+	                        data: JSON.stringify(data),
+	                        success: function (data) {
+	                                sessionStorage.setItem('userId', data.user);
+	                                sessionStorage.setItem('user', user);
+	                                //document.login_user={id:data.user,name:user};
+	                                this.props.history.push('/main/home');
+	                        }.bind(this),
+	                        error: function (data) {
+	                                this.setState({ error: true, msg: "Cannot create player! Player already exist" });
+	                        }.bind(this),
+	                        contentType: "application/json",
+	                        dataType: 'json'
+	                });
+	        },
+	        onCancel: function onCancel(event) {
+	                event.preventDefault();
+	                this.props.history.push('/');
+	        },
+	        handleKeyPress: function handleKeyPress(event) {
+	                if (event.charCode == 13) {
+	                        this.onCreate(event);
+	                }
+	        },
+	        render: function render() {
+	                var err = "";
+	                if (this.state.error) err = _react2.default.createElement(
+	                        _reactBootstrap.Alert,
+	                        { bsStyle: 'danger' },
+	                        this.state.msg
+	                );
+	                return _react2.default.createElement(
+	                        'div',
+	                        { className: 'static-modal' },
+	                        _react2.default.createElement(
+	                                _reactBootstrap.Modal.Dialog,
+	                                null,
+	                                _react2.default.createElement(
+	                                        _reactBootstrap.Modal.Header,
+	                                        null,
+	                                        _react2.default.createElement(
+	                                                _reactBootstrap.Modal.Title,
+	                                                null,
+	                                                'Login'
+	                                        )
+	                                ),
+	                                _react2.default.createElement(
+	                                        _reactBootstrap.Modal.Body,
+	                                        null,
+	                                        _react2.default.createElement(
+	                                                'form',
+	                                                { onKeyPress: this.handleKeyPress },
+	                                                _react2.default.createElement(_reactBootstrap.Input, { type: 'user', ref: 'user', label: 'username', placeholder: 'Enter username' }),
+	                                                _react2.default.createElement(_reactBootstrap.Input, { type: 'email', ref: 'email', label: 'Email Address', placeholder: 'Enter email' }),
+	                                                _react2.default.createElement(_reactBootstrap.Input, { type: 'password', ref: 'psw', label: 'Password' }),
+	                                                _react2.default.createElement(_reactBootstrap.Input, { type: 'password', ref: 'cpsw', label: 'confirm password' })
+	                                        )
+	                                ),
+	                                _react2.default.createElement(
+	                                        _reactBootstrap.Modal.Footer,
+	                                        null,
+	                                        err,
+	                                        _react2.default.createElement(
+	                                                _reactBootstrap.Button,
+	                                                { onClick: this.onCancel },
+	                                                'Cancel'
+	                                        ),
+	                                        _react2.default.createElement(
+	                                                _reactBootstrap.Button,
+	                                                { onClick: this.onCreate, bsStyle: 'primary' },
+	                                                'Create'
+	                                        )
+	                                )
+	                        )
+	                );
+	        }
+	});
+
+/***/ },
+/* 481 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactBootstrap = __webpack_require__(219);
+
+	var _reactRouterBootstrap = __webpack_require__(473);
+
+	var _reactRouter = __webpack_require__(159);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var React = __webpack_require__(1);
+
+	var Store = __webpack_require__(477);
+
+	var store = new Store();
+
+	var Results = function (_React$Component) {
+	        _inherits(Results, _React$Component);
+
+	        function Results(props) {
+	                _classCallCheck(this, Results);
+
+	                var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Results).call(this, props));
+
+	                _this.state = { matchups: {}, results: [], teams: [], winner: null, currentround: 0 };
+	                return _this;
+	        }
+
+	        _createClass(Results, [{
+	                key: 'componentDidMount',
+	                value: function componentDidMount() {
+	                        if (!sessionStorage.user) this.props.history.push('/');
+	                        store.load(function (data) {
+	                                var state = this.state;
+	                                state.matchups = store.matchups;
+	                                state.teams = store.getTeams();
+	                                state.winner = store.getWinner(sessionStorage.userId);
+	                                state.currentround = store.currentround;
+	                                store.loadResults(sessionStorage.userId, function (data) {
+	                                        var state = this.state;
+	                                        state.results = store.results;
+	                                        state.results.sort(this.compareResult);
+	                                        this.setState(state);
+	                                }.bind(this), function () {
+	                                        alert('Error!!!');
+	                                }.bind(this));
+	                        }.bind(this), function () {
+	                                alert('Error!!!');
+	                        }.bind(this));
+	                }
+	        }, {
+	                key: 'compareResult',
+	                value: function compareResult(a, b) {
+	                        if (a.pts > b.pts) return -1;else if (a.pts < b.pts) return 1;else {
+	                                if (a.victories.games_count > b.victories.games_count) return -1;else if (a.victories.games_count < b.victories.games_count) return 1;else {
+	                                        if (a.player.toLowerCase() > b.player.toLowerCase()) return 1;else return -1;
+	                                }
+	                        }
+	                }
+	        }, {
+	                key: 'findPrediction',
+	                value: function findPrediction(predictions, home, away) {
+	                        var _iteratorNormalCompletion = true;
+	                        var _didIteratorError = false;
+	                        var _iteratorError = undefined;
+
+	                        try {
+	                                for (var _iterator = predictions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                                        var prediction = _step.value;
+
+	                                        if (prediction.home == home && prediction.away == away) return prediction;
+	                                }
+	                        } catch (err) {
+	                                _didIteratorError = true;
+	                                _iteratorError = err;
+	                        } finally {
+	                                try {
+	                                        if (!_iteratorNormalCompletion && _iterator.return) {
+	                                                _iterator.return();
+	                                        }
+	                                } finally {
+	                                        if (_didIteratorError) {
+	                                                throw _iteratorError;
+	                                        }
+	                                }
+	                        }
+
+	                        return null;
+	                }
+	        }, {
+	                key: 'render',
+	                value: function render() {
+	                        var rounds = [1, 2, 3, 4];
+	                        var results = this.state.results.map(function (result, i) {
+	                                var t = rounds.map(function (d, i) {
+	                                        if (this.state.matchups[i] != undefined) {
+	                                                var m = this.state.matchups[i].map(function (matchup, j) {
+	                                                        //Get player predictions
+	                                                        var home = matchup.home.team.id;
+	                                                        var away = matchup.away.team.id;
+	                                                        var matchupResult = store.getMatchupResult(matchup);
+	                                                        var predClass = '';
+	                                                        var p = this.findPrediction(result.predictions, home, away);
+	                                                        if (p != null) {
+	                                                                if (matchupResult.winner != 0 && matchupResult.winner != p.winner) {
+	                                                                        if (matchupResult.isFinish) predClass = 'teamLoser';else predClass = 'teamLosing';
+	                                                                }
+	                                                                return React.createElement(
+	                                                                        'th',
+	                                                                        { style: { width: '10px' }, key: j },
+	                                                                        React.createElement(
+	                                                                                'div',
+	                                                                                null,
+	                                                                                React.createElement('img', { className: predClass, src: store.getTeamImgUrl(p.winner), style: { width: '100%', height: 'auto' } })
+	                                                                        ),
+	                                                                        React.createElement(
+	                                                                                'div',
+	                                                                                null,
+	                                                                                p.games
+	                                                                        )
+	                                                                );
+	                                                        } else {
+	                                                                return React.createElement('th', { style: { width: '10px' }, key: j });
+	                                                        }
+	                                                }.bind(this));
+	                                        }
+	                                        return m;
+	                                }.bind(this));
+
+	                                return React.createElement(
+	                                        'tr',
+	                                        { key: i },
+	                                        React.createElement(
+	                                                'th',
+	                                                { style: { width: '50px', verticalAlign: 'middle' } },
+	                                                result.player
+	                                        ),
+	                                        t,
+	                                        React.createElement(
+	                                                'th',
+	                                                { style: { width: '50px', verticalAlign: 'middle' } },
+	                                                result.pts
+	                                        )
+	                                );
+	                        }.bind(this));
+
+	                        var matchsHead = rounds.map(function (d, i) {
+	                                if (this.state.matchups[i] != undefined) {
+	                                        var m = this.state.matchups[i].map(function (matchup, j) {
+	                                                //Get player predictions
+	                                                var home = matchup.home.team.id;
+	                                                var away = matchup.away.team.id;
+	                                                var homeWin = matchup.result.home_win;
+	                                                var awayWin = matchup.result.away_win;
+	                                                var result = store.getMatchupResult(matchup);
+	                                                var homeClass = '';
+	                                                var awayClass = '';
+	                                                if (result.isFinish) {
+	                                                        if (result.winner == home) awayClass = 'teamLoser';else homeClass = 'teamLoser';
+	                                                }
+	                                                return React.createElement(
+	                                                        'th',
+	                                                        { style: { width: '10px' }, key: j },
+	                                                        React.createElement('img', { className: homeClass, src: store.getTeamImgUrl(home), style: { width: '100%', height: 'auto' } }),
+	                                                        homeWin,
+	                                                        React.createElement('img', { className: awayClass, src: store.getTeamImgUrl(away), style: { width: '100%', height: 'auto' } }),
+	                                                        awayWin
+	                                                );
+	                                        }.bind(this));
+	                                }
+	                                return m;
+	                        }.bind(this));
+	                        return React.createElement(
+	                                'table',
+	                                { className: 'table table-hover' },
+	                                React.createElement(
+	                                        'thead',
+	                                        null,
+	                                        React.createElement(
+	                                                'tr',
+	                                                null,
+	                                                React.createElement(
+	                                                        'th',
+	                                                        null,
+	                                                        'Player'
+	                                                ),
+	                                                matchsHead,
+	                                                React.createElement(
+	                                                        'th',
+	                                                        null,
+	                                                        'Pts'
+	                                                )
+	                                        )
+	                                ),
+	                                React.createElement(
+	                                        'tbody',
+	                                        { className: 'list-group' },
+	                                        results
+	                                )
+	                        );
+	                }
+	        }]);
+
+	        return Results;
+	}(React.Component);
+
+	module.exports = Results;
+
+/***/ },
 /* 482 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -43906,7 +44025,7 @@
 
 	var React = __webpack_require__(1);
 
-	var Store = __webpack_require__(481);
+	var Store = __webpack_require__(477);
 
 	var store = new Store();
 

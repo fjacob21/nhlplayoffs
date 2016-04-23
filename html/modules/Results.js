@@ -24,6 +24,7 @@ class Results extends React.Component{
                         store.loadResults(sessionStorage.userId, function(data) {
                                 var state = this.state;
                                 state.results = store.results;
+                                state.results.sort(this.compareResult);
                                 this.setState(state);
                         }.bind(this),function() {
                                 alert('Error!!!');
@@ -31,9 +32,27 @@ class Results extends React.Component{
                 }.bind(this),function() {
                         alert('Error!!!');
                 }.bind(this));
-
-
         }
+
+        compareResult(a,b) {
+                if(a.pts > b.pts)
+                        return -1;
+                else if(a.pts < b.pts)
+                        return 1;
+                else {
+                        if(a.victories.games_count > b.victories.games_count)
+                                return -1;
+                        else if(a.victories.games_count < b.victories.games_count)
+                                return 1;
+                        else {
+                                if(a.player.toLowerCase() > b.player.toLowerCase())
+                                        return 1;
+                                else
+                                        return -1;
+                        }
+                }
+        }
+
         findPrediction(predictions, home, away){
                 for (var prediction of predictions){
                         if (prediction.home == home && prediction.away == away)
