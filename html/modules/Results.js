@@ -94,8 +94,11 @@ class Results extends React.Component{
                                 }
                                 return m;
                         }.bind(this));
-
-                        return (<tr key={i}><th style={{width: '50px',verticalAlign: 'middle'}}>{result.player}</th>{t}<th style={{width: '50px',verticalAlign: 'middle'}}>{result.pts}</th></tr>);
+                        var winnerClass = '';
+                        var winner = <div></div>;
+                        if(result.winner != 0)
+                                winner = <img className={winnerClass} src={store.getTeamImgUrl(result.winner)} style={{width: '50px', height: 'auto'}} />
+                        return (<tr key={i}><th style={{width: '50px',verticalAlign: 'middle'}}>{result.player}</th>{t}<th style={{width: '50px',verticalAlign: 'middle'}} >{winner}</th><th style={{width: '50px',verticalAlign: 'middle'}}>{result.pts}</th></tr>);
                 }.bind(this));
 
                 var matchsHead = rounds.map(function(d,i){
@@ -104,8 +107,13 @@ class Results extends React.Component{
                                         //Get player predictions
                                         var home = matchup.home.team.id;
                                         var away = matchup.away.team.id;
-                                        var homeWin = matchup.result.home_win;
-                                        var awayWin = matchup.result.away_win;
+                                        var homeWin = 0;
+                                        var awayWin = 0;
+                                        if(matchup.result != undefined){
+                                                var homeWin = matchup.result.home_win;
+                                                var awayWin = matchup.result.away_win;
+                                        }
+
                                         var result = store.getMatchupResult(matchup);
                                         var homeClass = '';
                                         var awayClass = '';
@@ -130,6 +138,7 @@ class Results extends React.Component{
                                     <tr>
                                         <th>Player</th>
                                         {matchsHead}
+                                        <th style={{width: '10px'}}>Winner</th>
                                         <th>Pts</th>
                                     </tr>
                                 </thead>

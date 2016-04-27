@@ -107,7 +107,12 @@ def get(player_id, year):
             pts = calculate_pts(player['id'], get_player_prediction(player['id'], preds), m)
             oldpts = calculate_pts_old(player['id'], get_player_prediction(player['id'], preds), m)
             victories = calculate_victories(player['id'], get_player_prediction(player['id'], preds), m)
+            winner = predictions.get_winner(player['id'], year)
+            if winner is not None:
+                winner = winner['winner']
+            else:
+                winner = 0
             if player['id'] != player_id:
                 player_preds = filter_predictions(player_preds, m)
-            result.append({'player':player['name'], 'pts':pts, 'oldpts':oldpts, 'predictions':player_preds, 'victories':victories})
+            result.append({'player':player['name'], 'pts':pts, 'oldpts':oldpts, 'winner':winner, 'predictions':player_preds, 'victories':victories})
     return result

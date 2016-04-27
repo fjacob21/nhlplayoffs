@@ -43931,7 +43931,9 @@
 	                                        }
 	                                        return m;
 	                                }.bind(this));
-
+	                                var winnerClass = '';
+	                                var winner = React.createElement('div', null);
+	                                if (result.winner != 0) winner = React.createElement('img', { className: winnerClass, src: store.getTeamImgUrl(result.winner), style: { width: '50px', height: 'auto' } });
 	                                return React.createElement(
 	                                        'tr',
 	                                        { key: i },
@@ -43941,6 +43943,11 @@
 	                                                result.player
 	                                        ),
 	                                        t,
+	                                        React.createElement(
+	                                                'th',
+	                                                { style: { width: '50px', verticalAlign: 'middle' } },
+	                                                winner
+	                                        ),
 	                                        React.createElement(
 	                                                'th',
 	                                                { style: { width: '50px', verticalAlign: 'middle' } },
@@ -43955,8 +43962,13 @@
 	                                                //Get player predictions
 	                                                var home = matchup.home.team.id;
 	                                                var away = matchup.away.team.id;
-	                                                var homeWin = matchup.result.home_win;
-	                                                var awayWin = matchup.result.away_win;
+	                                                var homeWin = 0;
+	                                                var awayWin = 0;
+	                                                if (matchup.result != undefined) {
+	                                                        var homeWin = matchup.result.home_win;
+	                                                        var awayWin = matchup.result.away_win;
+	                                                }
+
 	                                                var result = store.getMatchupResult(matchup);
 	                                                var homeClass = '';
 	                                                var awayClass = '';
@@ -43990,6 +44002,11 @@
 	                                                        'Player'
 	                                                ),
 	                                                matchsHead,
+	                                                React.createElement(
+	                                                        'th',
+	                                                        { style: { width: '10px' } },
+	                                                        'Winner'
+	                                                ),
 	                                                React.createElement(
 	                                                        'th',
 	                                                        null,
