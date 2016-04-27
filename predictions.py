@@ -20,8 +20,8 @@ def store_db(year, predictions):
 def add_winner(player, year, winner):
     predictions = restore_db(year)
     #check if round 1 is started
-    if matchups.is_round_started(year, 1):
-        return False
+    #if matchups.is_round_started(year, 1):
+    #    return False
 
     if not players.is_valid_player(player):
         return False

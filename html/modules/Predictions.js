@@ -34,9 +34,9 @@ var Predictions = React.createClass({
           return {predictions: [], teams:[], winner:null, currentround:0};
         },
         winnerChange: function(event) {
-                if (store.isRountStarted(1))
-                        return;
-                alert('should not go there');
+                //if (store.isRountStarted(1))
+                  //      return;
+                //alert('should not go there');
                 this.state.winner = event.target.value;
 
                 store.setWinner(sessionStorage.userId, this.state.winner, function(data){this.setState(this.state);}.bind(this), function(){alert('Error!!!');}.bind(this));
