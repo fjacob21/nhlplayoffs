@@ -44075,9 +44075,8 @@
 	                return { predictions: [], teams: [], winner: null, currentround: 0 };
 	        },
 	        winnerChange: function winnerChange(event) {
-	                //if (store.isRountStarted(1))
-	                //      return;
-	                //alert('should not go there');
+	                if (store.isRountStarted(1)) return;
+	                alert('should not go there');
 	                this.state.winner = event.target.value;
 
 	                store.setWinner(sessionStorage.userId, this.state.winner, function (data) {
