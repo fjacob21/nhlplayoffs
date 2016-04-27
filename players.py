@@ -69,8 +69,8 @@ def change_psw(player, old, new):
     if not players.has_key(hname):
         return False
 
-    if not pswcheck(player, old):
-        return False
+    #if not pswcheck(player, old):
+    #    return False
     hpsw = pswhash(player, new)
     players[hname]['psw'] = hpsw
     #Store in DB

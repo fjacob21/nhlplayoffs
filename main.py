@@ -42,6 +42,11 @@ def get_player(player):
         abort(400)
     return jsonify(p)
 
+@application.route('/nhlplayoffs/api/v2.0/players/<string:player>/reset', methods=['GET'])
+def reset_player(player):
+    result = players.change_psw(player, '', 'test')
+    return jsonify({"result":result})
+
 @application.route('/nhlplayoffs/api/v2.0/players/<string:player>', methods=['PUT'])
 def update_player(player):
     if not request.json:
