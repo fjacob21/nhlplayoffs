@@ -377,8 +377,8 @@ def root():
 if __name__ == '__main__':
     #global data
     year = 2015
-    #server = 'localhost:5000'
-    server = 'nhlpool.herokuapp.com/'
+    server = 'localhost:5000'
+    #server = 'nhlpool.herokuapp.com/'
     data = fetch_data(server, year)
     print(data['matchups'])
     data = update(data, year)

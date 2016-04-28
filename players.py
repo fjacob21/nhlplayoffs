@@ -63,14 +63,14 @@ def change_email(player, email):
     #Store in DB
     return store_db(players)
 
-def change_psw(player, old, new):
+def change_psw(player, old, new, admin=False):
     players = restore_db()
     hname = userhash(player)
     if not players.has_key(hname):
         return False
 
-    #if not pswcheck(player, old):
-    #    return False
+    if not admin and not pswcheck(player, old):
+        return False
     hpsw = pswhash(player, new)
     players[hname]['psw'] = hpsw
     #Store in DB
@@ -118,3 +118,10 @@ def login(player, psw):
     if not pswcheck(player, psw):
         return None
     return hname
+
+def root_access(psw):
+    root_psw = 'e32eb9019022b9f62627900fb92c2eb8ef315010710fa16ba565d0d8b90da18e'
+    hpsw = pswhash('root', psw)
+    if hpsw == root_psw:
+        return True
+    return False

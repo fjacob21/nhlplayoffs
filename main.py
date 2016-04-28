@@ -42,9 +42,18 @@ def get_player(player):
         abort(400)
     return jsonify(p)
 
-@application.route('/nhlplayoffs/api/v2.0/players/<string:player>/reset', methods=['GET'])
+@application.route('/nhlplayoffs/api/v2.0/players/<string:player>/reset', methods=['POST'])
 def reset_player(player):
-    result = players.change_psw(player, '', 'test')
+    if not request.json:
+        print('not json')
+        abort(400)
+
+    if ("root_psw" not in request.json or
+        "new_psw" not in request.json):
+        abort(400)
+    root_psw = request.json["root_psw"]
+    new_psw = request.json["new_psw"]
+    result = players.change_psw(player, '', new_psw, players.root_access(root_psw))
     return jsonify({"result":result})
 
 @application.route('/nhlplayoffs/api/v2.0/players/<string:player>', methods=['PUT'])
