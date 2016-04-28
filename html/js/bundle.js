@@ -44087,7 +44087,8 @@
 	        },
 	        predictionChange: function predictionChange(event) {
 	                var prediction = this.state.predictions[event.target.id];
-	                if (store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round))) return;
+	                //if(store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round)))
+	                //         return;
 	                this.state.predictions[event.target.id].winner = Number(event.target.value);
 	                this.setState(this.state);
 	                store.setPrediction(sessionStorage.userId, prediction.round, prediction.home, prediction.away, prediction.winner, prediction.games, function (data) {}.bind(this), function () {
@@ -44096,7 +44097,8 @@
 	        },
 	        gamesChange: function gamesChange(event) {
 	                var prediction = this.state.predictions[event.target.id];
-	                if (store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round))) return;
+	                //if(store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round)))
+	                //         return;
 	                this.state.predictions[event.target.id].games = Number(event.target.value);
 	                this.setState(this.state);
 	                store.setPrediction(sessionStorage.userId, prediction.round, prediction.home, prediction.away, prediction.winner, prediction.games, function (data) {}.bind(this), function () {
