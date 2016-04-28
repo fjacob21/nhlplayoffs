@@ -1,6 +1,7 @@
 #!/usr/bin/python
 from flask import Flask, jsonify, abort, request, send_from_directory, redirect, url_for
 import json
+import sys
 import requests
 
 app = Flask(__name__, static_url_path='')
@@ -377,8 +378,12 @@ def root():
 if __name__ == '__main__':
     #global data
     year = 2015
-    server = 'localhost:5000'
-    #server = 'nhlpool.herokuapp.com/'
+    if len(sys.argv) > 1 and sys.argv[1] == 'debug':
+        print('Using debug server')
+        server = 'localhost:5000'
+    else:
+        print('Using production server')
+        server = 'nhlpool.herokuapp.com/'
     data = fetch_data(server, year)
     print(data['matchups'])
     data = update(data, year)
