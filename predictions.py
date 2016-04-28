@@ -69,8 +69,8 @@ def add(player, year, round, home, away, winner, games):
         return False
 
     ####################################################
-    #if matchups.is_matchup_started(matchup):
-    #    return False
+    if matchups.is_matchup_started(matchup):
+        return False
 
     prediction_index = get_prediction_index(player, year, round, home, away)
     if prediction_index != -1:
@@ -93,8 +93,8 @@ def update(player, year, round, home, away, winner, games):
     if matchup is None:
         return False
 
-    #if matchups.is_matchup_started(matchup):
-    #    return False
+    if matchups.is_matchup_started(matchup):
+        return False
 
     prediction_index = get_prediction_index(player, year, round, home, away)
     if prediction_index == -1:
