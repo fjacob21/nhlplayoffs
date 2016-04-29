@@ -44,6 +44,7 @@ if __name__ == '__main__':
     if args.filename == '<auto>':
         print('Using auto filename')
         n=datetime.datetime.now()
-        args.filename = 'backup-' +server + '-' + n.isoformat() + '.backup'
+        filename = 'backup-' +server + '-' + n.isoformat() + '.backup'
+        filename=filename.replace('/','')
 
-    backup(server, args.filename, args.root_psw)
+    backup(server, filename, args.root_psw)
