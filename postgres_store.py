@@ -138,3 +138,49 @@ class postgres_store(object):
             con.close()
             return data
         return None
+
+    def backup(self):
+        req_tables = "SELECT table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema = 'public' ORDER BY table_schema,table_name;"
+        con = self.connect()
+        data={}
+        if con :
+            try:
+                cur = con.cursor()
+                cur.execute(req_tables)
+                records = cur.fetchall()
+                for record in records:
+                    table = record[0]
+                    data[table] = {}
+                    data_req = 'SELECT * FROM {table};'.format(table=table)
+                    cur.execute(data_req)
+                    rows = cur.fetchall()
+                    for row in rows:
+                        data[table][row[0]] = json.loads(row[1])
+            except Exception as e:
+                pass
+            con.close()
+        return data
+
+    def restore_backup(self, data):
+        req_tables = "SELECT table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema = 'public' ORDER BY table_schema,table_name;"
+        con = self.connect()
+        if con :
+            try:
+                cur = con.cursor()
+                cur.execute(req_tables)
+                records = cur.fetchall()
+                for record in records:
+                    table = record[0]
+                    drop_req = 'DROP TABLE {table};'.format(table=table)
+                    cur.execute(drop_req)
+                con.commit()
+
+                for table in list(data.items()):
+                    table_name = table[0]
+                    for row in list(table[1].items()):
+                        id = row[0]
+                        self.store(table_name, id, row[1])
+            except Exception as e:
+                print('restore_backup', e)
+
+            con.close()
