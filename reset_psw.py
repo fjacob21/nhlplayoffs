@@ -13,7 +13,7 @@ def reset_psw(server, player, new_psw, root_psw):
     if r.json()['result']:
         print('Reset successful')
     else:
-        print('Invalid parameter');
+        print('Invalid parameter')
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:

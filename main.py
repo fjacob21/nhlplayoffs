@@ -7,6 +7,9 @@ import matchups
 import predictions
 import players
 import results
+import postgres_store
+
+_db = postgres_store.get_default()
 
 application = Flask(__name__, static_url_path='')
 
@@ -163,6 +166,38 @@ def get_results(year):
 
     r = results.get(player, year)
     return jsonify({"results": r})
+
+@application.route('/nhlplayoffs/api/v2.0/backup', methods=['POST'])
+def backup():
+    if not request.json:
+        print('not json')
+        abort(400)
+
+    if "root_psw" not in request.json:
+        abort(403)
+
+    root_psw = request.json["root_psw"]
+    if not players.root_access(root_psw):
+        abort(403)
+
+    return jsonify(_db.backup())
+
+@application.route('/nhlplayoffs/api/v2.0/restore', methods=['POST'])
+def restore():
+    if not request.json:
+        print('not json')
+        abort(400)
+
+    if ("root_psw" not in request.json or
+        "data" not in request.json):
+        abort(403)
+
+    root_psw = request.json["root_psw"]
+    if not players.root_access(root_psw):
+        abort(403)
+
+    data = request.json["data"]
+    return jsonify({'result':_db.restore_backup(data)})
 
 @application.route('/html/<path:path>')
 def send_js(path):
