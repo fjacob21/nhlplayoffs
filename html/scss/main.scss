@@ -20,13 +20,18 @@ html, body {
         opacity:0.1;
 }
 
+.matchup-tree {
+    border: 2px solid black;
+}
+
 .matchup-table {
     line-height:30px;
-    background-color:#eeeeee;
-    height:100px;
-    width:300px;
+    //background-color:#eeeeee;
+    //height:60px;
+    //width:100px;
     margin: 5px;
     display: table;
+    //border: 2px solid black;
 }
 
 .matchup-row {
@@ -35,7 +40,18 @@ html, body {
 
 .matchup-cell {
     display: table-cell;
-    padding: 5px;
+    padding: 1px;
     vertical-align: middle;
     text-align: center;
+    //border: 2px solid black;
+}
+
+.matchup {
+    line-height:30px;
+    background-color:#eeeeee;
+    //height:60px;
+    //width:100px;
+    margin: 5px;
+    //display: table;
+    border: 2px solid black;
 }

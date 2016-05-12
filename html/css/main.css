@@ -14,11 +14,11 @@ html, body {
 .teamLoser {
   opacity: 0.1; }
 
+.matchup-tree {
+  border: 2px solid black; }
+
 .matchup-table {
   line-height: 30px;
-  background-color: #eeeeee;
-  height: 100px;
-  width: 300px;
   margin: 5px;
   display: table; }
 
@@ -27,6 +27,12 @@ html, body {
 
 .matchup-cell {
   display: table-cell;
-  padding: 5px;
+  padding: 1px;
   vertical-align: middle;
   text-align: center; }
+
+.matchup {
+  line-height: 30px;
+  background-color: #eeeeee;
+  margin: 5px;
+  border: 2px solid black; }

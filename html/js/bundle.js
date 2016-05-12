@@ -43005,37 +43005,132 @@
 	        }
 
 	        _createClass(GameInfo, [{
+	                key: 'findNextMatch',
+	                value: function findNextMatch(matchup) {
+	                        if (matchup.result.home_win == 4 || matchup.result.away_win == 4) return "Terminated";
+
+	                        this.props.matchup.schedule.sort(function (a, b) {
+	                                var a = new Date(a.gameDate);
+	                                var b = new Date(b.gameDate);
+	                                return a < b ? -1 : a > b ? 1 : 0;
+	                        });
+	                        var next = "";
+	                        if (this.props.matchup.schedule.length > 0) {
+	                                var now = new Date(Date.now());
+	                                for (var i = 0; i < this.props.matchup.schedule.length; i++) {
+	                                        var gameDate = new Date(this.props.matchup.schedule[i].gameDate);
+	                                        if (gameDate > now) break;
+	                                }
+
+	                                if (i == 7) return "In progress";
+	                                next = new Date(this.props.matchup.schedule[i].gameDate);
+	                                next = next.toLocaleString();
+	                        }
+	                        return next;
+	                }
+	        }, {
+	                key: 'findLastMatch',
+	                value: function findLastMatch(matchup) {
+	                        this.props.matchup.schedule.sort(function (a, b) {
+	                                var a = new Date(a.gameDate);
+	                                var b = new Date(b.gameDate);
+	                                return a < b ? -1 : a > b ? 1 : 0;
+	                        });
+	                        var last = "";
+	                        if (this.props.matchup.schedule.length > 0) {
+	                                var now = new Date(Date.now());
+	                                for (var i = 0; i < this.props.matchup.schedule.length; i++) {
+	                                        var gameDate = new Date(this.props.matchup.schedule[i].gameDate);
+	                                        if (gameDate > now) break;
+	                                }
+	                                if (i == 0) return "not stated";
+
+	                                var lastGame = this.props.matchup.schedule[i - 1];
+	                                if (lastGame.teams.home.score > lastGame.teams.away.score) {
+	                                        last = lastGame.teams.home.team.abbreviation + " win " + lastGame.teams.home.score + "-" + lastGame.teams.away.score;
+	                                } else {
+	                                        last = lastGame.teams.away.team.abbreviation + " win " + lastGame.teams.away.score + "-" + lastGame.teams.home.score;
+	                                }
+	                        }
+	                        return last;
+	                }
+	        }, {
 	                key: 'render',
 	                value: function render() {
+	                        var homeImg = React.createElement(_reactBootstrap.Glyphicon, { glyph: 'question-sign', style: { width: '50px', height: 'auto' } });
+	                        var awayImg = React.createElement(_reactBootstrap.Glyphicon, { glyph: 'question-sign', style: { width: '50px', height: 'auto' } });
+	                        var nextGame = this.findNextMatch(this.props.matchup);
+	                        var LastGame = this.findLastMatch(this.props.matchup);
+
+	                        //console.debug(this.props.matchup.schedule);
+	                        if (this.props.matchup.home != 0) homeImg = React.createElement('img', { src: store.getTeamImgUrl(this.props.matchup.home), style: { width: '50px', height: 'auto' } });
+	                        if (this.props.matchup.away != 0) awayImg = React.createElement('img', { src: store.getTeamImgUrl(this.props.matchup.away), style: { width: '50px', height: 'auto' } });
 	                        return React.createElement(
 	                                'div',
-	                                { className: 'matchup-table' },
+	                                { className: 'matchup' },
 	                                React.createElement(
 	                                        'div',
-	                                        { className: 'matchup-row' },
+	                                        { className: 'matchup-table' },
 	                                        React.createElement(
 	                                                'div',
-	                                                { className: 'matchup-cell' },
-	                                                React.createElement('img', { src: store.getTeamImgUrl(this.props.matchup.home.team.id), style: { width: '100%', height: 'auto' } })
-	                                        ),
-	                                        React.createElement(
-	                                                'div',
-	                                                { className: 'matchup-cell' },
-	                                                'VS'
-	                                        ),
-	                                        React.createElement(
-	                                                'div',
-	                                                { className: 'matchup-cell' },
-	                                                React.createElement('img', { src: store.getTeamImgUrl(this.props.matchup.away.team.id), style: { width: '100%', height: 'auto' } })
+	                                                { className: 'matchup-row' },
+	                                                React.createElement(
+	                                                        'div',
+	                                                        { className: 'matchup-cell' },
+	                                                        homeImg
+	                                                ),
+	                                                React.createElement(
+	                                                        'div',
+	                                                        { className: 'matchup-cell' },
+	                                                        this.props.matchup.result.home_win
+	                                                ),
+	                                                React.createElement(
+	                                                        'div',
+	                                                        { className: 'matchup-cell' },
+	                                                        '-'
+	                                                ),
+	                                                React.createElement(
+	                                                        'div',
+	                                                        { className: 'matchup-cell' },
+	                                                        this.props.matchup.result.away_win
+	                                                ),
+	                                                React.createElement(
+	                                                        'div',
+	                                                        { className: 'matchup-cell' },
+	                                                        awayImg
+	                                                )
 	                                        )
 	                                ),
 	                                React.createElement(
 	                                        'div',
-	                                        { className: 'matchup-row' },
+	                                        { className: 'matchup-table' },
 	                                        React.createElement(
 	                                                'div',
-	                                                null,
-	                                                'Last game'
+	                                                { className: 'matchup-row' },
+	                                                React.createElement(
+	                                                        'div',
+	                                                        { className: 'matchup-cell' },
+	                                                        'Next: '
+	                                                ),
+	                                                React.createElement(
+	                                                        'div',
+	                                                        { className: 'matchup-cell' },
+	                                                        nextGame
+	                                                )
+	                                        ),
+	                                        React.createElement(
+	                                                'div',
+	                                                { className: 'matchup-row' },
+	                                                React.createElement(
+	                                                        'div',
+	                                                        { className: 'matchup-cell' },
+	                                                        'Last: '
+	                                                ),
+	                                                React.createElement(
+	                                                        'div',
+	                                                        { className: 'matchup-cell' },
+	                                                        LastGame
+	                                                )
 	                                        )
 	                                )
 	                        );
@@ -43053,7 +43148,7 @@
 
 	                var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Home).call(this, props));
 
-	                _this2.state = { matchups: {}, currentround: 0 };
+	                _this2.state = { "matchups": {}, "currentround": 0 };
 	                return _this2;
 	        }
 
@@ -43061,20 +43156,62 @@
 	                key: 'componentDidMount',
 	                value: function componentDidMount() {
 	                        if (!sessionStorage.user) this.props.history.push('/');
-	                        // store.load(function(data) {
-	                        //         var state = this.state;
-	                        //         state.matchups = store.matchups;
-	                        //         state.currentround = store.currentround;
-	                        //         store.loadResults(sessionStorage.userId, function(data) {
-	                        //                 var state = this.state;
-	                        //                 state.results = store.results;
-	                        //                 this.setState(state);
-	                        //         }.bind(this),function() {
-	                        //                 alert('Error!!!');
-	                        //         }.bind(this));
-	                        // }.bind(this),function() {
-	                        //         alert('Error!!!');
-	                        // }.bind(this));
+	                        store.load(function (data) {
+	                                var state = this.state;
+	                                state.matchups = store.matchups;
+	                                state.currentround = store.currentround;
+	                                store.loadResults(sessionStorage.userId, function (data) {
+	                                        var state = this.state;
+	                                        state.results = store.results;
+	                                        this.setState(state);
+	                                }.bind(this), function () {
+	                                        alert('Error!!!');
+	                                }.bind(this));
+	                        }.bind(this), function () {
+	                                alert('Error!!!');
+	                        }.bind(this));
+	                }
+	        }, {
+	                key: 'display',
+	                value: function display() {
+	                        //console.debug(this.state.matchups);
+	                        if (this.state.matchups.w == undefined) return;
+	                        var nb_round = 4;
+	                        var width = nb_round * 2 - 1;
+	                        var heigh = Math.pow(2, nb_round - 1) - 1;
+	                        var display = [];
+	                        for (var x = 0; x < width; x++) {
+	                                display[x] = [];
+	                                for (var y = 0; y < heigh; y++) {
+
+	                                        display[x][y] = '';
+	                                }
+	                        }
+	                        function walk_matchup_tree(root, x, y, dx) {
+	                                display[y][x] = root.id;
+	                                if (root.left != null) walk_matchup_tree(root.left, x + dx, y - (root.round - 1), dx);
+	                                if (root.right != null) walk_matchup_tree(root.right, x + dx, y + (root.round - 1), dx);
+	                        }
+	                        display[2][3] = 'sc';
+	                        walk_matchup_tree(this.state.matchups.w, 2, 3, -1);
+	                        walk_matchup_tree(this.state.matchups.e, 4, 3, 1);
+
+	                        var result = display.map(function (row, y) {
+	                                var r = row.map(function (cell, x) {
+	                                        if (cell == '') return React.createElement('th', { key: x });
+	                                        return React.createElement(
+	                                                'th',
+	                                                { key: x },
+	                                                React.createElement(GameInfo, { matchup: this.state.matchups[cell] })
+	                                        );
+	                                }.bind(this));
+	                                return React.createElement(
+	                                        'tr',
+	                                        { key: y },
+	                                        r
+	                                );
+	                        }.bind(this));
+	                        return result;
 	                }
 	        }, {
 	                key: 'render',
@@ -43088,7 +43225,7 @@
 	                        //         }
 	                        //         return m;
 	                        // }.bind(this));
-
+	                        var tree = this.display();
 	                        return React.createElement(
 	                                'div',
 	                                null,
@@ -43096,6 +43233,20 @@
 	                                        'div',
 	                                        null,
 	                                        'Welcome to the 2016 NHL playoffs pool 🏒🏒🏒'
+	                                ),
+	                                React.createElement(
+	                                        'center',
+	                                        null,
+	                                        React.createElement(
+	                                                'table',
+	                                                { className: 'matchup-tree' },
+	                                                ' ',
+	                                                React.createElement(
+	                                                        'tbody',
+	                                                        null,
+	                                                        tree
+	                                                )
+	                                        )
 	                                )
 	                        );
 	                }
@@ -43132,6 +43283,62 @@
 	        }
 
 	        _createClass(Store, [{
+	                key: 'display',
+	                value: function display() {
+	                        var nb_round = 4;
+	                        var width = nb_round * 2 - 1;
+	                        var heigh = Math.pow(2, nb_round - 1) - 1;
+	                        var display = [];
+	                        for (var y = 0; y < heigh; y++) {
+	                                display[y] = [];
+	                                for (var x = 0; x < width; x++) {
+	                                        display[y][x] = '';
+	                                }
+	                        }
+	                        function walk_matchup_tree(root, x, y, dx) {
+	                                display[x][y] = root.id;
+	                                if (root.left != null) walk_matchup_tree(root.left, x + dx, y - (root.round - 1), dx);
+	                                if (root.right != null) walk_matchup_tree(root.right, x + dx, y + (root.round - 1), dx);
+	                        }
+	                        display[3][2] = 'sc';
+	                        walk_matchup_tree(this.matchups.w, 2, 3, -1);
+	                        walk_matchup_tree(this.matchups.e, 4, 3, 1);
+	                        for (var y = 0; y < heigh; y++) {
+	                                var line = "";
+	                                for (var x = 0; x < width; x++) {
+	                                        var id = display[x][y];
+	                                        var cell = "";
+	                                        if (id != '') {
+	                                                var matchup = this.matchups[id];
+	                                                if (matchup.home == 0) {
+	                                                        cell = id;
+	                                                        cell += " ".repeat(20 - cell.length);
+	                                                } else {
+	                                                        var home = this.teams[matchup.home].info.abbreviation;
+	                                                        var away = '?';
+	                                                        if (matchup.away != 0) away = this.teams[matchup.away].info.abbreviation;
+	                                                        cell = home + "-" + matchup.result.home_win + " vs " + matchup.result.away_win + "-" + away;
+	                                                        cell += " ".repeat(20 - cell.length);
+	                                                }
+	                                        } else {
+	                                                cell += " ".repeat(20);
+	                                        }
+	                                        line += cell;
+	                                }
+	                                console.debug(line);
+	                        }
+	                }
+	        }, {
+	                key: 'buildMatchupTree',
+	                value: function buildMatchupTree() {
+	                        for (var m in this.matchups) {
+	                                var matchup = this.matchups[m];
+	                                if (matchup.next != "") matchup.next = this.matchups[matchup.next];
+	                                if (matchup.left != "") matchup.left = this.matchups[matchup.left];
+	                                if (matchup.right != "") matchup.right = this.matchups[matchup.right];
+	                        }
+	                }
+	        }, {
 	                key: 'getTeamImgUrl',
 	                value: function getTeamImgUrl(team) {
 	                        return 'https://www-league.nhlstatic.com/builds/site-core/284dc4ec70e4bee8802842e5e700157f45660a48_1457473228/images/team/logo/current/' + team + '_dark.svg';
@@ -43176,19 +43383,28 @@
 	                value: function getPredictions(player, round) {
 	                        if (round == undefined) round = this.currentround;
 	                        var results = [];
+	                        var matchups = this.getMatchups(0);
+	                        matchups.sort(function (a, b) {
+	                                return b.round - a.round;
+	                        });
 	                        var _iteratorNormalCompletion2 = true;
 	                        var _didIteratorError2 = false;
 	                        var _iteratorError2 = undefined;
 
 	                        try {
-	                                for (var _iterator2 = this.matchups[round][Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	                                for (var _iterator2 = matchups[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
 	                                        var matchup = _step2.value;
 
-	                                        var home = matchup.home.team.id;
-	                                        var away = matchup.away.team.id;
-	                                        var prediction = this.getPrediction(player, round, home, away);
-	                                        if (prediction == null) prediction = { 'player': player, 'round': round, 'home': home, 'away': away, 'winner': 0, 'games': 4 };
-	                                        results.push(prediction);
+	                                        var home = matchup.home;
+	                                        var away = matchup.away;
+	                                        if (home != 0 && away != 0) {
+	                                                var matchupRound = matchup.round;
+	                                                var prediction = this.getPrediction(player, matchupRound, home, away);
+	                                                if (prediction == null) {
+	                                                        prediction = { 'player': player, 'round': matchupRound, 'home': home, 'away': away, 'winner': 0, 'games': 4 };
+	                                                }
+	                                                results.push(prediction);
+	                                        }
 	                                }
 	                        } catch (err) {
 	                                _didIteratorError2 = true;
@@ -43251,10 +43467,10 @@
 	                        var _iteratorError4 = undefined;
 
 	                        try {
-	                                for (var _iterator4 = this.matchups[round][Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+	                                for (var _iterator4 = this.getMatchups(round)[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
 	                                        var matchup = _step4.value;
 
-	                                        if (matchup.home.team.id == home && matchup.away.team.id == away) return matchup;
+	                                        if (matchup.home == home && matchup.away == away) return matchup;
 	                                }
 	                        } catch (err) {
 	                                _didIteratorError4 = true;
@@ -43276,7 +43492,12 @@
 	        }, {
 	                key: 'getMatchups',
 	                value: function getMatchups(round) {
-	                        return this.matchups[round];
+	                        var ms = [];
+	                        for (var key in this.matchups) {
+	                                var matchup = this.matchups[key];
+	                                if (matchup.round == round || round == 0) ms.push(matchup);
+	                        }
+	                        return ms;
 	                }
 	        }, {
 	                key: 'getMatchupTime',
@@ -43299,7 +43520,7 @@
 	                                result.games = matchup.result.home_win + matchup.result.away_win;
 
 	                                if (result.games > 0) {
-	                                        if (matchup.result.home_win > matchup.result.away_win) result.winner = matchup.home.team.id;else if (matchup.result.home_win < matchup.result.away_win) result.winner = matchup.away.team.id;
+	                                        if (matchup.result.home_win > matchup.result.away_win) result.winner = matchup.home;else if (matchup.result.home_win < matchup.result.away_win) result.winner = matchup.away;
 	                                }
 
 	                                if (matchup.result.home_win == 4 || matchup.result.away_win == 4) result.isFinish = true;
@@ -43347,19 +43568,26 @@
 	        }, {
 	                key: 'getTeams',
 	                value: function getTeams() {
-	                        var results = [];
+	                        //Look to filter teams not in playoff!!!!
+	                        var teams = [];
+	                        for (var t in this.teams) {
+	                                teams.push(this.teams[t]);
+	                        }
+	                        return teams;
+	                }
+	        }, {
+	                key: 'getTeam',
+	                value: function getTeam(id) {
+	                        var teams = this.getTeams();
 	                        var _iteratorNormalCompletion6 = true;
 	                        var _didIteratorError6 = false;
 	                        var _iteratorError6 = undefined;
 
 	                        try {
-	                                for (var _iterator6 = this.matchups[1][Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-	                                        var matchup = _step6.value;
+	                                for (var _iterator6 = teams[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+	                                        var team = _step6.value;
 
-	                                        var home = matchup.home;
-	                                        var away = matchup.away;
-	                                        results.push(home);
-	                                        results.push(away);
+	                                        if (team.info.id == id) return team;
 	                                }
 	                        } catch (err) {
 	                                _didIteratorError6 = true;
@@ -43376,45 +43604,16 @@
 	                                }
 	                        }
 
-	                        return results;
-	                }
-	        }, {
-	                key: 'getTeam',
-	                value: function getTeam(id) {
-	                        var teams = this.getTeams();
-	                        var _iteratorNormalCompletion7 = true;
-	                        var _didIteratorError7 = false;
-	                        var _iteratorError7 = undefined;
-
-	                        try {
-	                                for (var _iterator7 = teams[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-	                                        var team = _step7.value;
-
-	                                        if (team.team.id == id) return team;
-	                                }
-	                        } catch (err) {
-	                                _didIteratorError7 = true;
-	                                _iteratorError7 = err;
-	                        } finally {
-	                                try {
-	                                        if (!_iteratorNormalCompletion7 && _iterator7.return) {
-	                                                _iterator7.return();
-	                                        }
-	                                } finally {
-	                                        if (_didIteratorError7) {
-	                                                throw _iteratorError7;
-	                                        }
-	                                }
-	                        }
-
 	                        return null;
 	                }
 	        }, {
 	                key: 'post',
 	                value: function post(verb, data, success, error) {
+	                        var version = arguments.length <= 4 || arguments[4] === undefined ? 'v2.0' : arguments[4];
+
 	                        $.ajax({
 	                                type: 'POST',
-	                                url: this.server + "/nhlplayoffs/api/v2.0/" + verb,
+	                                url: this.server + "/nhlplayoffs/api/" + version + "/" + verb,
 	                                data: JSON.stringify(data),
 	                                success: success,
 	                                error: error,
@@ -43425,9 +43624,11 @@
 	        }, {
 	                key: 'get',
 	                value: function get(verb, success, error) {
+	                        var version = arguments.length <= 3 || arguments[3] === undefined ? 'v2.0' : arguments[3];
+
 	                        $.ajax({
 	                                type: 'GET',
-	                                url: this.server + "/nhlplayoffs/api/v2.0/" + verb,
+	                                url: this.server + "/nhlplayoffs/api/" + version + "/" + verb,
 	                                success: success,
 	                                error: error,
 	                                contentType: "application/json",
@@ -43439,6 +43640,9 @@
 	                value: function load(success, error) {
 	                        this.get(String(this.year) + "/data", function (data) {
 	                                this.matchups = data.matchups;
+	                                this.teams = data.teams;
+	                                this.buildMatchupTree();
+	                                this.display();
 	                                this.currentround = data.current_round;
 	                                this.get(String(this.year) + "/predictions", function (data) {
 	                                        this.predictions = data.predictions;
@@ -43447,7 +43651,7 @@
 	                                                success();
 	                                        }.bind(this), error);
 	                                }.bind(this), error);
-	                        }.bind(this), error);
+	                        }.bind(this), error, "v3.0");
 	                }
 	        }, {
 	                key: 'loadResults',
@@ -43827,7 +44031,7 @@
 
 	                var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Results).call(this, props));
 
-	                _this.state = { matchups: {}, results: [], teams: [], winner: null, currentround: 0 };
+	                _this.state = { matchups: [], results: [], teams: [], winner: null, currentround: 0 };
 	                return _this;
 	        }
 
@@ -43837,7 +44041,10 @@
 	                        if (!sessionStorage.user) this.props.history.push('/');
 	                        store.load(function (data) {
 	                                var state = this.state;
-	                                state.matchups = store.matchups;
+	                                state.matchups = store.getMatchups(0);
+	                                state.matchups.sort(function (a, b) {
+	                                        return a.round - b.round;
+	                                });
 	                                state.teams = store.getTeams();
 	                                state.winner = store.getWinner(sessionStorage.userId);
 	                                state.currentround = store.currentround;
@@ -43895,41 +44102,37 @@
 	        }, {
 	                key: 'render',
 	                value: function render() {
-	                        var rounds = [1, 2, 3, 4];
 	                        var results = this.state.results.map(function (result, i) {
-	                                var t = rounds.map(function (d, i) {
-	                                        if (this.state.matchups[i] != undefined) {
-	                                                var m = this.state.matchups[i].map(function (matchup, j) {
-	                                                        //Get player predictions
-	                                                        var home = matchup.home.team.id;
-	                                                        var away = matchup.away.team.id;
-	                                                        var matchupResult = store.getMatchupResult(matchup);
-	                                                        var predClass = '';
-	                                                        var p = this.findPrediction(result.predictions, home, away);
-	                                                        if (p != null) {
-	                                                                if (matchupResult.winner != 0 && matchupResult.winner != p.winner) {
-	                                                                        if (matchupResult.isFinish) predClass = 'teamLoser';else predClass = 'teamLosing';
-	                                                                }
-	                                                                return React.createElement(
-	                                                                        'th',
-	                                                                        { style: { width: '10px' }, key: j },
-	                                                                        React.createElement(
-	                                                                                'div',
-	                                                                                null,
-	                                                                                React.createElement('img', { className: predClass, src: store.getTeamImgUrl(p.winner), style: { width: '100%', height: 'auto' } })
-	                                                                        ),
-	                                                                        React.createElement(
-	                                                                                'div',
-	                                                                                null,
-	                                                                                p.games
-	                                                                        )
-	                                                                );
-	                                                        } else {
-	                                                                return React.createElement('th', { style: { width: '10px' }, key: j });
+	                                var m = this.state.matchups.map(function (matchup, j) {
+	                                        if (matchup.home != 0 && matchup.away != 0) {
+	                                                //Get player predictions
+	                                                var home = matchup.home;
+	                                                var away = matchup.away;
+	                                                var matchupResult = store.getMatchupResult(matchup);
+	                                                var predClass = '';
+	                                                var p = this.findPrediction(result.predictions, home, away);
+	                                                if (p != null) {
+	                                                        if (matchupResult.winner != 0 && matchupResult.winner != p.winner) {
+	                                                                if (matchupResult.isFinish) predClass = 'teamLoser';else predClass = 'teamLosing';
 	                                                        }
-	                                                }.bind(this));
+	                                                        return React.createElement(
+	                                                                'th',
+	                                                                { style: { width: '10px' }, key: j },
+	                                                                React.createElement(
+	                                                                        'div',
+	                                                                        null,
+	                                                                        React.createElement('img', { className: predClass, src: store.getTeamImgUrl(p.winner), style: { width: '100%', height: 'auto' } })
+	                                                                ),
+	                                                                React.createElement(
+	                                                                        'div',
+	                                                                        null,
+	                                                                        p.games
+	                                                                )
+	                                                        );
+	                                                } else {
+	                                                        return React.createElement('th', { style: { width: '10px' }, key: j });
+	                                                }
 	                                        }
-	                                        return m;
 	                                }.bind(this));
 	                                var winnerClass = '';
 	                                var winner = React.createElement('div', null);
@@ -43942,7 +44145,7 @@
 	                                                { style: { width: '50px', verticalAlign: 'middle' } },
 	                                                result.player
 	                                        ),
-	                                        t,
+	                                        m,
 	                                        React.createElement(
 	                                                'th',
 	                                                { style: { width: '50px', verticalAlign: 'middle' } },
@@ -43956,36 +44159,38 @@
 	                                );
 	                        }.bind(this));
 
-	                        var matchsHead = rounds.map(function (d, i) {
-	                                if (this.state.matchups[i] != undefined) {
-	                                        var m = this.state.matchups[i].map(function (matchup, j) {
-	                                                //Get player predictions
-	                                                var home = matchup.home.team.id;
-	                                                var away = matchup.away.team.id;
-	                                                var homeWin = 0;
-	                                                var awayWin = 0;
-	                                                if (matchup.result != undefined) {
-	                                                        var homeWin = matchup.result.home_win;
-	                                                        var awayWin = matchup.result.away_win;
-	                                                }
+	                        var currentRound = 0;
+	                        var matchsHead = this.state.matchups.map(function (matchup, j) {
+	                                if (matchup.home != 0 && matchup.away != 0) {
+	                                        var roundSeparator = React.createElement('th', null);
+	                                        if (matchup.round != currentRound) {
+	                                                currentRound = matchup.round;
+	                                        }
+	                                        //Get player predictions
+	                                        var home = matchup.home;
+	                                        var away = matchup.away;
+	                                        var homeWin = 0;
+	                                        var awayWin = 0;
+	                                        if (matchup.result != undefined) {
+	                                                var homeWin = matchup.result.home_win;
+	                                                var awayWin = matchup.result.away_win;
+	                                        }
 
-	                                                var result = store.getMatchupResult(matchup);
-	                                                var homeClass = '';
-	                                                var awayClass = '';
-	                                                if (result.isFinish) {
-	                                                        if (result.winner == home) awayClass = 'teamLoser';else homeClass = 'teamLoser';
-	                                                }
-	                                                return React.createElement(
-	                                                        'th',
-	                                                        { style: { width: '10px' }, key: j },
-	                                                        React.createElement('img', { className: homeClass, src: store.getTeamImgUrl(home), style: { width: '100%', height: 'auto' } }),
-	                                                        homeWin,
-	                                                        React.createElement('img', { className: awayClass, src: store.getTeamImgUrl(away), style: { width: '100%', height: 'auto' } }),
-	                                                        awayWin
-	                                                );
-	                                        }.bind(this));
+	                                        var result = store.getMatchupResult(matchup);
+	                                        var homeClass = '';
+	                                        var awayClass = '';
+	                                        if (result.isFinish) {
+	                                                if (result.winner == home) awayClass = 'teamLoser';else homeClass = 'teamLoser';
+	                                        }
+	                                        return React.createElement(
+	                                                'th',
+	                                                { style: { width: '10px' }, key: j },
+	                                                React.createElement('img', { className: homeClass, src: store.getTeamImgUrl(home), style: { width: '100%', height: 'auto' } }),
+	                                                homeWin,
+	                                                React.createElement('img', { className: awayClass, src: store.getTeamImgUrl(away), style: { width: '100%', height: 'auto' } }),
+	                                                awayWin
+	                                        );
 	                                }
-	                                return m;
 	                        }.bind(this));
 	                        return React.createElement(
 	                                'table',
@@ -44106,12 +44311,12 @@
 	        render: function render() {
 	                var teams = this.state.teams.map(function (team) {
 	                        var id = team;
-	                        id = id.team.id;
+	                        id = id.info.id;
 	                        var url = "https://www-league.nhlstatic.com/builds/site-core/284dc4ec70e4bee8802842e5e700157f45660a48_1457473228/images/team/logo/current/" + String(id) + "_dark.svg";
 	                        return React.createElement(
 	                                'option',
-	                                { value: team.team.id, key: team.team.id },
-	                                team.team.name
+	                                { value: team.info.id, key: team.info.id },
+	                                team.info.name
 	                        );
 	                });
 
@@ -44119,8 +44324,8 @@
 	                        var homeClass = 'btn btn-primary ';
 	                        var awayClass = 'btn btn-primary ';
 	                        if (prediction.winner == prediction.home) homeClass += 'active predictionSel';else if (prediction.winner == prediction.away) awayClass += 'active predictionSel';
-	                        var homeUrl = 'https://www-league.nhlstatic.com/builds/site-core/284dc4ec70e4bee8802842e5e700157f45660a48_1457473228/images/team/logo/current/' + store.getTeam(prediction.home).team.id + '_dark.svg';
-	                        var awayUrl = 'https://www-league.nhlstatic.com/builds/site-core/284dc4ec70e4bee8802842e5e700157f45660a48_1457473228/images/team/logo/current/' + store.getTeam(prediction.away).team.id + '_dark.svg';
+	                        var homeUrl = 'https://www-league.nhlstatic.com/builds/site-core/284dc4ec70e4bee8802842e5e700157f45660a48_1457473228/images/team/logo/current/' + store.getTeam(prediction.home).info.id + '_dark.svg';
+	                        var awayUrl = 'https://www-league.nhlstatic.com/builds/site-core/284dc4ec70e4bee8802842e5e700157f45660a48_1457473228/images/team/logo/current/' + store.getTeam(prediction.away).info.id + '_dark.svg';
 	                        var homeTeam = store.getTeam(prediction.home);
 	                        var awayTeam = store.getTeam(prediction.away);
 	                        var matchup = store.getMatchup(prediction.home, prediction.away, prediction.round);
@@ -44141,30 +44346,35 @@
 	                                        null,
 	                                        React.createElement(
 	                                                'div',
+	                                                null,
+	                                                matchup.round
+	                                        ),
+	                                        React.createElement(
+	                                                'div',
 	                                                { 'data-toggle': 'buttons' },
 	                                                React.createElement(
 	                                                        'label',
-	                                                        { className: homeClass, 'data-value': prediction.home, style: { width: '150px' } },
-	                                                        homeTeam.conferenceRank + '-',
+	                                                        { className: homeClass, 'data-value': prediction.home, style: { width: '160px' } },
+	                                                        homeTeam.standings.conferenceRank + '-',
 	                                                        React.createElement('img', { style: { width: '50px' }, src: homeUrl }),
 	                                                        React.createElement('input', { type: 'radio', name: 'predcit' + String(i),
 	                                                                id: i,
 	                                                                value: prediction.home,
 	                                                                checked: prediction.winner == prediction.home,
 	                                                                onChange: this.predictionChange }),
-	                                                        homeTeam.team.teamName + ' ' + matchup.season.home_win
+	                                                        homeTeam.info.teamName + ' ' + matchup.season.home_win
 	                                                ),
 	                                                React.createElement(
 	                                                        'label',
-	                                                        { className: awayClass, 'data-value': prediction.away, style: { width: '150px' } },
-	                                                        awayTeam.conferenceRank + '-',
+	                                                        { className: awayClass, 'data-value': prediction.away, style: { width: '160px' } },
+	                                                        awayTeam.standings.conferenceRank + '-',
 	                                                        React.createElement('img', { style: { width: '50px' }, src: awayUrl }),
 	                                                        React.createElement('input', { type: 'radio', name: 'predcit' + String(i),
 	                                                                value: prediction.away,
 	                                                                id: i,
 	                                                                checked: prediction.winner == prediction.away,
 	                                                                onChange: this.predictionChange }),
-	                                                        awayTeam.team.teamName + ' ' + matchup.season.away_win
+	                                                        awayTeam.info.teamName + ' ' + matchup.season.away_win
 	                                                )
 	                                        )
 	                                ),
@@ -44214,9 +44424,6 @@
 	                        React.createElement(
 	                                _reactBootstrap.PageHeader,
 	                                null,
-	                                'Round ',
-	                                this.state.currentround,
-	                                ' ',
 	                                React.createElement(
 	                                        'small',
 	                                        null,

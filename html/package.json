@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "node_modules/webpack/bin/webpack.js",
     "watch": "node_modules/webpack/bin/webpack.js -w",
-    "build-css": "node-sass --include-path scss scss/main.scss css/main.css"
+    "build-css": "node-sass --include-path scss scss/main.scss css/main.css",
+    "build-css-watch": "node-sass --watch --include-path scss scss/main.scss css/main.css"
   },
   "author": "",
   "license": "ISC",

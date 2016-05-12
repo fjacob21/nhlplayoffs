@@ -9,7 +9,7 @@ var store = new Store();
 class Results extends React.Component{
         constructor(props) {
                 super(props);
-                this.state = {matchups:{}, results: [], teams:[], winner:null, currentround:0};
+                this.state = {matchups:[], results: [], teams:[], winner:null, currentround:0};
         }
 
         componentDidMount(){
@@ -17,7 +17,8 @@ class Results extends React.Component{
                         this.props.history.push('/')
                 store.load(function(data) {
                         var state = this.state;
-                        state.matchups = store.matchups;
+                        state.matchups = store.getMatchups(0);
+                        state.matchups.sort(function(a, b){return a.round - b .round;});
                         state.teams = store.getTeams();
                         state.winner =store.getWinner(sessionStorage.userId);
                         state.currentround = store.currentround;
@@ -62,14 +63,12 @@ class Results extends React.Component{
         }
 
         render() {
-                var rounds=[1,2,3,4];
                 var results = this.state.results.map(function(result,i){
-                        var t = rounds.map(function(d,i){
-                                if(this.state.matchups[i] != undefined){
-                                        var m = this.state.matchups[i].map(function(matchup, j){
+                                        var m = this.state.matchups.map(function(matchup, j){
+                                           if(matchup.home != 0 && matchup.away != 0) {
                                                 //Get player predictions
-                                                var home = matchup.home.team.id;
-                                                var away = matchup.away.team.id;
+                                                var home = matchup.home;
+                                                var away = matchup.away;
                                                 var matchupResult = store.getMatchupResult(matchup);
                                                 var predClass = '';
                                                 var p = this.findPrediction(result.predictions, home, away);
@@ -90,23 +89,25 @@ class Results extends React.Component{
 
                                                                 </th>);
                                                 }
+                                             }
                                         }.bind(this));
-                                }
-                                return m;
-                        }.bind(this));
                         var winnerClass = '';
                         var winner = <div></div>;
                         if(result.winner != 0)
                                 winner = <img className={winnerClass} src={store.getTeamImgUrl(result.winner)} style={{width: '50px', height: 'auto'}} />
-                        return (<tr key={i}><th style={{width: '50px',verticalAlign: 'middle'}}>{result.player}</th>{t}<th style={{width: '50px',verticalAlign: 'middle'}} >{winner}</th><th style={{width: '50px',verticalAlign: 'middle'}}>{result.pts}</th></tr>);
+                        return (<tr key={i}><th style={{width: '50px',verticalAlign: 'middle'}}>{result.player}</th>{m}<th style={{width: '50px',verticalAlign: 'middle'}} >{winner}</th><th style={{width: '50px',verticalAlign: 'middle'}}>{result.pts}</th></tr>);
                 }.bind(this));
 
-                var matchsHead = rounds.map(function(d,i){
-                        if(this.state.matchups[i] != undefined){
-                                var m = this.state.matchups[i].map(function(matchup, j){
+                                var currentRound = 0;
+                                var matchsHead = this.state.matchups.map(function(matchup, j){
+                                    if(matchup.home != 0 && matchup.away != 0) {
+                                       var roundSeparator = <th></th>;
+                                        if (matchup.round != currentRound){
+                                           currentRound = matchup.round;
+                                        }
                                         //Get player predictions
-                                        var home = matchup.home.team.id;
-                                        var away = matchup.away.team.id;
+                                        var home = matchup.home;
+                                        var away = matchup.away;
                                         var homeWin = 0;
                                         var awayWin = 0;
                                         if(matchup.result != undefined){
@@ -128,10 +129,8 @@ class Results extends React.Component{
                                                         <img className={homeClass} src={store.getTeamImgUrl(home)} style={{width: '100%', height: 'auto'}} />{homeWin}
                                                         <img className={awayClass} src={store.getTeamImgUrl(away)} style={{width: '100%', height: 'auto'}} />{awayWin}
                                                 </th>);
+                                       }
                                 }.bind(this));
-                        }
-                        return m;
-                }.bind(this));
                 return (
                         <table className='table table-hover'>
                                 <thead>

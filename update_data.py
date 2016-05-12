@@ -305,7 +305,7 @@ def get_round4_matchups(round3_matchup):
     return matchups
 
 def update_matchup(matchups, year):
-    finished = False
+    finished = True
     for match in matchups:
         home_id = match['home']['team']['id']
         s = get_playoff_schedule(int(home_id), year)
@@ -315,8 +315,8 @@ def update_matchup(matchups, year):
             match['start'] = start
         match['result'] = result
         match['schedule'] = get_matchup_schedule(match, year, s)
-        if result['home_win'] == 4 or  result['away_win'] == 4:
-            finished = True
+        if result['home_win'] != 4 and  result['away_win'] != 4:
+            finished = False
     return finished
 
 def update(data, year):

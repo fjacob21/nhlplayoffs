@@ -4,6 +4,7 @@ import json
 import os
 import urlparse
 import matchups
+import matchupsv2
 import predictions
 import players
 import results
@@ -96,6 +97,17 @@ def update_data(year):
     if not request.json:
         abort(400)
     matchups.update(year,request.json)
+    return ''
+
+@application.route('/nhlplayoffs/api/v3.0/<int:year>/data', methods=['GET'])
+def get_datav3(year):
+    return jsonify(matchupsv2.get(year))
+
+@application.route('/nhlplayoffs/api/v3.0/<int:year>/data', methods=['POST'])
+def update_datav3(year):
+    if not request.json:
+        abort(400)
+    matchupsv2.update(year,request.json)
     return ''
 
 @application.route('/nhlplayoffs/api/v2.0/<int:year>/currentround', methods=['GET'])

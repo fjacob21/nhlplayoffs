@@ -1,7 +1,7 @@
 # Predictions management module
 #
 import postgres_store
-import matchups
+import matchupsv2 as matchups
 import players
 
 _db = postgres_store.get_default()

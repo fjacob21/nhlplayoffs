@@ -13,6 +13,67 @@ class Store {
                 this.results = [];
         }
 
+        display() {
+             var nb_round = 4;
+             var width = (nb_round * 2) - 1;
+             var heigh = Math.pow(2,(nb_round-1)) -1;
+             var display = [];
+             for(var y=0;y<heigh;y++) {
+                display[y] = [];
+               for(var x=0;x<width;x++) {
+                  display[y][x] = '';
+               }
+            }
+            function walk_matchup_tree(root, x, y, dx){
+                display[x][y] = root.id;
+                if (root.left != null)
+                  walk_matchup_tree(root.left, x+dx, y-(root.round-1), dx);
+                if (root.right != null)
+                  walk_matchup_tree(root.right, x+dx, y+(root.round-1), dx);
+            }
+            display[3][2] = 'sc';
+            walk_matchup_tree(this.matchups.w, 2, 3, -1);
+            walk_matchup_tree(this.matchups.e, 4, 3, 1);
+            for(var y=0;y<heigh;y++) {
+               var line = "";
+              for(var x=0;x<width;x++) {
+                 var id = display[x][y];
+                 var cell = "";
+                 if(id != ''){
+                    var matchup = this.matchups[id];
+                    if (matchup.home == 0) {
+                       cell = id;
+                       cell += " ".repeat(20 - cell.length);
+                    } else {
+                       var home = this.teams[matchup.home].info.abbreviation;
+                       var away = '?';
+                       if (matchup.away != 0)
+                           away = this.teams[matchup.away].info.abbreviation;
+                       cell = home + "-" + matchup.result.home_win + " vs " + matchup.result.away_win + "-"+ away;
+                     cell += " ".repeat(20 - cell.length);
+                    }
+                 }
+                 else{
+                    cell += " ".repeat(20);
+                 }
+                 line +=  cell;
+
+              }
+              console.debug(line);
+           }
+        }
+
+        buildMatchupTree(){
+          for(var m in this.matchups){
+             var matchup = this.matchups[m];
+             if(matchup.next != "")
+               matchup.next = this.matchups[matchup.next];
+             if(matchup.left != "")
+               matchup.left = this.matchups[matchup.left];
+             if(matchup.right != "")
+               matchup.right = this.matchups[matchup.right];}
+        }
+
         getTeamImgUrl(team){
                 return 'https://www-league.nhlstatic.com/builds/site-core/284dc4ec70e4bee8802842e5e700157f45660a48_1457473228/images/team/logo/current/' + team + '_dark.svg';
         }
@@ -36,13 +97,19 @@ class Store {
                 if (round == undefined)
                         round = this.currentround;
                 var results = [];
-                for (var matchup of this.matchups[round]){
-                        var home = matchup.home.team.id;
-                        var away = matchup.away.team.id;
-                        var prediction = this.getPrediction(player, round, home, away);
-                        if (prediction == null)
-                                prediction = {'player':player, 'round':round, 'home':home, 'away':away, 'winner':0, 'games':4};
-                        results.push(prediction);
+                var matchups = this.getMatchups(0);
+                matchups.sort(function(a, b){return b.round - a.round;});
+                for (var matchup of matchups){
+                        var home = matchup.home;
+                        var away = matchup.away;
+                        if(home != 0 && away != 0) {
+                           var matchupRound = matchup.round;
+                           var prediction = this.getPrediction(player, matchupRound, home, away);
+                           if (prediction == null){
+                                   prediction = {'player':player, 'round':matchupRound, 'home':home, 'away':away, 'winner':0, 'games':4};
+                           }
+                           results.push(prediction);
+                        }
                 }
                 return results;
         }
@@ -67,15 +134,21 @@ class Store {
         }
 
         getMatchup(home, away, round){
-                for(var matchup of this.matchups[round]){
-                        if(matchup.home.team.id == home && matchup.away.team.id == away)
+                for(var matchup of this.getMatchups(round)){
+                        if(matchup.home == home && matchup.away == away)
                                 return matchup;
                 }
                 return null;
         }
 
         getMatchups(round){
-                return this.matchups[round];
+                var ms = []
+                for (var key in this.matchups){
+                    var matchup = this.matchups[key]
+                    if (matchup.round == round || round == 0)
+                        ms.push(matchup);
+                }
+                return ms;
         }
 
         getMatchupTime(matchup){
@@ -98,9 +171,9 @@ class Store {
 
                         if(result.games > 0){
                                 if(matchup.result.home_win > matchup.result.away_win)
-                                        result.winner = matchup.home.team.id;
+                                        result.winner = matchup.home;
                                 else if(matchup.result.home_win < matchup.result.away_win)
-                                        result.winner = matchup.away.team.id;
+                                        result.winner = matchup.away;
                         }
 
                         if(matchup.result.home_win == 4 || matchup.result.away_win == 4)
@@ -127,29 +200,27 @@ class Store {
         }
 
         getTeams(){
-                var results = [];
-                for (var matchup of this.matchups[1]){
-                        var home = matchup.home;
-                        var away = matchup.away;
-                        results.push(home);
-                        results.push(away);
-                }
-                return results;
+               //Look to filter teams not in playoff!!!!
+               var teams = [];
+               for(var t in this.teams){
+                  teams.push(this.teams[t]);
+               }
+               return teams;
         }
 
         getTeam(id){
                 var teams = this.getTeams();
                 for (var team of teams){
-                        if(team.team.id == id)
+                        if(team.info.id == id)
                                 return team;
                 }
                 return null;
         }
 
-        post(verb, data, success, error){
+        post(verb, data, success, error, version='v2.0'){
                 $.ajax({
                 type: 'POST',
-                url: this.server +"/nhlplayoffs/api/v2.0/" + verb,
+                url: this.server +"/nhlplayoffs/api/"+ version +"/" + verb,
                 data: JSON.stringify (data),
                 success: success,
                 error: error,
@@ -158,10 +229,10 @@ class Store {
                 });
         }
 
-        get(verb, success, error){
+        get(verb, success, error, version='v2.0'){
                 $.ajax({
                 type: 'GET',
-                url: this.server +"/nhlplayoffs/api/v2.0/" + verb,
+                url: this.server +"/nhlplayoffs/api/" + version + "/" + verb,
                 success: success,
                 error: error,
                 contentType: "application/json",
@@ -173,6 +244,9 @@ class Store {
                 this.get(String(this.year) + "/data",
                         function(data) {
                                 this.matchups = data.matchups;
+                                this.teams = data.teams;
+                                this.buildMatchupTree();
+                                this.display();
                                 this.currentround = data.current_round;
                                 this.get(String(this.year) + "/predictions",
                                         function(data) {
@@ -186,7 +260,7 @@ class Store {
                                         }.bind(this),
                                         error);
                         }.bind(this),
-                        error);
+                        error, "v3.0");
         }
 
         loadResults(player, success, error){
