@@ -43043,7 +43043,7 @@
 	                                        var gameDate = new Date(this.props.matchup.schedule[i].gameDate);
 	                                        if (gameDate > now) break;
 	                                }
-	                                if (i == 0) return "not stated";
+	                                if (i == 0) return "not started";
 
 	                                var lastGame = this.props.matchup.schedule[i - 1];
 	                                if (lastGame.teams.home.score > lastGame.teams.away.score) {

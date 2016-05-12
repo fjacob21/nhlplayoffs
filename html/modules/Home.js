@@ -50,7 +50,7 @@ class GameInfo extends React.Component{
                      break;
                }
               if (i == 0)
-               return "not stated";
+               return "not started";
 
               var lastGame = this.props.matchup.schedule[i-1];
               if (lastGame.teams.home.score > lastGame.teams.away.score){
