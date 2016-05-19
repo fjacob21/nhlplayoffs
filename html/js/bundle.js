@@ -25191,10 +25191,10 @@
 	                if (sessionStorage.user) username = sessionStorage.user;
 	                return _react2.default.createElement(
 	                        'div',
-	                        null,
+	                        { className: 'app' },
 	                        _react2.default.createElement(
 	                                _reactBootstrap.Navbar,
-	                                { inverse: true, expanded: this.state.navExpanded, onToggle: this.onNavbarToggle },
+	                                { fixedTop: 'true', inverse: true, expanded: this.state.navExpanded, onToggle: this.onNavbarToggle },
 	                                _react2.default.createElement(
 	                                        _reactBootstrap.Navbar.Header,
 	                                        null,
@@ -43001,7 +43001,10 @@
 	        function GameInfo(props) {
 	                _classCallCheck(this, GameInfo);
 
-	                return _possibleConstructorReturn(this, Object.getPrototypeOf(GameInfo).call(this, props));
+	                var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GameInfo).call(this, props));
+
+	                _this.state = { showModal: false };
+	                return _this;
 	        }
 
 	        _createClass(GameInfo, [{
@@ -43055,58 +43058,65 @@
 	                        return last;
 	                }
 	        }, {
+	                key: 'onTouch',
+	                value: function onTouch(event) {
+	                        event.preventDefault();
+	                        this.setState({ showModal: true });
+	                }
+	        }, {
+	                key: 'close',
+	                value: function close() {
+	                        this.setState({ showModal: false });
+	                }
+	        }, {
 	                key: 'render',
 	                value: function render() {
-	                        var homeImg = React.createElement(_reactBootstrap.Glyphicon, { glyph: 'question-sign', style: { width: '50px', height: 'auto' } });
-	                        var awayImg = React.createElement(_reactBootstrap.Glyphicon, { glyph: 'question-sign', style: { width: '50px', height: 'auto' } });
+	                        var homeImg = React.createElement(_reactBootstrap.Glyphicon, { className: 'matchup-img', glyph: 'question-sign' });
+	                        var awayImg = React.createElement(_reactBootstrap.Glyphicon, { className: 'matchup-img', glyph: 'question-sign' });
 	                        var nextGame = this.findNextMatch(this.props.matchup);
 	                        var LastGame = this.findLastMatch(this.props.matchup);
 
 	                        //console.debug(this.props.matchup.schedule);
-	                        if (this.props.matchup.home != 0) homeImg = React.createElement('img', { src: store.getTeamImgUrl(this.props.matchup.home), style: { width: '50px', height: 'auto' } });
-	                        if (this.props.matchup.away != 0) awayImg = React.createElement('img', { src: store.getTeamImgUrl(this.props.matchup.away), style: { width: '50px', height: 'auto' } });
+	                        if (this.props.matchup.home != 0) homeImg = React.createElement('img', { className: 'matchup-img', src: store.getTeamImgUrl(this.props.matchup.home) });
+	                        if (this.props.matchup.away != 0) awayImg = React.createElement('img', { className: 'matchup-img', src: store.getTeamImgUrl(this.props.matchup.away) });
 	                        return React.createElement(
 	                                'div',
-	                                { className: 'matchup' },
+	                                { className: 'matchup', onTouchStart: this.onTouch.bind(this) },
 	                                React.createElement(
 	                                        'div',
-	                                        { className: 'matchup-table' },
+	                                        { className: 'teams' },
 	                                        React.createElement(
 	                                                'div',
-	                                                { className: 'matchup-row' },
-	                                                React.createElement(
-	                                                        'div',
-	                                                        { className: 'matchup-cell' },
-	                                                        homeImg
-	                                                ),
-	                                                React.createElement(
-	                                                        'div',
-	                                                        { className: 'matchup-cell' },
-	                                                        this.props.matchup.result.home_win
-	                                                ),
-	                                                React.createElement(
-	                                                        'div',
-	                                                        { className: 'matchup-cell' },
-	                                                        '-'
-	                                                ),
-	                                                React.createElement(
-	                                                        'div',
-	                                                        { className: 'matchup-cell' },
-	                                                        this.props.matchup.result.away_win
-	                                                ),
-	                                                React.createElement(
-	                                                        'div',
-	                                                        { className: 'matchup-cell' },
-	                                                        awayImg
-	                                                )
+	                                                { className: 'matchup-cell' },
+	                                                homeImg
+	                                        ),
+	                                        React.createElement(
+	                                                'div',
+	                                                { className: 'matchup-cell' },
+	                                                this.props.matchup.result.home_win
+	                                        ),
+	                                        React.createElement(
+	                                                'div',
+	                                                { className: 'matchup-cell' },
+	                                                '-'
+	                                        ),
+	                                        React.createElement(
+	                                                'div',
+	                                                { className: 'matchup-cell' },
+	                                                this.props.matchup.result.away_win
+	                                        ),
+	                                        React.createElement(
+	                                                'div',
+	                                                { className: 'matchup-cell' },
+	                                                awayImg
 	                                        )
 	                                ),
 	                                React.createElement(
 	                                        'div',
-	                                        { className: 'matchup-table' },
+	                                        { className: 'info' },
 	                                        React.createElement(
 	                                                'div',
-	                                                { className: 'matchup-row' },
+	                                                { className: 'next' },
 	                                                React.createElement(
 	                                                        'div',
 	                                                        { className: 'matchup-cell' },
@@ -43120,7 +43130,7 @@
 	                                        ),
 	                                        React.createElement(
 	                                                'div',
-	                                                { className: 'matchup-row' },
+	                                                { className: 'last' },
 	                                                React.createElement(
 	                                                        'div',
 	                                                        { className: 'matchup-cell' },
@@ -43130,6 +43140,93 @@
 	                                                        'div',
 	                                                        { className: 'matchup-cell' },
 	                                                        LastGame
+	                                                )
+	                                        )
+	                                ),
+	                                React.createElement(
+	                                        _reactBootstrap.Modal,
+	                                        { show: this.state.showModal, onHide: this.close.bind(this) },
+	                                        React.createElement(
+	                                                _reactBootstrap.Modal.Header,
+	                                                { closeButton: true },
+	                                                React.createElement(
+	                                                        _reactBootstrap.Modal.Title,
+	                                                        null,
+	                                                        'Details'
+	                                                )
+	                                        ),
+	                                        React.createElement(
+	                                                _reactBootstrap.Modal.Body,
+	                                                null,
+	                                                React.createElement(
+	                                                        'div',
+	                                                        { className: 'teams' },
+	                                                        React.createElement(
+	                                                                'div',
+	                                                                { className: 'matchup-cell' },
+	                                                                homeImg
+	                                                        ),
+	                                                        React.createElement(
+	                                                                'div',
+	                                                                { className: 'matchup-cell' },
+	                                                                this.props.matchup.result.home_win
+	                                                        ),
+	                                                        React.createElement(
+	                                                                'div',
+	                                                                { className: 'matchup-cell' },
+	                                                                '-'
+	                                                        ),
+	                                                        React.createElement(
+	                                                                'div',
+	                                                                { className: 'matchup-cell' },
+	                                                                this.props.matchup.result.away_win
+	                                                        ),
+	                                                        React.createElement(
+	                                                                'div',
+	                                                                { className: 'matchup-cell' },
+	                                                                awayImg
+	                                                        )
+	                                                ),
+	                                                React.createElement(
+	                                                        'div',
+	                                                        { className: '' },
+	                                                        React.createElement(
+	                                                                'div',
+	                                                                { className: 'next' },
+	                                                                React.createElement(
+	                                                                        'div',
+	                                                                        { className: 'matchup-cell' },
+	                                                                        'Next: '
+	                                                                ),
+	                                                                React.createElement(
+	                                                                        'div',
+	                                                                        { className: 'matchup-cell' },
+	                                                                        nextGame
+	                                                                )
+	                                                        ),
+	                                                        React.createElement(
+	                                                                'div',
+	                                                                { className: 'last' },
+	                                                                React.createElement(
+	                                                                        'div',
+	                                                                        { className: 'matchup-cell' },
+	                                                                        'Last: '
+	                                                                ),
+	                                                                React.createElement(
+	                                                                        'div',
+	                                                                        { className: 'matchup-cell' },
+	                                                                        LastGame
+	                                                                )
+	                                                        )
+	                                                )
+	                                        ),
+	                                        React.createElement(
+	                                                _reactBootstrap.Modal.Footer,
+	                                                null,
+	                                                React.createElement(
+	                                                        _reactBootstrap.Button,
+	                                                        { onClick: this.close.bind(this) },
+	                                                        'Close'
 	                                                )
 	                                        )
 	                                )
@@ -43198,16 +43295,17 @@
 
 	                        var result = display.map(function (row, y) {
 	                                var r = row.map(function (cell, x) {
-	                                        if (cell == '') return React.createElement('th', { key: x });
+	                                        if (cell == '') return React.createElement('div', { className: 'cell', key: x });
 	                                        return React.createElement(
-	                                                'th',
-	                                                { key: x },
+	                                                'div',
+	                                                { className: 'cell', key: x },
 	                                                React.createElement(GameInfo, { matchup: this.state.matchups[cell] })
 	                                        );
+	                                        //return (<div className='cell' key={x}>{x}</div>);
 	                                }.bind(this));
 	                                return React.createElement(
-	                                        'tr',
-	                                        { key: y },
+	                                        'div',
+	                                        { className: 'row', key: y },
 	                                        r
 	                                );
 	                        }.bind(this));
@@ -43235,18 +43333,10 @@
 	                                        'Welcome to the 2016 NHL playoffs pool 🏒🏒🏒'
 	                                ),
 	                                React.createElement(
-	                                        'center',
-	                                        null,
-	                                        React.createElement(
-	                                                'table',
-	                                                { className: 'matchup-tree' },
-	                                                ' ',
-	                                                React.createElement(
-	                                                        'tbody',
-	                                                        null,
-	                                                        tree
-	                                                )
-	                                        )
+	                                        'div',
+	                                        { className: 'matchups' },
+	                                        ' ',
+	                                        tree
 	                                )
 	                        );
 	                }

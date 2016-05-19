@@ -7,6 +7,10 @@ html, body {
   width: 100%;
 }
 
+body {
+   padding-top: 70px;
+}
+
 .btn-primary.predictionSel {
     border-color: $borderColor;
     border-width: medium;
@@ -20,24 +24,25 @@ html, body {
         opacity:0.1;
 }
 
-.matchup-tree {
-    border: 2px solid black;
-}
-
-.matchup-table {
-    line-height:30px;
-    //background-color:#eeeeee;
-    //height:60px;
-    //width:100px;
-    margin: 5px;
-    display: table;
-    //border: 2px solid black;
-}
-
-.matchup-row {
-    display: table-row;;
-}
-
+// .matchup-tree {
+//     border: 2px solid black;
+//     width: 600px;
+// }
+//
+// .matchup-table {
+//     line-height:30px;
+//     //background-color:#eeeeee;
+//     //height:60px;
+//     //width:100px;
+//     margin: 5px;
+//     display: table;
+//     //border: 2px solid black;
+// }
+//
+// .matchup-row {
+//     display: table-row;;
+// }
+//
 .matchup-cell {
     display: table-cell;
     padding: 1px;
@@ -47,11 +52,133 @@ html, body {
 }
 
 .matchup {
-    line-height:30px;
+    //line-height:30px;
     background-color:#eeeeee;
-    //height:60px;
-    //width:100px;
-    margin: 5px;
-    //display: table;
+    height:100%;
+    width:100%;
+    //margin: 5px;
+    display: block;
     border: 2px solid black;
+    overflow: hidden;
+}
+
+
+.matchup .teams{
+    display: flex;
+    width: 100%;
+    font-size: 50%;
+    //border: 2px solid black;
+}
+
+.matchup .info{
+    display: block;
+    //border: 2px solid black;
+    visibility: hidden;
+    width: 0;
+    height: 0;
+    line-height: 0;
+}
+
+.matchup-img{
+    width: 100%;
+    height: 100%;
+    font-size: 10px;
+}
+
+
+.modal-dialog {
+    .matchup-img{
+    width: 50px;
+    height: 50px;
+    font-size: 30px;
+    }
+
+    .teams{
+        display: table;
+        width: 100%
+        //border: 2px solid black;
+    }
+}
+
+.matchup .info .next{
+    display: table-row;;
+    border: 2px solid black;
+}
+
+.matchup .info .last{
+    display: table-row;;
+    border: 2px solid black;
+}
+
+.app {
+
+   margin:0;
+  padding:0;
+  height:100%;
+  width:100vw;
+}
+
+#app {
+
+   margin:0;
+  padding:0;
+  height:100%;
+  width:100vw;
+}
+
+.matchups {
+   border: 2px solid black;
+   //width: 600px;
+   overflow: hidden;
+   margin:0;
+  padding:0;
+  height:100%;
+  width:100%;
+}
+
+.matchups .row{
+   //border: 2px solid black;
+   margin:0;
+  padding:0;
+  height:14%;
+  display: flex;
+  width: 100%;
+   //display: table-row;
+   //border: 2px solid black;
+}
+
+.matchups .cell{
+   //border: 2px solid black;
+   height:100%;
+   width:14%;
+   display: block;
+   //border: 1px solid black;
+}
+
+@media (min-width: 800px) {
+.matchup .teams{
+    display: table;
+    width: 100%;
+    font-size: 100%;
+    //border: 2px solid black;
+}
+
+.matchup .info{
+    display: table;
+    width: 100%;
+    height: auto;
+    visibility: visible;
+    line-height: 30px;
+}
+.matchup-img{
+    width: 50px;
+    height: 50px;
+    font-size: 30px;
+}
+//.matchups .cell{
+   //border: 2px solid black;
+   //height:60px;
+   //width:100px;
+   //display: table-cell;
+//}
 }

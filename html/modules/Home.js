@@ -1,5 +1,5 @@
 var React = require('react');
-import { Navbar, NavItem, NavDropdown, MenuItem, Nav, Glyphicon } from 'react-bootstrap';
+import { Navbar, NavItem, NavDropdown, MenuItem, Nav, Glyphicon, Modal, OverlayTrigger, popover, tooltip, Button } from 'react-bootstrap';
 var Store = require('./store');
 
 var store = new Store();
@@ -7,6 +7,7 @@ var store = new Store();
 class GameInfo extends React.Component{
         constructor(props) {
                 super(props);
+                this.state = {showModal: false};
         }
 
         findNextMatch(matchup){
@@ -54,7 +55,7 @@ class GameInfo extends React.Component{
 
               var lastGame = this.props.matchup.schedule[i-1];
               if (lastGame.teams.home.score > lastGame.teams.away.score){
-                 last = lastGame.teams.home.team.abbreviation + " win " + lastGame.teams.home.score + "-" + lastGame.teams.away.score;
+                 last =  lastGame.teams.home.team.abbreviation + " win " + lastGame.teams.home.score + "-" + lastGame.teams.away.score;
               }
               else {
                  last = lastGame.teams.away.team.abbreviation + " win " + lastGame.teams.away.score + "-" + lastGame.teams.home.score;
@@ -63,38 +64,72 @@ class GameInfo extends React.Component{
             return last;
         }
 
+        onTouch(event){
+           event.preventDefault();
+           this.setState({ showModal: true });
+        }
+
+         close() {
+          this.setState({ showModal: false });
+         }
+
         render(){
-                var homeImg = <Glyphicon glyph="question-sign" style={{width: '50px', height: 'auto'}}/>;
-                var awayImg = <Glyphicon glyph="question-sign" style={{width: '50px', height: 'auto'}}/>;
+                var homeImg = <Glyphicon className='matchup-img' glyph="question-sign" />;
+                var awayImg = <Glyphicon className='matchup-img' glyph="question-sign" />;
                 var nextGame = this.findNextMatch(this.props.matchup);
                 var LastGame = this.findLastMatch(this.props.matchup);
 
                 //console.debug(this.props.matchup.schedule);
                 if (this.props.matchup.home != 0)
-                  homeImg = <img src={store.getTeamImgUrl(this.props.matchup.home)} style={{width: '50px', height: 'auto'}}/>;
+                  homeImg = <img className='matchup-img' src={store.getTeamImgUrl(this.props.matchup.home)} />;
                 if (this.props.matchup.away != 0)
-                  awayImg = <img src={store.getTeamImgUrl(this.props.matchup.away)} style={{width: '50px', height: 'auto'}}/>;
+                  awayImg = <img className='matchup-img' src={store.getTeamImgUrl(this.props.matchup.away)} />;
                 return (
-                        <div className='matchup'>
-                           <div className='matchup-table'>
-                                   <div className='matchup-row'>
-                                           <div className='matchup-cell'>{homeImg}</div>
-                                           <div className='matchup-cell'>{this.props.matchup.result.home_win}</div>
-                                           <div className='matchup-cell'>-</div>
-                                           <div className='matchup-cell'>{this.props.matchup.result.away_win}</div>
-                                           <div className='matchup-cell'>{awayImg}</div>
-                                   </div>
+                        <div className='matchup' onTouchStart={this.onTouch.bind(this)}>
+                           <div className='teams'>
+                               <div className='matchup-cell'>{homeImg}</div>
+                               <div className='matchup-cell'>{this.props.matchup.result.home_win}</div>
+                               <div className='matchup-cell'>-</div>
+                               <div className='matchup-cell'>{this.props.matchup.result.away_win}</div>
+                               <div className='matchup-cell'>{awayImg}</div>
                            </div>
-                           <div className='matchup-table'>
-                                   <div className='matchup-row'>
+                           <div className='info'>
+                                   <div className='next'>
                                            <div className='matchup-cell'>Next: </div>
                                            <div className='matchup-cell'>{nextGame}</div>
                                    </div>
-                                   <div className='matchup-row'>
+                                   <div className='last'>
                                            <div className='matchup-cell'>Last: </div>
                                            <div className='matchup-cell'>{LastGame}</div>
                                    </div>
                            </div>
+                              <Modal show={this.state.showModal} onHide={this.close.bind(this)}>
+                                  <Modal.Header closeButton>
+                                    <Modal.Title>Details</Modal.Title>
+                                  </Modal.Header>
+                                  <Modal.Body>
+                                  <div className='teams'>
+                                      <div className='matchup-cell'>{homeImg}</div>
+                                      <div className='matchup-cell'>{this.props.matchup.result.home_win}</div>
+                                      <div className='matchup-cell'>-</div>
+                                      <div className='matchup-cell'>{this.props.matchup.result.away_win}</div>
+                                      <div className='matchup-cell'>{awayImg}</div>
+                                  </div>
+                                  <div className=''>
+                                          <div className='next'>
+                                                 <div className='matchup-cell'>Next: </div>
+                                                 <div className='matchup-cell'>{nextGame}</div>
+                                          </div>
+                                          <div className='last'>
+                                                 <div className='matchup-cell'>Last: </div>
+                                                 <div className='matchup-cell'>{LastGame}</div>
+                                          </div>
+                                  </div>
+                                  </Modal.Body>
+                                  <Modal.Footer>
+                                    <Button onClick={this.close.bind(this)}>Close</Button>
+                                  </Modal.Footer>
+                             </Modal>
                         </div>
                 )
         }
@@ -154,10 +189,11 @@ class Home extends React.Component{
             var result = display.map(function (row, y){
                var r = row.map(function(cell, x){
                   if (cell == '')
-                     return (<th key={x}></th>);
-                  return (<th key={x}><GameInfo matchup={this.state.matchups[cell]}/></th>);
+                     return (<div className='cell' key={x}></div>);
+                  return (<div className='cell' key={x}><GameInfo matchup={this.state.matchups[cell]}/></div>);
+                  //return (<div className='cell' key={x}>{x}</div>);
                }.bind(this));
-               return (<tr key={y}>{r}</tr>);
+               return (<div className='row' key={y}>{r}</div>);
             }.bind(this));
             return result;
         }
@@ -176,7 +212,7 @@ class Home extends React.Component{
                 return (
                     <div >
                             <div>Welcome to the 2016 NHL playoffs pool 🏒🏒🏒</div>
-                            <center><table className='matchup-tree'> <tbody>{tree}</tbody></table></center>
+                            <div className='matchups'> {tree}</div>
                     </div>
                 )
         }
