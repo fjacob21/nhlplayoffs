@@ -263,7 +263,9 @@ class Updater(object):
                         elif home_score < away_score:
                             away_win = away_win + 1
                     elif int(game['status']['statusCode']) == 3:
-                        print("Game in progress {0} {1}-{2} {3}".format(game['teams']['home']['team']['abbreviation'],home_score,away_score,game['teams']['away']['team']['abbreviation']))
+                        hi = self._teams[matchup['home']]
+                        ai = self._teams[matchup['away']]
+                        print("Game in progress {0} {1}-{2} {3}".format(hi['info']['abbreviation'],home_score,away_score,ai['info']['abbreviation']))
         result['home_win'] = home_win
         result['away_win'] = away_win
         return result
