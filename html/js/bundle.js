@@ -43092,7 +43092,7 @@
 	                                        ),
 	                                        React.createElement(
 	                                                'div',
-	                                                { className: 'matchup-cell' },
+	                                                { className: 'matchup-result matchup-cell' },
 	                                                React.createElement(
 	                                                        'div',
 	                                                        null,
@@ -43137,7 +43137,7 @@
 	                                                        ),
 	                                                        React.createElement(
 	                                                                'div',
-	                                                                { className: 'matchup-cell' },
+	                                                                { className: 'modal-result matchup-cell' },
 	                                                                this.props.matchup.result.home_win,
 	                                                                ' - ',
 	                                                                this.props.matchup.result.away_win

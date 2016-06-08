@@ -88,7 +88,7 @@ class GameInfo extends React.Component{
                         <div className='matchup' onTouchStart={this.onTouch.bind(this)} onClick={this.onTouch.bind(this)}>
                            <div className='teams'>
                                    <div className='matchup-cell'>{homeImg}</div>
-                                   <div className='matchup-cell'><div>{this.props.matchup.result.home_win} - {this.props.matchup.result.away_win}</div><div>...</div></div>
+                                   <div className='matchup-result matchup-cell'><div>{this.props.matchup.result.home_win} - {this.props.matchup.result.away_win}</div><div>...</div></div>
                                    <div className='matchup-cell'>{awayImg}</div>
                            </div>
 
@@ -99,7 +99,7 @@ class GameInfo extends React.Component{
                                   <Modal.Body className='matchup'>
                                   <div className='teams'>
                                       <div className='matchup-cell'>{homeImg}</div>
-                                      <div className='matchup-cell'>{this.props.matchup.result.home_win} - {this.props.matchup.result.away_win}</div>
+                                      <div className='modal-result matchup-cell'>{this.props.matchup.result.home_win} - {this.props.matchup.result.away_win}</div>
                                       <div className='matchup-cell'>{awayImg}</div>
                                   </div>
                                   <div className='info'>

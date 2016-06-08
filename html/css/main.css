@@ -181,6 +181,14 @@ body {
     .team-selector .results {
       font-size: 200%; } }
 
+.matchup-result {
+  font-size: 90%;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+
+.modal-result {
+  font-size: 300%;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+
 .team-rank {
   position: relative;
   left: 10%;
@@ -193,6 +201,24 @@ body {
   font-weight: bold;
   font-size: 150%;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+
+@media (min-width: 500px) {
+  .matchups .row {
+    max-height: 30px; }
+  .matchups .cell {
+    max-height: 30px; } }
+
+@media (min-width: 600px) {
+  .matchups .row {
+    max-height: 35px; }
+  .matchups .cell {
+    max-height: 35px; } }
+
+@media (min-width: 650px) {
+  .matchups .row {
+    max-height: 40px; }
+  .matchups .cell {
+    max-height: 40px; } }
 
 @media (min-width: 800px) {
   .matchup .teams {
@@ -210,6 +236,15 @@ body {
     max-width: 100px;
     font-size: 30px; }
   .matchups .row {
-    max-height: 50px; }
+    max-height: 100px; }
   .matchups .cell {
-    max-height: 50px; } }
+    max-height: 100px; }
+  .matchup-result {
+    font-size: 160%;
+    font-weight: bold;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; } }
+
+@media (min-width: 1500px) {
+  .matchup-result {
+    font-size: 200%;
+    font-weight: bold; } }
