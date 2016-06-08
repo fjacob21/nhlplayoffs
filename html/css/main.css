@@ -17,31 +17,36 @@ body {
 .teamLoser {
   opacity: 0.1; }
 
+.home {
+  height: 100%; }
+
 .matchup-cell {
   display: table-cell;
   padding: 1px;
   vertical-align: middle;
-  text-align: center; }
+  text-align: center;
+  width: 33%;
+  height: 100%; }
 
 .matchup {
-  background-color: #eeeeee;
+  background-color: #5E5A5F;
   height: 100%;
   width: 100%;
   display: block;
   border: 2px solid black;
-  overflow: hidden; }
+  overflow: hidden;
+  color: white;
+  cursor: pointer; }
 
 .matchup .teams {
   display: flex;
   width: 100%;
-  font-size: 50%; }
+  font-size: 50%;
+  align-items: baseline;
+  height: 100%; }
 
 .matchup .info {
-  display: block;
-  visibility: hidden;
-  width: 0;
-  height: 0;
-  line-height: 0; }
+  display: block; }
 
 .matchup-img {
   width: 100%;
@@ -90,12 +95,104 @@ body {
   padding: 0;
   height: 14%;
   display: flex;
-  width: 100%; }
+  width: 100%;
+  max-height: 20px; }
 
 .matchups .cell {
   height: 100%;
   width: 14%;
+  display: block;
+  width: 33%;
+  max-height: 20px; }
+
+.predictions {
   display: block; }
+  .predictions .header {
+    display: flex;
+    width: 100%; }
+    .predictions .header .cell {
+      width: 20%;
+      display: flex;
+      padding: 5px;
+      text-align: center;
+      max-width: 300px; }
+    .predictions .header .round {
+      width: 5%; }
+    .predictions .header .teams {
+      width: 45%; }
+    .predictions .header .games {
+      width: 20%; }
+    .predictions .header .time-left {
+      width: 30%; }
+  .predictions .prediction {
+    display: flex;
+    width: 100%; }
+    .predictions .prediction .cell {
+      width: 20%;
+      display: flex;
+      padding: 5px;
+      text-align: center;
+      max-width: 300px; }
+    .predictions .prediction .round {
+      width: 5%;
+      align-items: center; }
+    .predictions .prediction .teams {
+      width: 45%;
+      align-items: center; }
+    .predictions .prediction .games {
+      width: 20%;
+      align-items: center; }
+    .predictions .prediction .time-left {
+      width: 30%;
+      align-items: center; }
+
+.team-selector {
+  display: flex;
+  color: black;
+  width: 100%; }
+  .team-selector .homeimg {
+    display: block;
+    border: 2px solid black;
+    background-color: #5E5A5F;
+    border-radius: 9px;
+    margin: 2px;
+    width: 33%;
+    max-height: 100px;
+    max-width: 100px; }
+  .team-selector .awayimg {
+    display: block;
+    border: 2px solid black;
+    background-color: #5E5A5F;
+    border-radius: 9px;
+    margin: 2px;
+    width: 33%;
+    max-height: 100px;
+    max-width: 100px; }
+  .team-selector .selected {
+    border: 3px solid red;
+    border-radius: 9px; }
+  .team-selector .results {
+    display: block;
+    font-size: 130%;
+    color: black;
+    align-self: center;
+    width: 33%; }
+  @media (min-width: 800px) {
+    .team-selector .results {
+      font-size: 200%; } }
+
+.team-rank {
+  position: relative;
+  left: 10%;
+  height: 0;
+  width: 0;
+  display: flex;
+  margin-top: 10%;
+  float: left;
+  color: #FFC107;
+  font-weight: bold;
+  font-size: 150%;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
 
 @media (min-width: 800px) {
   .matchup .teams {
@@ -109,6 +206,10 @@ body {
     visibility: visible;
     line-height: 30px; }
   .matchup-img {
-    width: 50px;
-    height: 50px;
-    font-size: 30px; } }
+    max-height: 100px;
+    max-width: 100px;
+    font-size: 30px; }
+  .matchups .row {
+    max-height: 50px; }
+  .matchups .cell {
+    max-height: 50px; } }

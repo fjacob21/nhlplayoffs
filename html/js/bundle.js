@@ -25194,7 +25194,7 @@
 	                        { className: 'app' },
 	                        _react2.default.createElement(
 	                                _reactBootstrap.Navbar,
-	                                { fixedTop: 'true', inverse: true, expanded: this.state.navExpanded, onToggle: this.onNavbarToggle },
+	                                { fixedTop: true, inverse: true, expanded: this.state.navExpanded, onToggle: this.onNavbarToggle },
 	                                _react2.default.createElement(
 	                                        _reactBootstrap.Navbar.Header,
 	                                        null,
@@ -43081,7 +43081,7 @@
 	                        if (this.props.matchup.away != 0) awayImg = React.createElement('img', { className: 'matchup-img', src: store.getTeamImgUrl(this.props.matchup.away) });
 	                        return React.createElement(
 	                                'div',
-	                                { className: 'matchup', onTouchStart: this.onTouch.bind(this) },
+	                                { className: 'matchup', onTouchStart: this.onTouch.bind(this), onClick: this.onTouch.bind(this) },
 	                                React.createElement(
 	                                        'div',
 	                                        { className: 'teams' },
@@ -43093,54 +43093,23 @@
 	                                        React.createElement(
 	                                                'div',
 	                                                { className: 'matchup-cell' },
-	                                                this.props.matchup.result.home_win
-	                                        ),
-	                                        React.createElement(
-	                                                'div',
-	                                                { className: 'matchup-cell' },
-	                                                '-'
-	                                        ),
-	                                        React.createElement(
-	                                                'div',
-	                                                { className: 'matchup-cell' },
-	                                                this.props.matchup.result.away_win
+	                                                React.createElement(
+	                                                        'div',
+	                                                        null,
+	                                                        this.props.matchup.result.home_win,
+	                                                        ' - ',
+	                                                        this.props.matchup.result.away_win
+	                                                ),
+	                                                React.createElement(
+	                                                        'div',
+	                                                        null,
+	                                                        '...'
+	                                                )
 	                                        ),
 	                                        React.createElement(
 	                                                'div',
 	                                                { className: 'matchup-cell' },
 	                                                awayImg
-	                                        )
-	                                ),
-	                                React.createElement(
-	                                        'div',
-	                                        { className: 'info' },
-	                                        React.createElement(
-	                                                'div',
-	                                                { className: 'next' },
-	                                                React.createElement(
-	                                                        'div',
-	                                                        { className: 'matchup-cell' },
-	                                                        'Next: '
-	                                                ),
-	                                                React.createElement(
-	                                                        'div',
-	                                                        { className: 'matchup-cell' },
-	                                                        nextGame
-	                                                )
-	                                        ),
-	                                        React.createElement(
-	                                                'div',
-	                                                { className: 'last' },
-	                                                React.createElement(
-	                                                        'div',
-	                                                        { className: 'matchup-cell' },
-	                                                        'Last: '
-	                                                ),
-	                                                React.createElement(
-	                                                        'div',
-	                                                        { className: 'matchup-cell' },
-	                                                        LastGame
-	                                                )
 	                                        )
 	                                ),
 	                                React.createElement(
@@ -43157,7 +43126,7 @@
 	                                        ),
 	                                        React.createElement(
 	                                                _reactBootstrap.Modal.Body,
-	                                                null,
+	                                                { className: 'matchup' },
 	                                                React.createElement(
 	                                                        'div',
 	                                                        { className: 'teams' },
@@ -43169,16 +43138,8 @@
 	                                                        React.createElement(
 	                                                                'div',
 	                                                                { className: 'matchup-cell' },
-	                                                                this.props.matchup.result.home_win
-	                                                        ),
-	                                                        React.createElement(
-	                                                                'div',
-	                                                                { className: 'matchup-cell' },
-	                                                                '-'
-	                                                        ),
-	                                                        React.createElement(
-	                                                                'div',
-	                                                                { className: 'matchup-cell' },
+	                                                                this.props.matchup.result.home_win,
+	                                                                ' - ',
 	                                                                this.props.matchup.result.away_win
 	                                                        ),
 	                                                        React.createElement(
@@ -43189,7 +43150,7 @@
 	                                                ),
 	                                                React.createElement(
 	                                                        'div',
-	                                                        { className: '' },
+	                                                        { className: 'info' },
 	                                                        React.createElement(
 	                                                                'div',
 	                                                                { className: 'next' },
@@ -43326,7 +43287,7 @@
 	                        var tree = this.display();
 	                        return React.createElement(
 	                                'div',
-	                                null,
+	                                { className: 'home' },
 	                                React.createElement(
 	                                        'div',
 	                                        null,
@@ -44336,6 +44297,7 @@
 	var _reactRouter = __webpack_require__(159);
 
 	var React = __webpack_require__(1);
+	var TeamSelector = __webpack_require__(483);
 
 	var Store = __webpack_require__(477);
 
@@ -44425,65 +44387,28 @@
 	                        var diffDay = Math.max(0, Math.floor((start - now) / (1000 * 60 * 60 * 24)));
 	                        var diffHour = Math.max(0, Math.floor((start - now - diffDay * (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
 	                        var diffMin = Math.max(0, Math.floor((start - now - diffDay * (1000 * 60 * 60 * 24) - diffHour * (1000 * 60 * 60)) / (1000 * 60)));
-	                        start = start.toLocaleString();
+	                        var dstart = start.toLocaleString();
 	                        var diffStr = diffDay + ' days ' + diffHour + 'h' + diffMin + 'm';
 	                        if (diffDay == 0 && diffHour == 0 && diffMin == 0) diffStr = 'Started';
 	                        return React.createElement(
-	                                'tr',
-	                                { key: i },
+	                                'div',
+	                                { key: i, className: 'prediction' },
 	                                React.createElement(
-	                                        'th',
-	                                        null,
-	                                        React.createElement(
-	                                                'div',
-	                                                null,
-	                                                matchup.round
-	                                        ),
-	                                        React.createElement(
-	                                                'div',
-	                                                { 'data-toggle': 'buttons' },
-	                                                React.createElement(
-	                                                        'label',
-	                                                        { className: homeClass, 'data-value': prediction.home, style: { width: '160px' } },
-	                                                        homeTeam.standings.conferenceRank + '-',
-	                                                        React.createElement('img', { style: { width: '50px' }, src: homeUrl }),
-	                                                        React.createElement('input', { type: 'radio', name: 'predcit' + String(i),
-	                                                                id: i,
-	                                                                value: prediction.home,
-	                                                                checked: prediction.winner == prediction.home,
-	                                                                onChange: this.predictionChange }),
-	                                                        homeTeam.info.teamName + ' ' + matchup.season.home_win
-	                                                ),
-	                                                React.createElement(
-	                                                        'label',
-	                                                        { className: awayClass, 'data-value': prediction.away, style: { width: '160px' } },
-	                                                        awayTeam.standings.conferenceRank + '-',
-	                                                        React.createElement('img', { style: { width: '50px' }, src: awayUrl }),
-	                                                        React.createElement('input', { type: 'radio', name: 'predcit' + String(i),
-	                                                                value: prediction.away,
-	                                                                id: i,
-	                                                                checked: prediction.winner == prediction.away,
-	                                                                onChange: this.predictionChange }),
-	                                                        awayTeam.info.teamName + ' ' + matchup.season.away_win
-	                                                )
-	                                        )
+	                                        'div',
+	                                        { className: 'round cell' },
+	                                        matchup.round
 	                                ),
 	                                React.createElement(
-	                                        'th',
-	                                        null,
-	                                        start
+	                                        'div',
+	                                        { className: 'teams cell' },
+	                                        React.createElement(TeamSelector, { id: i, matchup: matchup, value: prediction.winner, onChange: this.predictionChange, store: store })
 	                                ),
 	                                React.createElement(
-	                                        'th',
-	                                        null,
-	                                        diffStr
-	                                ),
-	                                React.createElement(
-	                                        'th',
-	                                        null,
+	                                        'div',
+	                                        { className: 'games cell' },
 	                                        React.createElement(
 	                                                'select',
-	                                                { className: 'form-control', style: { width: '60px' }, value: prediction.games, id: i, onChange: this.gamesChange },
+	                                                { className: 'form-control', value: prediction.games, id: i, onChange: this.gamesChange },
 	                                                React.createElement(
 	                                                        'option',
 	                                                        { value: 4 },
@@ -44505,6 +44430,11 @@
 	                                                        '7'
 	                                                )
 	                                        )
+	                                ),
+	                                React.createElement(
+	                                        'div',
+	                                        { className: 'time-left cell' },
+	                                        diffStr
 	                                )
 	                        );
 	                }.bind(this));
@@ -44512,50 +44442,38 @@
 	                        'div',
 	                        null,
 	                        React.createElement(
-	                                _reactBootstrap.PageHeader,
+	                                'h1',
 	                                null,
-	                                React.createElement(
-	                                        'small',
-	                                        null,
-	                                        'predictions'
-	                                )
+	                                'Predictions'
 	                        ),
 	                        React.createElement(
-	                                'table',
-	                                { className: 'table table-hover' },
+	                                'div',
+	                                { className: 'predictions table table-hover' },
 	                                React.createElement(
-	                                        'thead',
-	                                        null,
+	                                        'div',
+	                                        { className: 'header' },
 	                                        React.createElement(
-	                                                'tr',
-	                                                null,
-	                                                React.createElement(
-	                                                        'th',
-	                                                        null,
-	                                                        'Winning team'
-	                                                ),
-	                                                React.createElement(
-	                                                        'th',
-	                                                        null,
-	                                                        'Start'
-	                                                ),
-	                                                React.createElement(
-	                                                        'th',
-	                                                        null,
-	                                                        'Time for prediction'
-	                                                ),
-	                                                React.createElement(
-	                                                        'th',
-	                                                        null,
-	                                                        'Number of games'
-	                                                )
+	                                                'div',
+	                                                { className: 'round cell' },
+	                                                'R'
+	                                        ),
+	                                        React.createElement(
+	                                                'div',
+	                                                { className: 'teams cell' },
+	                                                'Winner'
+	                                        ),
+	                                        React.createElement(
+	                                                'div',
+	                                                { className: 'games cell' },
+	                                                'Games'
+	                                        ),
+	                                        React.createElement(
+	                                                'div',
+	                                                { className: 'time-left cell' },
+	                                                'Time left'
 	                                        )
 	                                ),
-	                                React.createElement(
-	                                        'tbody',
-	                                        { className: 'list-group' },
-	                                        predictions
-	                                )
+	                                predictions
 	                        ),
 	                        React.createElement(
 	                                _reactBootstrap.PageHeader,
@@ -44572,6 +44490,114 @@
 	});
 
 	module.exports = Predictions;
+
+/***/ },
+/* 483 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactBootstrap = __webpack_require__(219);
+
+	var _reactRouterBootstrap = __webpack_require__(473);
+
+	var _reactRouter = __webpack_require__(159);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var React = __webpack_require__(1);
+
+	var TeamSelector = function (_React$Component) {
+	        _inherits(TeamSelector, _React$Component);
+
+	        function TeamSelector(props) {
+	                _classCallCheck(this, TeamSelector);
+
+	                var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TeamSelector).call(this, props));
+
+	                _this.state = {};
+	                _this.value = _this.props.value;
+	                _this.id = _this.props.id;
+	                return _this;
+	        }
+
+	        _createClass(TeamSelector, [{
+	                key: 'componentDidMount',
+	                value: function componentDidMount() {}
+	        }, {
+	                key: 'homeSelect',
+	                value: function homeSelect(event) {
+	                        this.value = this.props.matchup.home;
+	                        event.target = this;
+	                        this.props.onChange(event);
+	                }
+	        }, {
+	                key: 'awaySelect',
+	                value: function awaySelect(event) {
+	                        this.value = this.props.matchup.away;
+	                        event.target = this;
+	                        this.props.onChange(event);
+	                }
+	        }, {
+	                key: 'render',
+	                value: function render() {
+	                        var store = this.props.store;
+	                        var matchup = this.props.matchup;
+	                        var homeTeam = store.getTeam(this.props.matchup.home);
+	                        var awayTeam = store.getTeam(this.props.matchup.away);
+
+	                        var homeImgStyle = 'homeimg';
+	                        var awayImgStyle = 'awayimg';
+	                        if (this.props.matchup.home == this.props.value) homeImgStyle += " selected";else if (this.props.matchup.away == this.props.value) awayImgStyle += " selected";
+
+	                        var homeImg = React.createElement('img', { id: 'img-' + this.props.matchup.home, className: 'matchup-img', src: store.getTeamImgUrl(this.props.matchup.home) });
+	                        var awayImg = React.createElement('img', { className: 'matchup-img', src: store.getTeamImgUrl(this.props.matchup.away) });
+	                        return React.createElement(
+	                                'div',
+	                                { className: 'team-selector' },
+	                                React.createElement(
+	                                        'div',
+	                                        { className: homeImgStyle, onClick: this.homeSelect.bind(this) },
+	                                        React.createElement(
+	                                                'div',
+	                                                { className: 'team-rank' },
+	                                                homeTeam.standings.conferenceRank
+	                                        ),
+	                                        ' ',
+	                                        homeImg,
+	                                        ' '
+	                                ),
+	                                React.createElement(
+	                                        'div',
+	                                        { className: 'results' },
+	                                        matchup.season.home_win + " - " + matchup.season.away_win
+	                                ),
+	                                React.createElement(
+	                                        'div',
+	                                        { className: awayImgStyle, onClick: this.awaySelect.bind(this) },
+	                                        React.createElement(
+	                                                'div',
+	                                                { className: 'team-rank' },
+	                                                awayTeam.standings.conferenceRank
+	                                        ),
+	                                        ' ',
+	                                        awayImg,
+	                                        ' '
+	                                )
+	                        );
+	                }
+	        }]);
+
+	        return TeamSelector;
+	}(React.Component);
+
+	module.exports = TeamSelector;
 
 /***/ }
 /******/ ]);

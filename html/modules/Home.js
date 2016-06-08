@@ -85,37 +85,24 @@ class GameInfo extends React.Component{
                 if (this.props.matchup.away != 0)
                   awayImg = <img className='matchup-img' src={store.getTeamImgUrl(this.props.matchup.away)} />;
                 return (
-                        <div className='matchup' onTouchStart={this.onTouch.bind(this)}>
+                        <div className='matchup' onTouchStart={this.onTouch.bind(this)} onClick={this.onTouch.bind(this)}>
                            <div className='teams'>
-                               <div className='matchup-cell'>{homeImg}</div>
-                               <div className='matchup-cell'>{this.props.matchup.result.home_win}</div>
-                               <div className='matchup-cell'>-</div>
-                               <div className='matchup-cell'>{this.props.matchup.result.away_win}</div>
-                               <div className='matchup-cell'>{awayImg}</div>
+                                   <div className='matchup-cell'>{homeImg}</div>
+                                   <div className='matchup-cell'><div>{this.props.matchup.result.home_win} - {this.props.matchup.result.away_win}</div><div>...</div></div>
+                                   <div className='matchup-cell'>{awayImg}</div>
                            </div>
-                           <div className='info'>
-                                   <div className='next'>
-                                           <div className='matchup-cell'>Next: </div>
-                                           <div className='matchup-cell'>{nextGame}</div>
-                                   </div>
-                                   <div className='last'>
-                                           <div className='matchup-cell'>Last: </div>
-                                           <div className='matchup-cell'>{LastGame}</div>
-                                   </div>
-                           </div>
+
                               <Modal show={this.state.showModal} onHide={this.close.bind(this)}>
                                   <Modal.Header closeButton>
                                     <Modal.Title>Details</Modal.Title>
                                   </Modal.Header>
-                                  <Modal.Body>
+                                  <Modal.Body className='matchup'>
                                   <div className='teams'>
                                       <div className='matchup-cell'>{homeImg}</div>
-                                      <div className='matchup-cell'>{this.props.matchup.result.home_win}</div>
-                                      <div className='matchup-cell'>-</div>
-                                      <div className='matchup-cell'>{this.props.matchup.result.away_win}</div>
+                                      <div className='matchup-cell'>{this.props.matchup.result.home_win} - {this.props.matchup.result.away_win}</div>
                                       <div className='matchup-cell'>{awayImg}</div>
                                   </div>
-                                  <div className=''>
+                                  <div className='info'>
                                           <div className='next'>
                                                  <div className='matchup-cell'>Next: </div>
                                                  <div className='matchup-cell'>{nextGame}</div>
@@ -210,7 +197,7 @@ class Home extends React.Component{
                 // }.bind(this));
                 var tree = this.display();
                 return (
-                    <div >
+                    <div className='home'>
                             <div>Welcome to the 2016 NHL playoffs pool 🏒🏒🏒</div>
                             <div className='matchups'> {tree}</div>
                     </div>

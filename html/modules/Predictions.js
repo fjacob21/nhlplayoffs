@@ -1,4 +1,5 @@
 var React = require('react');
+var TeamSelector = require('./teamSelector');
 import { Navbar, NavItem, NavDropdown, MenuItem, Nav, Button, DropdownButton, PageHeader } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap'
 import { Router, Route, Link } from 'react-router'
@@ -87,68 +88,43 @@ var Predictions = React.createClass({
                 var diffDay = Math.max(0, Math.floor((start-now)/(1000*60*60*24)));
                 var diffHour = Math.max(0, Math.floor((start-now - (diffDay*(1000*60*60*24)))/(1000*60*60)));
                 var diffMin = Math.max(0, Math.floor((start-now - (diffDay*(1000*60*60*24)) - (diffHour*(1000*60*60)))/(1000*60)));
-                start = start.toLocaleString();
+                var dstart = start.toLocaleString();
                 var diffStr = diffDay + ' days ' + diffHour+'h'+diffMin +'m';
                 if(diffDay==0 && diffHour==0 && diffMin==0)
                         diffStr = 'Started';
                 return (
-                        <tr key={i}>
-                                <th>
-                                        <div>{matchup.round}</div>
-                                        <div  data-toggle='buttons'>
-                                                <label className={homeClass} data-value={prediction.home} style={{width:'160px'}}>
-                                                        {homeTeam.standings.conferenceRank + '-' }
-                                                        <img style={{width: '50px'}} src={homeUrl} />
-                                                        <input type="radio" name={'predcit' + String(i)}
-                                                           id={i}
-                                                           value={prediction.home}
-                                                           checked={prediction.winner==prediction.home}
-                                                           onChange={this.predictionChange} />{homeTeam.info.teamName + ' ' + matchup.season.home_win}
-                                                </label>
-                                                <label className={awayClass} data-value={prediction.away} style={{width:'160px'}}>
-                                                        {awayTeam.standings.conferenceRank + '-' }
-                                                        <img style={{width: '50px'}} src={awayUrl} />
-                                                        <input type="radio" name={'predcit' + String(i)}
-                                                           value={prediction.away}
-                                                           id={i}
-                                                           checked={prediction.winner==prediction.away}
-                                                           onChange={this.predictionChange} />{awayTeam.info.teamName + ' ' + matchup.season.away_win}
-                                                </label>
-                                        </div>
-                                </th>
-                                <th>
-                                        {start}
-                                </th>
-                                <th>
-                                        {diffStr}
-                                </th>
-                                <th>
-                                        <select className='form-control' style={{width:'60px'}} value={prediction.games} id={i} onChange={this.gamesChange}>
+                        <div key={i} className='prediction'>
+                               <div className='round cell'>{matchup.round}</div>
+                                <div className='teams cell'>
+                                        <TeamSelector id={i} matchup={matchup} value={prediction.winner} onChange={this.predictionChange} store={store}/>
+                                </div>
+                                <div className='games cell'>
+                                        <select className='form-control' value={prediction.games} id={i} onChange={this.gamesChange}>
                                                 <option value={4} >4</option>
                                                 <option value={5}>5</option>
                                                 <option value={6}>6</option>
                                                 <option value={7}>7</option>
                                         </select>
-                                </th>
-                        </tr>
+                                </div>
+                                <div className='time-left cell'>
+                                        {diffStr}
+                                </div>
+                        </div>
                 );
         }.bind(this));
         return (
                 <div>
-                        <PageHeader><small>predictions</small></PageHeader>
-                        <table className='table table-hover'>
-                                <thead>
-                                    <tr>
-                                        <th>Winning team</th>
-                                        <th>Start</th>
-                                        <th>Time for prediction</th>
-                                        <th>Number of games</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="list-group">
+                        <h1>Predictions</h1>
+                        <div className='predictions table table-hover'>
+                                <div className='header'>
+                                        <div className='round cell'>R</div>
+                                        <div className='teams cell'>Winner</div>
+                                        <div className='games cell'>Games</div>
+                                        <div className='time-left cell'>Time left</div>
+
+                                </div>
                                 {predictions}
-                        </tbody>
-                        </table>
+                        </div>
                         <PageHeader>Winner prediction</PageHeader>
                         <select className='form-control' style={{width: '300px'}} id='winner_prediction' value={this.state.winner} onChange={this.winnerChange}>
                                 {teams}

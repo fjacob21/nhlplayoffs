@@ -29,7 +29,7 @@ const App = React.createClass({
                 username = sessionStorage.user;
         return (
                 <div className='app'>
-                         <Navbar fixedTop='true' inverse expanded={ this.state.navExpanded } onToggle={ this.onNavbarToggle } >
+                         <Navbar fixedTop={true} inverse expanded={ this.state.navExpanded } onToggle={ this.onNavbarToggle } >
                                  <Navbar.Header>
                                          <Navbar.Brand>
                                                  <LinkContainer to="/main/home">
