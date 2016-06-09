@@ -43256,7 +43256,11 @@
 
 	                        var result = display.map(function (row, y) {
 	                                var r = row.map(function (cell, x) {
-	                                        if (cell == '') return React.createElement('div', { className: 'cell', key: x });
+	                                        if (cell == '') return React.createElement(
+	                                                'div',
+	                                                { className: 'cell', key: x },
+	                                                React.createElement('div', null)
+	                                        );
 	                                        return React.createElement(
 	                                                'div',
 	                                                { className: 'cell', key: x },

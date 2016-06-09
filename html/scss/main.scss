@@ -320,7 +320,7 @@ body {
 
 @media (min-width: 800px) {
 .matchup .teams{
-        display: table;
+        display: flex;
         width: 100%;
         font-size: 100%;
 }
@@ -367,4 +367,14 @@ body {
            font-size: 200%;
            font-weight: bold;
    }
+}
+
+.test-line {
+        border-top: 2px solid;
+    border-right: 2px solid;
+    height: 50%;
+    width: 50%;
+    top: 50%;
+    display: block;
+    position: relative;
 }

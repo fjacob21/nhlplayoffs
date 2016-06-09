@@ -176,7 +176,7 @@ class Home extends React.Component{
             var result = display.map(function (row, y){
                var r = row.map(function(cell, x){
                   if (cell == '')
-                     return (<div className='cell' key={x}></div>);
+                     return (<div className='cell' key={x}><div></div></div>);
                   return (<div className='cell' key={x}><GameInfo matchup={this.state.matchups[cell]}/></div>);
                   //return (<div className='cell' key={x}>{x}</div>);
                }.bind(this));
