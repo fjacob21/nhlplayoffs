@@ -4,6 +4,32 @@ var Store = require('./store');
 
 var store = new Store();
 
+class Line extends React.Component{
+        constructor(props) {
+                super(props);
+        }
+
+        render(){
+                var dx = this.props.dx;
+                var dy = this.props.dy;
+                var className = "";
+                if (dx == 0 && dy==1)
+                        className = "rline";
+                else if (dx==0 && dy==-1)
+                        className = "lline";
+                else if (dx==1 && dy==1)
+                        className = "right-top-corner";
+                else if (dx==1 && dy==-1)
+                        className = "right-bottom-corner";
+                else if (dx==-1 && dy==1)
+                        className = "left-top-corner";
+                else if (dx==-1 && dy==-1)
+                        className = "left-bottom-corner";
+
+                return (<div className={className}></div>)
+        }
+}
+
 class GameInfo extends React.Component{
         constructor(props) {
                 super(props);
@@ -164,10 +190,31 @@ class Home extends React.Component{
             }
             function walk_matchup_tree(root, x, y, dx){
                 display[y][x] = root.id;
-                if (root.left != null)
+                if (root.left != null){
+                  //Insert lines
+                  var dx = dx;
+                  var dy = (root.round-1);
+                  var py = y;
+                  for (var i=0;i<dy-1;i++){
+                          py--;
+                          display[py][x] = [0,dx];
+                  }
+                  py--;
+                  display[py][x] = [dx,1];
                   walk_matchup_tree(root.left, x+dx, y-(root.round-1), dx);
-                if (root.right != null)
-                  walk_matchup_tree(root.right, x+dx, y+(root.round-1), dx);
+                }
+                if (root.right != null) {
+                        var dx = dx;
+                        var dy = (root.round-1);
+                        var py = y;
+                        for (var i=0;i<dy-1;i++){
+                              py++;
+                              display[py][x] = [0,dx];
+                        }
+                        py++;
+                        display[py][x] = [dx,-1];
+                        walk_matchup_tree(root.right, x+dx, y+(root.round-1), dx);
+                }
             }
             display[2][3] = 'sc';
             walk_matchup_tree(this.state.matchups.w, 2, 3, -1);
@@ -177,6 +224,8 @@ class Home extends React.Component{
                var r = row.map(function(cell, x){
                   if (cell == '')
                      return (<div className='cell' key={x}><div></div></div>);
+                  else if (typeof(cell) == 'object')
+                        return (<div className='cell' key={x}><Line dx={cell[0]} dy={cell[1]} /></div>);
                   return (<div className='cell' key={x}><GameInfo matchup={this.state.matchups[cell]}/></div>);
                   //return (<div className='cell' key={x}>{x}</div>);
                }.bind(this));

@@ -42979,6 +42979,8 @@
 
 	'use strict';
 
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _reactBootstrap = __webpack_require__(219);
@@ -42995,16 +42997,40 @@
 
 	var store = new Store();
 
-	var GameInfo = function (_React$Component) {
-	        _inherits(GameInfo, _React$Component);
+	var Line = function (_React$Component) {
+	        _inherits(Line, _React$Component);
+
+	        function Line(props) {
+	                _classCallCheck(this, Line);
+
+	                return _possibleConstructorReturn(this, Object.getPrototypeOf(Line).call(this, props));
+	        }
+
+	        _createClass(Line, [{
+	                key: 'render',
+	                value: function render() {
+	                        var dx = this.props.dx;
+	                        var dy = this.props.dy;
+	                        var className = "";
+	                        if (dx == 0 && dy == 1) className = "rline";else if (dx == 0 && dy == -1) className = "lline";else if (dx == 1 && dy == 1) className = "right-top-corner";else if (dx == 1 && dy == -1) className = "right-bottom-corner";else if (dx == -1 && dy == 1) className = "left-top-corner";else if (dx == -1 && dy == -1) className = "left-bottom-corner";
+
+	                        return React.createElement('div', { className: className });
+	                }
+	        }]);
+
+	        return Line;
+	}(React.Component);
+
+	var GameInfo = function (_React$Component2) {
+	        _inherits(GameInfo, _React$Component2);
 
 	        function GameInfo(props) {
 	                _classCallCheck(this, GameInfo);
 
-	                var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GameInfo).call(this, props));
+	                var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(GameInfo).call(this, props));
 
-	                _this.state = { showModal: false };
-	                return _this;
+	                _this2.state = { showModal: false };
+	                return _this2;
 	        }
 
 	        _createClass(GameInfo, [{
@@ -43198,16 +43224,16 @@
 	        return GameInfo;
 	}(React.Component);
 
-	var Home = function (_React$Component2) {
-	        _inherits(Home, _React$Component2);
+	var Home = function (_React$Component3) {
+	        _inherits(Home, _React$Component3);
 
 	        function Home(props) {
 	                _classCallCheck(this, Home);
 
-	                var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Home).call(this, props));
+	                var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(Home).call(this, props));
 
-	                _this2.state = { "matchups": {}, "currentround": 0 };
-	                return _this2;
+	                _this3.state = { "matchups": {}, "currentround": 0 };
+	                return _this3;
 	        }
 
 	        _createClass(Home, [{
@@ -43247,8 +43273,31 @@
 	                        }
 	                        function walk_matchup_tree(root, x, y, dx) {
 	                                display[y][x] = root.id;
-	                                if (root.left != null) walk_matchup_tree(root.left, x + dx, y - (root.round - 1), dx);
-	                                if (root.right != null) walk_matchup_tree(root.right, x + dx, y + (root.round - 1), dx);
+	                                if (root.left != null) {
+	                                        //Insert lines
+	                                        var dx = dx;
+	                                        var dy = root.round - 1;
+	                                        var py = y;
+	                                        for (var i = 0; i < dy - 1; i++) {
+	                                                py--;
+	                                                display[py][x] = [0, dx];
+	                                        }
+	                                        py--;
+	                                        display[py][x] = [dx, 1];
+	                                        walk_matchup_tree(root.left, x + dx, y - (root.round - 1), dx);
+	                                }
+	                                if (root.right != null) {
+	                                        var dx = dx;
+	                                        var dy = root.round - 1;
+	                                        var py = y;
+	                                        for (var i = 0; i < dy - 1; i++) {
+	                                                py++;
+	                                                display[py][x] = [0, dx];
+	                                        }
+	                                        py++;
+	                                        display[py][x] = [dx, -1];
+	                                        walk_matchup_tree(root.right, x + dx, y + (root.round - 1), dx);
+	                                }
 	                        }
 	                        display[2][3] = 'sc';
 	                        walk_matchup_tree(this.state.matchups.w, 2, 3, -1);
@@ -43260,6 +43309,10 @@
 	                                                'div',
 	                                                { className: 'cell', key: x },
 	                                                React.createElement('div', null)
+	                                        );else if ((typeof cell === 'undefined' ? 'undefined' : _typeof(cell)) == 'object') return React.createElement(
+	                                                'div',
+	                                                { className: 'cell', key: x },
+	                                                React.createElement(Line, { dx: cell[0], dy: cell[1] })
 	                                        );
 	                                        return React.createElement(
 	                                                'div',

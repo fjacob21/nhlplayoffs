@@ -46,6 +46,7 @@ body {
     overflow: hidden;
     color: white;
     cursor: pointer;
+    border-radius: 20px;
 }
 
 .matchup .teams{
@@ -369,12 +370,61 @@ body {
    }
 }
 
-.test-line {
-        border-top: 2px solid;
+.rline {
+    border-left: 2px solid;
+    height: 100%;
+    width: 50%;
+    left: 50%;
+    display: block;
+    position: relative;
+}
+
+.lline {
+    border-right: 2px solid;
+    height: 100%;
+    width: 50%;
+    display: block;
+    position: relative;
+}
+
+.right-top-corner {
+    border-top: 2px solid;
+    border-left: 2px solid;
+    height: 50%;
+    width: 50%;
+    top: 50%;
+    left: 50%;
+    display: block;
+    position: relative;
+}
+
+.right-bottom-corner {
+    border-bottom: 2px solid;
+    border-left: 2px solid;
+    height: 50%;
+    width: 50%;
+    top: 0%;
+    left: 50%;
+    display: block;
+    position: relative;
+}
+
+.left-top-corner {
+    border-top: 2px solid;
     border-right: 2px solid;
     height: 50%;
     width: 50%;
     top: 50%;
+    display: block;
+    position: relative;
+}
+
+.left-bottom-corner {
+    border-bottom: 2px solid;
+    border-right: 2px solid;
+    height: 50%;
+    width: 50%;
+    top: 0%;
     display: block;
     position: relative;
 }
