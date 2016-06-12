@@ -44285,7 +44285,7 @@
 	                                        React.createElement(
 	                                                'th',
 	                                                { className: 'rank' },
-	                                                i
+	                                                i + 1
 	                                        ),
 	                                        React.createElement(
 	                                                'th',
