@@ -30,6 +30,21 @@ class Line extends React.Component{
         }
 }
 
+class Winner extends React.Component{
+        constructor(props) {
+                super(props);
+        }
+
+        render(){
+                var winner = <img className='winner-img' src={store.getTeamImgUrl(this.props.winner)} />;
+                return (
+                        <div className='winner'>
+                                <img className='scimg' src='https://nhl.bamcontent.com/images/logos/league/2016_Playoffs_English_Primary_WebBracketVersion.svg'></img>
+                                {winner}
+                        </div>)
+        }
+}
+
 class GameInfo extends React.Component{
         constructor(props) {
                 super(props);
@@ -220,12 +235,21 @@ class Home extends React.Component{
             walk_matchup_tree(this.state.matchups.w, 2, 3, -1);
             walk_matchup_tree(this.state.matchups.e, 4, 3, 1);
 
+
+            if (this.state.matchups.sc.result.home_win == 4){
+                console.debug(this.state.matchups.sc.home);
+                display[0][3] = this.state.matchups.sc.home;
+            }
+            if (this.state.matchups.sc.result.away_win == 4)
+                display[0][3] = this.state.matchups.sc.away;
             var result = display.map(function (row, y){
                var r = row.map(function(cell, x){
                   if (cell == '')
                      return (<div className='cell' key={x}><div></div></div>);
                   else if (typeof(cell) == 'object')
                         return (<div className='cell' key={x}><Line dx={cell[0]} dy={cell[1]} /></div>);
+                  else if (typeof(cell) == 'number')
+                        return (<div className='cell' key={x}><Winner winner={cell} /></div>);
                   return (<div className='cell' key={x}><GameInfo matchup={this.state.matchups[cell]}/></div>);
                   //return (<div className='cell' key={x}>{x}</div>);
                }.bind(this));

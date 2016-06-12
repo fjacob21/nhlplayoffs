@@ -43021,16 +43021,41 @@
 	        return Line;
 	}(React.Component);
 
-	var GameInfo = function (_React$Component2) {
-	        _inherits(GameInfo, _React$Component2);
+	var Winner = function (_React$Component2) {
+	        _inherits(Winner, _React$Component2);
+
+	        function Winner(props) {
+	                _classCallCheck(this, Winner);
+
+	                return _possibleConstructorReturn(this, Object.getPrototypeOf(Winner).call(this, props));
+	        }
+
+	        _createClass(Winner, [{
+	                key: 'render',
+	                value: function render() {
+	                        var winner = React.createElement('img', { className: 'winner-img', src: store.getTeamImgUrl(this.props.winner) });
+	                        return React.createElement(
+	                                'div',
+	                                { className: 'winner' },
+	                                React.createElement('img', { className: 'scimg', src: 'https://nhl.bamcontent.com/images/logos/league/2016_Playoffs_English_Primary_WebBracketVersion.svg' }),
+	                                winner
+	                        );
+	                }
+	        }]);
+
+	        return Winner;
+	}(React.Component);
+
+	var GameInfo = function (_React$Component3) {
+	        _inherits(GameInfo, _React$Component3);
 
 	        function GameInfo(props) {
 	                _classCallCheck(this, GameInfo);
 
-	                var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(GameInfo).call(this, props));
+	                var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(GameInfo).call(this, props));
 
-	                _this2.state = { showModal: false };
-	                return _this2;
+	                _this3.state = { showModal: false };
+	                return _this3;
 	        }
 
 	        _createClass(GameInfo, [{
@@ -43224,16 +43249,16 @@
 	        return GameInfo;
 	}(React.Component);
 
-	var Home = function (_React$Component3) {
-	        _inherits(Home, _React$Component3);
+	var Home = function (_React$Component4) {
+	        _inherits(Home, _React$Component4);
 
 	        function Home(props) {
 	                _classCallCheck(this, Home);
 
-	                var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(Home).call(this, props));
+	                var _this4 = _possibleConstructorReturn(this, Object.getPrototypeOf(Home).call(this, props));
 
-	                _this3.state = { "matchups": {}, "currentround": 0 };
-	                return _this3;
+	                _this4.state = { "matchups": {}, "currentround": 0 };
+	                return _this4;
 	        }
 
 	        _createClass(Home, [{
@@ -43303,6 +43328,11 @@
 	                        walk_matchup_tree(this.state.matchups.w, 2, 3, -1);
 	                        walk_matchup_tree(this.state.matchups.e, 4, 3, 1);
 
+	                        if (this.state.matchups.sc.result.home_win == 4) {
+	                                console.debug(this.state.matchups.sc.home);
+	                                display[0][3] = this.state.matchups.sc.home;
+	                        }
+	                        if (this.state.matchups.sc.result.away_win == 4) display[0][3] = this.state.matchups.sc.away;
 	                        var result = display.map(function (row, y) {
 	                                var r = row.map(function (cell, x) {
 	                                        if (cell == '') return React.createElement(
@@ -43313,6 +43343,10 @@
 	                                                'div',
 	                                                { className: 'cell', key: x },
 	                                                React.createElement(Line, { dx: cell[0], dy: cell[1] })
+	                                        );else if (typeof cell == 'number') return React.createElement(
+	                                                'div',
+	                                                { className: 'cell', key: x },
+	                                                React.createElement(Winner, { winner: cell })
 	                                        );
 	                                        return React.createElement(
 	                                                'div',
@@ -44250,6 +44284,11 @@
 	                                        { key: i },
 	                                        React.createElement(
 	                                                'th',
+	                                                { className: 'rank' },
+	                                                i
+	                                        ),
+	                                        React.createElement(
+	                                                'th',
 	                                                { style: { width: '50px', verticalAlign: 'middle' } },
 	                                                result.player
 	                                        ),
@@ -44309,6 +44348,11 @@
 	                                        React.createElement(
 	                                                'tr',
 	                                                null,
+	                                                React.createElement(
+	                                                        'th',
+	                                                        null,
+	                                                        'Rank'
+	                                                ),
 	                                                React.createElement(
 	                                                        'th',
 	                                                        null,

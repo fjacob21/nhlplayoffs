@@ -95,7 +95,7 @@ class Results extends React.Component{
                         var winner = <div></div>;
                         if(result.winner != 0)
                                 winner = <img className={winnerClass} src={store.getTeamImgUrl(result.winner)} style={{width: '50px', height: 'auto'}} />
-                        return (<tr key={i}><th style={{width: '50px',verticalAlign: 'middle'}}>{result.player}</th>{m}<th style={{width: '50px',verticalAlign: 'middle'}} >{winner}</th><th style={{width: '50px',verticalAlign: 'middle'}}>{result.pts}</th></tr>);
+                        return (<tr key={i}><th className='rank'>{i}</th><th style={{width: '50px',verticalAlign: 'middle'}}>{result.player}</th>{m}<th style={{width: '50px',verticalAlign: 'middle'}} >{winner}</th><th style={{width: '50px',verticalAlign: 'middle'}}>{result.pts}</th></tr>);
                 }.bind(this));
 
                                 var currentRound = 0;
@@ -135,6 +135,7 @@ class Results extends React.Component{
                         <table className='table table-hover'>
                                 <thead>
                                     <tr>
+                                        <th>Rank</th>
                                         <th>Player</th>
                                         {matchsHead}
                                         <th style={{width: '10px'}}>Winner</th>
