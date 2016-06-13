@@ -41,8 +41,6 @@ def calculate_pts_old(player_id , preds, matchups, teams, winner, final_winner):
             pts = pts + int(result['winner']['conferenceRank'])
             if result['has_games']:
                 pts = pts + 10
-
-    print('Winner', winner, 'final winner', final_winner)
     if winner == final_winner:
             pts = pts + 50
     return pts
@@ -56,7 +54,6 @@ def calculate_pts(player_id , preds, matchups, teams, winner, final_winner):
             pts = pts + int(result['winner']['conferenceRank'])
             if result['has_games']:
                 pts = pts + 5
-    print('Winner', winner, 'final winner', final_winner)
     if winner == final_winner:
             pts = pts + 50
     return pts
