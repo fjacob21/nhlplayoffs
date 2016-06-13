@@ -451,8 +451,11 @@ body {
         left: 50%;
         top: 90%;
         height: 100%;
-        //width: 100%;
-        //display: flex;
-        //margin-top: 10%;
         float: left;
+}
+
+.winner-star{
+        color: #ffeb3b;
+        text-shadow: 0 0 3px black;
+        margin-left: 2px;
 }

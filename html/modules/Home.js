@@ -235,12 +235,9 @@ class Home extends React.Component{
             walk_matchup_tree(this.state.matchups.w, 2, 3, -1);
             walk_matchup_tree(this.state.matchups.e, 4, 3, 1);
 
-
-            if (this.state.matchups.sc.result.home_win == 4){
-                console.debug(this.state.matchups.sc.home);
+            if (this.state.matchups.sc.result.home_win == 4)
                 display[0][3] = this.state.matchups.sc.home;
-            }
-            if (this.state.matchups.sc.result.away_win == 4)
+            else if (this.state.matchups.sc.result.away_win == 4)
                 display[0][3] = this.state.matchups.sc.away;
             var result = display.map(function (row, y){
                var r = row.map(function(cell, x){

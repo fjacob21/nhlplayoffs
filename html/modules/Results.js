@@ -1,5 +1,5 @@
 var React = require('react');
-import { Navbar, NavItem, NavDropdown, MenuItem, Nav, Button } from 'react-bootstrap';
+import { Navbar, NavItem, NavDropdown, MenuItem, Nav, Button, Glyphicon } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap'
 import { Router, Route, Link } from 'react-router'
 var Store = require('./store');
@@ -54,6 +54,15 @@ class Results extends React.Component{
                 }
         }
 
+        isFinished(){
+                if (store.matchups.sc == undefined)
+                        return false;
+                if (store.matchups.sc.result.home_win == 4)
+                    return true;
+                else if (store.matchups.sc.result.away_win == 4)
+                    return true;
+                return false;
+        }
         findPrediction(predictions, home, away){
                 for (var prediction of predictions){
                         if (prediction.home == home && prediction.away == away)
@@ -93,9 +102,12 @@ class Results extends React.Component{
                                         }.bind(this));
                         var winnerClass = '';
                         var winner = <div></div>;
+                        var winnerstar = <div></div>;
+                        if (i==0 && this.isFinished())
+                                winnerstar = <Glyphicon className='winner-star' glyph="star" />;;
                         if(result.winner != 0)
                                 winner = <img className={winnerClass} src={store.getTeamImgUrl(result.winner)} style={{width: '50px', height: 'auto'}} />
-                        return (<tr key={i}><th className='rank'>{i+1}</th><th style={{width: '50px',verticalAlign: 'middle'}}>{result.player}</th>{m}<th style={{width: '50px',verticalAlign: 'middle'}} >{winner}</th><th style={{width: '50px',verticalAlign: 'middle'}}>{result.pts}</th></tr>);
+                        return (<tr key={i}><th className='rank'>{i+1}</th><th style={{width: '50px',verticalAlign: 'middle'}}>{result.player}</th>{m}<th style={{width: '50px',verticalAlign: 'middle'}} >{winner}</th><th style={{width: '50px',verticalAlign: 'middle'}}><div>{result.pts}{winnerstar}</div></th></tr>);
                 }.bind(this));
 
                                 var currentRound = 0;

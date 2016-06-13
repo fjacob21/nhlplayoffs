@@ -43328,11 +43328,7 @@
 	                        walk_matchup_tree(this.state.matchups.w, 2, 3, -1);
 	                        walk_matchup_tree(this.state.matchups.e, 4, 3, 1);
 
-	                        if (this.state.matchups.sc.result.home_win == 4) {
-	                                console.debug(this.state.matchups.sc.home);
-	                                display[0][3] = this.state.matchups.sc.home;
-	                        }
-	                        if (this.state.matchups.sc.result.away_win == 4) display[0][3] = this.state.matchups.sc.away;
+	                        if (this.state.matchups.sc.result.home_win == 4) display[0][3] = this.state.matchups.sc.home;else if (this.state.matchups.sc.result.away_win == 4) display[0][3] = this.state.matchups.sc.away;
 	                        var result = display.map(function (row, y) {
 	                                var r = row.map(function (cell, x) {
 	                                        if (cell == '') return React.createElement(
@@ -44212,6 +44208,13 @@
 	                        }
 	                }
 	        }, {
+	                key: 'isFinished',
+	                value: function isFinished() {
+	                        if (store.matchups.sc == undefined) return false;
+	                        if (store.matchups.sc.result.home_win == 4) return true;else if (store.matchups.sc.result.away_win == 4) return true;
+	                        return false;
+	                }
+	        }, {
 	                key: 'findPrediction',
 	                value: function findPrediction(predictions, home, away) {
 	                        var _iteratorNormalCompletion = true;
@@ -44278,6 +44281,8 @@
 	                                }.bind(this));
 	                                var winnerClass = '';
 	                                var winner = React.createElement('div', null);
+	                                var winnerstar = React.createElement('div', null);
+	                                if (i == 0 && this.isFinished()) winnerstar = React.createElement(_reactBootstrap.Glyphicon, { className: 'winner-star', glyph: 'star' });;
 	                                if (result.winner != 0) winner = React.createElement('img', { className: winnerClass, src: store.getTeamImgUrl(result.winner), style: { width: '50px', height: 'auto' } });
 	                                return React.createElement(
 	                                        'tr',
@@ -44301,7 +44306,12 @@
 	                                        React.createElement(
 	                                                'th',
 	                                                { style: { width: '50px', verticalAlign: 'middle' } },
-	                                                result.pts
+	                                                React.createElement(
+	                                                        'div',
+	                                                        null,
+	                                                        result.pts,
+	                                                        winnerstar
+	                                                )
 	                                        )
 	                                );
 	                        }.bind(this));
