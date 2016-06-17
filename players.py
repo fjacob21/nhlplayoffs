@@ -113,6 +113,8 @@ def is_valid_player(hplayer):
 def login(player, psw):
     players = restore_db()
     hname = userhash(player)
+    if player == 'guest':
+        return hname
     if not players.has_key(hname):
         return None
     if not pswcheck(player, psw):

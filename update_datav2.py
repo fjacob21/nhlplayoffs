@@ -19,9 +19,10 @@ class Updater(object):
     def run(self):
         if self._current_round == 0:
             self._teams = self.get_teams()
-            standings = self.get_standings(list(self._teams.values()))
             self._matchups = self.create_matchups_tree()
-            self.create_matchups(standings)
+            if len(list(self._teams.values())) > 0:
+                standings = self.get_standings(list(self._teams.values()))
+                self.create_matchups(standings)
             if self.is_season_finished():
                 self._current_round = 1
                 self.store()

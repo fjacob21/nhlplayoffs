@@ -31,6 +31,8 @@ class Store {
                 if (root.right != null)
                   walk_matchup_tree(root.right, x+dx, y+(root.round-1), dx);
             }
+            if (this.matchups.w == undefined)
+                return;
             display[3][2] = 'sc';
             walk_matchup_tree(this.matchups.w, 2, 3, -1);
             walk_matchup_tree(this.matchups.e, 4, 3, 1);
@@ -192,7 +194,7 @@ class Store {
         }
 
         isRountStarted(round){
-                for (var matchup of this.matchups[round]){
+                for (var matchup of this.getMatchups(round)){
                         if(this.isMatchupStarted(matchup))
                                 return true;
                 }

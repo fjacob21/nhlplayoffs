@@ -3,14 +3,44 @@ import { render } from 'react-dom'
 var Navigation = require('react-router').Navigation;
 import { Modal, Button, Input, NavDropdown, MenuItem, Alert } from 'react-bootstrap'
 
+var Store = require('./store');
+
+var store = new Store();
+
 var Login = module.exports = React.createClass({
    getInitialState: function() {
-         return {error: false};
+         return {error: false, loaded: false, started: false};
+   },
+   componentDidMount: function(){
+           store.load(function(data) {
+                   var state = this.state;
+                   state.loaded = true;
+                   state.started = store.isRountStarted(1);
+                   this.setState(state);
+           }.bind(this),function() {
+                   alert('Error!!!');
+           }.bind(this));
    },
    onCreate: function(event) {
     event.preventDefault();
     this.props.history.push('/adduser')
   },
+  onGuest: function(event) {
+   event.preventDefault();
+   var data = {psw:this.refs.psw.getValue()};
+   $.ajax({
+    type: 'POST',
+    url: "/nhlplayoffs/api/v2.0/players/guest/login",
+    data: JSON.stringify (data),
+    success: function(data) {
+            sessionStorage.setItem('userId', data.user);
+            sessionStorage.setItem('user', 'guest');
+            this.props.history.push('/main/home'); }.bind(this),
+    error: function(data) {  this.setState({error: true}); }.bind(this),
+    contentType: "application/json",
+    dataType: 'json'
+});
+ },
   onLogin: function(event) {
    event.preventDefault();
    var user = this.refs.user.getValue();
@@ -38,6 +68,14 @@ var Login = module.exports = React.createClass({
           var err = "";
           if(this.state.error)
               err =  <Alert bsStyle="danger">Invalid user or password</Alert>;
+          var create = "";
+          if (this.state.loaded){
+                  if (this.state.started)
+                        create = <Button onClick={this.onGuest}>Guest</Button>
+                  else
+                        create = <Button onClick={this.onCreate}>Create</Button>
+
+          }
     return (
             <div className="static-modal">
                     <Modal.Dialog>
@@ -55,7 +93,7 @@ var Login = module.exports = React.createClass({
 
                             <Modal.Footer>
                                     {err}
-                                    <Button onClick={this.onCreate}>Create</Button>
+                                    {create}
                                     <Button type="submit" onClick={this.onLogin} bsStyle="primary">Login</Button>
                             </Modal.Footer>
                     </Modal.Dialog>

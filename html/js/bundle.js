@@ -43438,6 +43438,7 @@
 	                                if (root.left != null) walk_matchup_tree(root.left, x + dx, y - (root.round - 1), dx);
 	                                if (root.right != null) walk_matchup_tree(root.right, x + dx, y + (root.round - 1), dx);
 	                        }
+	                        if (this.matchups.w == undefined) return;
 	                        display[3][2] = 'sc';
 	                        walk_matchup_tree(this.matchups.w, 2, 3, -1);
 	                        walk_matchup_tree(this.matchups.e, 4, 3, 1);
@@ -43681,7 +43682,7 @@
 	                        var _iteratorError5 = undefined;
 
 	                        try {
-	                                for (var _iterator5 = this.matchups[round][Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+	                                for (var _iterator5 = this.getMatchups(round)[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
 	                                        var matchup = _step5.value;
 
 	                                        if (this.isMatchupStarted(matchup)) return true;
@@ -43920,15 +43921,48 @@
 	var Navigation = __webpack_require__(159).Navigation;
 
 
+	var Store = __webpack_require__(477);
+
+	var store = new Store();
+
 	var Login = module.exports = _react2.default.createClass({
 	        displayName: 'exports',
 
 	        getInitialState: function getInitialState() {
-	                return { error: false };
+	                return { error: false, loaded: false, started: false };
+	        },
+	        componentDidMount: function componentDidMount() {
+	                store.load(function (data) {
+	                        var state = this.state;
+	                        state.loaded = true;
+	                        state.started = store.isRountStarted(1);
+	                        this.setState(state);
+	                }.bind(this), function () {
+	                        alert('Error!!!');
+	                }.bind(this));
 	        },
 	        onCreate: function onCreate(event) {
 	                event.preventDefault();
 	                this.props.history.push('/adduser');
+	        },
+	        onGuest: function onGuest(event) {
+	                event.preventDefault();
+	                var data = { psw: this.refs.psw.getValue() };
+	                $.ajax({
+	                        type: 'POST',
+	                        url: "/nhlplayoffs/api/v2.0/players/guest/login",
+	                        data: JSON.stringify(data),
+	                        success: function (data) {
+	                                sessionStorage.setItem('userId', data.user);
+	                                sessionStorage.setItem('user', 'guest');
+	                                this.props.history.push('/main/home');
+	                        }.bind(this),
+	                        error: function (data) {
+	                                this.setState({ error: true });
+	                        }.bind(this),
+	                        contentType: "application/json",
+	                        dataType: 'json'
+	                });
 	        },
 	        onLogin: function onLogin(event) {
 	                event.preventDefault();
@@ -43962,6 +43996,18 @@
 	                        { bsStyle: 'danger' },
 	                        'Invalid user or password'
 	                );
+	                var create = "";
+	                if (this.state.loaded) {
+	                        if (this.state.started) create = _react2.default.createElement(
+	                                _reactBootstrap.Button,
+	                                { onClick: this.onGuest },
+	                                'Guest'
+	                        );else create = _react2.default.createElement(
+	                                _reactBootstrap.Button,
+	                                { onClick: this.onCreate },
+	                                'Create'
+	                        );
+	                }
 	                return _react2.default.createElement(
 	                        'div',
 	                        { className: 'static-modal' },
@@ -43991,11 +44037,7 @@
 	                                        _reactBootstrap.Modal.Footer,
 	                                        null,
 	                                        err,
-	                                        _react2.default.createElement(
-	                                                _reactBootstrap.Button,
-	                                                { onClick: this.onCreate },
-	                                                'Create'
-	                                        ),
+	                                        create,
 	                                        _react2.default.createElement(
 	                                                _reactBootstrap.Button,
 	                                                { type: 'submit', onClick: this.onLogin, bsStyle: 'primary' },
@@ -44443,11 +44485,10 @@
 	                return { predictions: [], teams: [], winner: null, currentround: 0 };
 	        },
 	        winnerChange: function winnerChange(event) {
-	                if (store.isRountStarted(1)) return;
-	                alert('should not go there');
+	                if (sessionStorage.user != 'guest' && store.isRountStarted(1)) return;
 	                this.state.winner = event.target.value;
 
-	                store.setWinner(sessionStorage.userId, this.state.winner, function (data) {
+	                if (sessionStorage.user != 'guest') store.setWinner(sessionStorage.userId, this.state.winner, function (data) {
 	                        this.setState(this.state);
 	                }.bind(this), function () {
 	                        alert('Error!!!');
@@ -44455,19 +44496,19 @@
 	        },
 	        predictionChange: function predictionChange(event) {
 	                var prediction = this.state.predictions[event.target.id];
-	                if (store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round))) return;
+	                if (sessionStorage.user != 'guest' && store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round))) return;
 	                this.state.predictions[event.target.id].winner = Number(event.target.value);
 	                this.setState(this.state);
-	                store.setPrediction(sessionStorage.userId, prediction.round, prediction.home, prediction.away, prediction.winner, prediction.games, function (data) {}.bind(this), function () {
+	                if (sessionStorage.user != 'guest') store.setPrediction(sessionStorage.userId, prediction.round, prediction.home, prediction.away, prediction.winner, prediction.games, function (data) {}.bind(this), function () {
 	                        alert('Error!!!');
 	                }.bind(this));
 	        },
 	        gamesChange: function gamesChange(event) {
 	                var prediction = this.state.predictions[event.target.id];
-	                if (store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round))) return;
+	                if (sessionStorage.user != 'guest' && store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round))) return;
 	                this.state.predictions[event.target.id].games = Number(event.target.value);
 	                this.setState(this.state);
-	                store.setPrediction(sessionStorage.userId, prediction.round, prediction.home, prediction.away, prediction.winner, prediction.games, function (data) {}.bind(this), function () {
+	                if (sessionStorage.user != 'guest') store.setPrediction(sessionStorage.userId, prediction.round, prediction.home, prediction.away, prediction.winner, prediction.games, function (data) {}.bind(this), function () {
 	                        alert('Error!!!');
 	                }.bind(this));
 	        },
