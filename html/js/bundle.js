@@ -43885,7 +43885,12 @@
 	                        React.createElement(
 	                            'th',
 	                            null,
-	                            '|'
+	                            '|',
+	                            React.createElement(
+	                                'a',
+	                                { href: 'https://github.com/fjacob21/nhlplayoffs', target: '_blank' },
+	                                'GitHub '
+	                            )
 	                        )
 	                    )
 	                ),
