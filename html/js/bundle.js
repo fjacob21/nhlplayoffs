@@ -44596,7 +44596,6 @@
 	                        );
 	                }.bind(this));
 	                var emptyPrediction = React.createElement('option', { disabled: true });
-	                console.debug(this.state.winner);
 	                if (this.state.winner == null) {
 	                        //this.state.winner = -1;
 	                        emptyPrediction = React.createElement(

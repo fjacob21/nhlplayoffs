@@ -115,7 +115,6 @@ var Predictions = React.createClass({
                 );
         }.bind(this));
         var emptyPrediction = <option disabled></option>;
-        console.debug(this.state.winner);
         if (this.state.winner == null) {
                 //this.state.winner = -1;
                 emptyPrediction = <option>Select a winning teams</option>;
