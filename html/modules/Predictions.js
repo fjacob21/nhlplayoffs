@@ -38,7 +38,7 @@ var Predictions = React.createClass({
                 if (sessionStorage.user != 'guest' && store.isRountStarted(1))
                         return;
                 this.state.winner = event.target.value;
-
+                this.setState(this.state);
                 if (sessionStorage.user != 'guest')
                         store.setWinner(sessionStorage.userId, this.state.winner, function(data){this.setState(this.state);}.bind(this), function(){alert('Error!!!');}.bind(this));
         },
@@ -114,6 +114,12 @@ var Predictions = React.createClass({
                         </div>
                 );
         }.bind(this));
+        var emptyPrediction = <option disabled></option>;
+        console.debug(this.state.winner);
+        if (this.state.winner == null) {
+                //this.state.winner = -1;
+                emptyPrediction = <option>Select a winning teams</option>;
+        }
         return (
                 <div>
                         <h1>Predictions</h1>
@@ -129,6 +135,7 @@ var Predictions = React.createClass({
                         </div>
                         <PageHeader>Winner prediction</PageHeader>
                         <select className='form-control' style={{width: '300px'}} id='winner_prediction' value={this.state.winner} onChange={this.winnerChange}>
+                                {emptyPrediction}
                                 {teams}
                         </select>
                 </div>

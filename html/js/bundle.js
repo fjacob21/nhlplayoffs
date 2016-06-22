@@ -44492,7 +44492,7 @@
 	        winnerChange: function winnerChange(event) {
 	                if (sessionStorage.user != 'guest' && store.isRountStarted(1)) return;
 	                this.state.winner = event.target.value;
-
+	                this.setState(this.state);
 	                if (sessionStorage.user != 'guest') store.setWinner(sessionStorage.userId, this.state.winner, function (data) {
 	                        this.setState(this.state);
 	                }.bind(this), function () {
@@ -44595,6 +44595,16 @@
 	                                )
 	                        );
 	                }.bind(this));
+	                var emptyPrediction = React.createElement('option', { disabled: true });
+	                console.debug(this.state.winner);
+	                if (this.state.winner == null) {
+	                        //this.state.winner = -1;
+	                        emptyPrediction = React.createElement(
+	                                'option',
+	                                null,
+	                                'Select a winning teams'
+	                        );
+	                }
 	                return React.createElement(
 	                        'div',
 	                        null,
@@ -44640,6 +44650,7 @@
 	                        React.createElement(
 	                                'select',
 	                                { className: 'form-control', style: { width: '300px' }, id: 'winner_prediction', value: this.state.winner, onChange: this.winnerChange },
+	                                emptyPrediction,
 	                                teams
 	                        )
 	                );
