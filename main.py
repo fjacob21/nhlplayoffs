@@ -14,6 +14,12 @@ _db = postgres_store.get_default()
 
 application = Flask(__name__, static_url_path='')
 
+@application.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers['Cache-Control'] = 'public, max-age=0'
+    return response
+
 @application.route('/nhlplayoffs/api/v2.0/players', methods=['GET'])
 def get_all_players():
     return jsonify({'players':players.get_all()})
@@ -37,7 +43,8 @@ def add_player():
     if not players.add(name, psw, email, admin):
         abort(400)
     result = players.login(name, psw)
-    return jsonify({'user':result})
+    p = players.get(player)
+    return jsonify({'user':result, 'info': p})
 
 @application.route('/nhlplayoffs/api/v2.0/players/<string:player>', methods=['GET'])
 def get_player(player):
@@ -60,11 +67,30 @@ def reset_player(player):
     result = players.change_psw(player, '', new_psw, players.root_access(root_psw))
     return jsonify({"result":result})
 
+@application.route('/nhlplayoffs/api/v2.0/players/<string:player>/chpsw', methods=['POST'])
+def change_psw_player(player):
+    if not request.json:
+        print('not json')
+        abort(400)
+
+    if ("old_psw" not in request.json or
+        "new_psw" not in request.json):
+        abort(400)
+    old_psw = request.json["old_psw"]
+    new_psw = request.json["new_psw"]
+    result = players.change_psw(player, old_psw, new_psw)
+    return jsonify({"result":result})
+
 @application.route('/nhlplayoffs/api/v2.0/players/<string:player>', methods=['PUT'])
 def update_player(player):
     if not request.json:
         abort(400)
-    return ""
+
+    if "email" in request.json:
+        email = request.json["email"]
+
+    result = players.change_email(player, email)
+    return jsonify({'result': True})
 
 @application.route('/nhlplayoffs/api/v2.0/players/<string:player>', methods=['DELETE'])
 def delete_player(player):
@@ -84,9 +110,10 @@ def login_player(player):
         abort(400)
     psw = request.json["psw"]
     result = players.login(player, psw)
+    p = players.get(player)
     if result is None:
         abort(400)
-    return jsonify({'user':result})
+    return jsonify({'user':result, 'info': p})
 
 @application.route('/nhlplayoffs/api/v2.0/<int:year>/data', methods=['GET'])
 def get_data(year):

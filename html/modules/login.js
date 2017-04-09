@@ -50,7 +50,9 @@ var Login = module.exports = React.createClass({
     url: "/nhlplayoffs/api/v2.0/players/"+user+"/login",
     data: JSON.stringify (data),
     success: function(data) {
+            console.debug(data);
             sessionStorage.setItem('userId', data.user);
+            sessionStorage.setItem('userEmail', data.info.email);
             sessionStorage.setItem('user', user);
             this.props.history.push('/main/home'); }.bind(this),
     error: function(data) {  this.setState({error: true}); }.bind(this),

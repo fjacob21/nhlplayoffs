@@ -36,6 +36,7 @@ var AddUser = module.exports = React.createClass({
                  data: JSON.stringify (data),
                  success: function(data) {
                          sessionStorage.setItem('userId', data.user);
+                         sessionStorage.setItem('userEmail', data.info.email);
                          sessionStorage.setItem('user', user);
                          //document.login_user={id:data.user,name:user};
                          this.props.history.push('/main/home'); }.bind(this),

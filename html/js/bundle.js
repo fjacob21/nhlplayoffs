@@ -61,8 +61,9 @@
 	var About = __webpack_require__(478);
 	var Login = __webpack_require__(479);
 	var AddUser = __webpack_require__(480);
-	var Results = __webpack_require__(481);
-	var Predictions = __webpack_require__(482);
+	var UserInfo = __webpack_require__(481);
+	var Results = __webpack_require__(482);
+	var Predictions = __webpack_require__(483);
 
 	(0, _reactDom.render)(_react2.default.createElement(
 	  _reactRouter.Router,
@@ -75,7 +76,8 @@
 	    _react2.default.createElement(_reactRouter.Route, { path: '/main/home', component: Home }),
 	    _react2.default.createElement(_reactRouter.Route, { path: '/main/about', component: About }),
 	    _react2.default.createElement(_reactRouter.Route, { path: '/main/predictions', component: Predictions }),
-	    _react2.default.createElement(_reactRouter.Route, { path: '/main/results', component: Results })
+	    _react2.default.createElement(_reactRouter.Route, { path: '/main/results', component: Results }),
+	    _react2.default.createElement(_reactRouter.Route, { path: '/main/userinfo', component: UserInfo })
 	  )
 	), document.getElementById('app'));
 
@@ -25281,8 +25283,17 @@
 	                                                        )
 	                                                ),
 	                                                _react2.default.createElement(
+	                                                        _reactRouterBootstrap.LinkContainer,
+	                                                        { to: '/main/userinfo' },
+	                                                        _react2.default.createElement(
+	                                                                _reactBootstrap.NavItem,
+	                                                                { eventKey: 5, onClick: this.onNavItemClick },
+	                                                                username
+	                                                        )
+	                                                ),
+	                                                _react2.default.createElement(
 	                                                        _reactBootstrap.NavItem,
-	                                                        { eventKey: 5, onClick: this.onLogout },
+	                                                        { eventKey: 6, onClick: this.onLogout },
 	                                                        username,
 	                                                        ' Logout'
 	                                                )
@@ -43978,7 +43989,9 @@
 	                        url: "/nhlplayoffs/api/v2.0/players/" + user + "/login",
 	                        data: JSON.stringify(data),
 	                        success: function (data) {
+	                                console.debug(data);
 	                                sessionStorage.setItem('userId', data.user);
+	                                sessionStorage.setItem('userEmail', data.info.email);
 	                                sessionStorage.setItem('user', user);
 	                                this.props.history.push('/main/home');
 	                        }.bind(this),
@@ -44108,6 +44121,7 @@
 	                        data: JSON.stringify(data),
 	                        success: function (data) {
 	                                sessionStorage.setItem('userId', data.user);
+	                                sessionStorage.setItem('userEmail', data.info.email);
 	                                sessionStorage.setItem('user', user);
 	                                //document.login_user={id:data.user,name:user};
 	                                this.props.history.push('/main/home');
@@ -44184,6 +44198,181 @@
 
 /***/ },
 /* 481 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactBootstrap = __webpack_require__(219);
+
+	var _reactRouterBootstrap = __webpack_require__(473);
+
+	var _reactRouter = __webpack_require__(159);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var React = __webpack_require__(1);
+
+	var UserInfo = function (_React$Component) {
+	        _inherits(UserInfo, _React$Component);
+
+	        function UserInfo(props) {
+	                _classCallCheck(this, UserInfo);
+
+	                var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(UserInfo).call(this, props));
+
+	                var username = "";
+	                var email = "";
+	                if (sessionStorage.user) {
+	                        username = sessionStorage.user;
+	                        email = sessionStorage.userEmail;
+	                }
+	                _this.state = { email: email, username: username, error: false, msg: "" };
+	                return _this;
+	        }
+
+	        _createClass(UserInfo, [{
+	                key: 'onUpdate',
+	                value: function onUpdate(event) {
+	                        event.preventDefault();
+	                        var user = this.state.username;
+	                        var email = this.state.email;
+	                        if (email == "") {
+	                                this.state.error = true;
+	                                this.state.msg = "Cannot have empty email";
+	                                this.setState(this.state);
+	                                console.debug("Cannot have empty player name");
+	                                return;
+	                        }
+	                        var data = { 'email': email };
+
+	                        console.debug("update user", data);
+	                        $.ajax({
+	                                type: 'PUT',
+	                                url: "/nhlplayoffs/api/v2.0/players/" + user,
+	                                data: JSON.stringify(data),
+	                                success: function (data) {
+	                                        this.state.error = false;
+	                                        this.state.msg = "";
+	                                        sessionStorage.setItem('userEmail', email);
+	                                }.bind(this),
+	                                error: function (data) {
+	                                        this.state.error = true;
+	                                        this.state.msg = "Cannot update user info";
+	                                        this.setState(this.state);
+	                                }.bind(this),
+	                                contentType: "application/json",
+	                                dataType: 'json'
+	                        });
+	                }
+	        }, {
+	                key: 'onChangePsw',
+	                value: function onChangePsw(event) {
+	                        event.preventDefault();
+	                        var user = this.state.username;
+	                        var opsw = this.refs.opsw.getValue();
+	                        var npsw = this.refs.npsw.getValue();
+
+	                        var data = { 'old_psw': opsw,
+	                                'new_psw': npsw };
+
+	                        $.ajax({
+	                                type: 'POST',
+	                                url: "/nhlplayoffs/api/v2.0/players/" + user + "/chpsw",
+	                                data: JSON.stringify(data),
+	                                success: function (data) {
+	                                        if (data.result) {
+	                                                this.state.error = false;
+	                                                this.state.msg = "";
+	                                                this.setState(this.state);
+	                                                console.debug("Change psw success!!!!");
+	                                        } else {
+	                                                this.state.error = true;
+	                                                this.state.msg = "Cannot change password";
+	                                                this.setState(this.state);
+	                                                console.debug("Cannot change password");
+	                                        }
+	                                }.bind(this),
+	                                error: function (data) {
+	                                        this.state.error = true;
+	                                        this.state.msg = "Cannot change password";
+	                                        this.setState(this.state);
+	                                        console.debug("Cannot change password");
+	                                }.bind(this),
+	                                contentType: "application/json",
+	                                dataType: 'json'
+	                        });
+	                }
+	        }, {
+	                key: 'handleEmailChange',
+	                value: function handleEmailChange(event) {
+	                        this.setState({ email: event.target.value });
+	                }
+	        }, {
+	                key: 'handleKeyPress',
+	                value: function handleKeyPress(type, event) {
+	                        if (event.charCode == 13) {
+	                                if (type == 'info') this.onUpdate(event);
+	                                if (type == 'psw') this.onChangePsw(event);
+	                        }
+	                }
+	        }, {
+	                key: 'render',
+	                value: function render() {
+	                        var err = "";
+	                        if (this.state.error) err = React.createElement(
+	                                _reactBootstrap.Alert,
+	                                { bsStyle: 'danger' },
+	                                this.state.msg
+	                        );
+	                        var username = "";
+	                        var email = "";
+	                        if (sessionStorage.user) {
+	                                username = sessionStorage.user;
+	                                email = sessionStorage.userEmail;
+	                        }
+	                        return React.createElement(
+	                                'div',
+	                                { className: 'userinfo' },
+	                                React.createElement(
+	                                        'form',
+	                                        { onKeyPress: this.handleKeyPress.bind(this, 'info') },
+	                                        React.createElement(_reactBootstrap.Input, { type: 'user', readOnly: true, label: 'username', placeholder: 'Enter username', value: this.state.username }),
+	                                        React.createElement(_reactBootstrap.Input, { type: 'email', label: 'Email Address', placeholder: 'Enter email', value: this.state.email, onChange: this.handleEmailChange.bind(this) }),
+	                                        React.createElement(
+	                                                _reactBootstrap.Button,
+	                                                { onClick: this.onUpdate.bind(this), bsStyle: 'primary' },
+	                                                'Update'
+	                                        )
+	                                ),
+	                                React.createElement(
+	                                        'form',
+	                                        { onKeyPress: this.handleKeyPress.bind(this, 'psw') },
+	                                        React.createElement(_reactBootstrap.Input, { type: 'password', ref: 'opsw', label: 'Old Password' }),
+	                                        React.createElement(_reactBootstrap.Input, { type: 'password', ref: 'npsw', label: 'New Password' }),
+	                                        React.createElement(
+	                                                _reactBootstrap.Button,
+	                                                { onClick: this.onChangePsw.bind(this), bsStyle: 'primary' },
+	                                                'Change Password'
+	                                        )
+	                                ),
+	                                err
+	                        );
+	                }
+	        }]);
+
+	        return UserInfo;
+	}(React.Component);
+
+	module.exports = UserInfo;
+
+/***/ },
+/* 482 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44443,7 +44632,7 @@
 	module.exports = Results;
 
 /***/ },
-/* 482 */
+/* 483 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44455,7 +44644,7 @@
 	var _reactRouter = __webpack_require__(159);
 
 	var React = __webpack_require__(1);
-	var TeamSelector = __webpack_require__(483);
+	var TeamSelector = __webpack_require__(484);
 
 	var Store = __webpack_require__(477);
 
@@ -44659,7 +44848,7 @@
 	module.exports = Predictions;
 
 /***/ },
-/* 483 */
+/* 484 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

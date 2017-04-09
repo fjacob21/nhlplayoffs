@@ -55,7 +55,8 @@ const App = React.createClass({
                                          </Nav>
                                          <Nav pullRight>
                                                  <LinkContainer to="/main/about"><NavItem eventKey={4} onClick={ this.onNavItemClick }>About</NavItem></LinkContainer>
-                                                 <NavItem eventKey={5} onClick={ this.onLogout }>{username} Logout</NavItem>
+                                                 <LinkContainer to="/main/userinfo"><NavItem eventKey={5} onClick={ this.onNavItemClick }>{username}</NavItem></LinkContainer>
+                                                 <NavItem eventKey={6} onClick={ this.onLogout }>{username} Logout</NavItem>
                                          </Nav>
                                  </Navbar.Collapse>
                          </Navbar>

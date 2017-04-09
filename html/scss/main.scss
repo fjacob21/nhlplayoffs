@@ -17,6 +17,13 @@ body {
     border-width: medium;
 }
 
+.userinfo {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        margin: 16px;
+}
+
 .teamLosing{
         opacity:0.5;
 }

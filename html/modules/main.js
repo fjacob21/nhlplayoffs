@@ -3,6 +3,7 @@ var Home = require('./Home');
 var About = require('./About');
 var Login = require('./login');
 var AddUser = require('./AddUser');
+var UserInfo = require('./userinfo');
 var Results = require('./Results');
 var Predictions = require('./Predictions');
 
@@ -18,6 +19,7 @@ render((
       <Route path="/main/about" component={About} />
       <Route path="/main/predictions" component={Predictions} />
       <Route path="/main/results" component={Results} />
+      <Route path="/main/userinfo" component={UserInfo} />
     </Route>
   </Router>
 ), document.getElementById('app'))
