@@ -43718,10 +43718,40 @@
 	        }, {
 	                key: 'getTeams',
 	                value: function getTeams() {
-	                        //Look to filter teams not in playoff!!!!
+	                        var onlyPlayoffs = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
 	                        var teams = [];
-	                        for (var t in this.teams) {
-	                                teams.push(this.teams[t]);
+	                        if (onlyPlayoffs) {
+	                                var matchups = this.getMatchups(1);
+	                                var _iteratorNormalCompletion6 = true;
+	                                var _didIteratorError6 = false;
+	                                var _iteratorError6 = undefined;
+
+	                                try {
+	                                        for (var _iterator6 = matchups[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+	                                                var matchup = _step6.value;
+
+	                                                teams.push(this.getTeam(matchup.home));
+	                                                teams.push(this.getTeam(matchup.away));
+	                                        }
+	                                } catch (err) {
+	                                        _didIteratorError6 = true;
+	                                        _iteratorError6 = err;
+	                                } finally {
+	                                        try {
+	                                                if (!_iteratorNormalCompletion6 && _iterator6.return) {
+	                                                        _iterator6.return();
+	                                                }
+	                                        } finally {
+	                                                if (_didIteratorError6) {
+	                                                        throw _iteratorError6;
+	                                                }
+	                                        }
+	                                }
+	                        } else {
+	                                for (var t in this.teams) {
+	                                        teams.push(this.teams[t]);
+	                                }
 	                        }
 	                        return teams;
 	                }
@@ -43729,27 +43759,27 @@
 	                key: 'getTeam',
 	                value: function getTeam(id) {
 	                        var teams = this.getTeams();
-	                        var _iteratorNormalCompletion6 = true;
-	                        var _didIteratorError6 = false;
-	                        var _iteratorError6 = undefined;
+	                        var _iteratorNormalCompletion7 = true;
+	                        var _didIteratorError7 = false;
+	                        var _iteratorError7 = undefined;
 
 	                        try {
-	                                for (var _iterator6 = teams[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-	                                        var team = _step6.value;
+	                                for (var _iterator7 = teams[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+	                                        var team = _step7.value;
 
 	                                        if (team.info.id == id) return team;
 	                                }
 	                        } catch (err) {
-	                                _didIteratorError6 = true;
-	                                _iteratorError6 = err;
+	                                _didIteratorError7 = true;
+	                                _iteratorError7 = err;
 	                        } finally {
 	                                try {
-	                                        if (!_iteratorNormalCompletion6 && _iterator6.return) {
-	                                                _iterator6.return();
+	                                        if (!_iteratorNormalCompletion7 && _iterator7.return) {
+	                                                _iterator7.return();
 	                                        }
 	                                } finally {
-	                                        if (_didIteratorError6) {
-	                                                throw _iteratorError6;
+	                                        if (_didIteratorError7) {
+	                                                throw _iteratorError7;
 	                                        }
 	                                }
 	                        }
@@ -44658,7 +44688,7 @@
 	                store.load(function (data) {
 	                        var state = {
 	                                "predictions": store.getPredictions(sessionStorage.userId),
-	                                "teams": store.getTeams(),
+	                                "teams": store.getTeams(true),
 	                                "winner": store.getWinner(sessionStorage.userId),
 	                                "currentround": store.currentround
 	                        };

@@ -14,7 +14,7 @@ var Predictions = React.createClass({
                 store.load(function(data) {
                         var state = {
                                 "predictions":store.getPredictions(sessionStorage.userId),
-                                "teams":store.getTeams(),
+                                "teams":store.getTeams(true),
                                 "winner":store.getWinner(sessionStorage.userId),
                                 "currentround":store.currentround
                         };

@@ -201,11 +201,17 @@ class Store {
                 return false;
         }
 
-        getTeams(){
-               //Look to filter teams not in playoff!!!!
+        getTeams(onlyPlayoffs=false){
                var teams = [];
-               for(var t in this.teams){
-                  teams.push(this.teams[t]);
+               if (onlyPlayoffs) {
+                       var matchups = this.getMatchups(1);
+                       for (var matchup of matchups) {
+                                teams.push(this.getTeam(matchup.home));
+                                teams.push(this.getTeam(matchup.away));
+                        }
+               } else {
+                       for(var t in this.teams)
+                          teams.push(this.teams[t]);
                }
                return teams;
         }
