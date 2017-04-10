@@ -4,8 +4,8 @@ import json
 import psycopg2
 
 def get_default():
-    #return postgres_store('fred', 'fred', '763160', 'localhost', 5432)
-    return postgres_store('dc7m5co1u7n7ka', 'vfumyroepkgfsd', 'AsRCUy1JTkf500s_2pfXZK9qwR', 'ec2-107-22-246-250.compute-1.amazonaws.com', 5432)
+    return postgres_store('postgres', 'postgres', 'mysecretpassword', '172.17.0.3', 5432)
+    #return postgres_store('dc7m5co1u7n7ka', 'vfumyroepkgfsd', 'AsRCUy1JTkf500s_2pfXZK9qwR', 'ec2-107-22-246-250.compute-1.amazonaws.com', 5432)
 
 class postgres_store(object):
 
