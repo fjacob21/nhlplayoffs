@@ -199,13 +199,16 @@ class Updater(object):
         s = schedules
         if schedules is None:
             s = self.get_playoff_schedule(int(home_id))
-        for date in s['dates']:
-            game = date['games'][0]
-            game_home_id = game['teams']['home']['team']['id']
-            game_away_id = game['teams']['away']['team']['id']
-            if game['gameType'] == 'P':
-                if game_home_id == away_id or game_away_id == away_id:
-                    result.append(game)
+        if 'dates' in s:
+            for date in s['dates']:
+                game = date['games'][0]
+                game_home_id = game['teams']['home']['team']['id']
+                game_away_id = game['teams']['away']['team']['id']
+                if game['gameType'] == 'P':
+                    if game_home_id == away_id or game_away_id == away_id:
+                        result.append(game)
+        else:
+            print('No date in get matchup')
         result = sorted(result, key=lambda k: self.parse_time(k['gameDate']))
         return result
 
@@ -221,24 +224,27 @@ class Updater(object):
             schedule = self.get_schedule(home)
             #self._teams[home]['schedule'] = schedule
 
-        for date in schedule['dates']:
-            game = date['games'][0]
-            game_home_id = game['teams']['home']['team']['id']
-            game_away_id = game['teams']['away']['team']['id']
-            if game_home_id == away:
-                print(game['gameDate'],game['teams']['away']['score'],game['teams']['home']['score'])
-                if int(game['teams']['home']['score']) > int(game['teams']['away']['score']):
-                    result['away_win'] = result['away_win'] + 1
-                elif int(game['teams']['home']['score']) < int(game['teams']['away']['score']):
-                    result['home_win'] = result['home_win'] + 1
-                result['matchs'].append({'home': int(game['teams']['away']['score']), 'away': int(game['teams']['home']['score'])})
-            if game_away_id == away:
-                print(game['gameDate'],game['teams']['home']['score'],game['teams']['away']['score'])
-                if int(game['teams']['home']['score']) > int(game['teams']['away']['score']):
-                    result['home_win'] = result['home_win'] + 1
-                elif int(game['teams']['home']['score']) < int(game['teams']['away']['score']):
-                    result['away_win'] = result['away_win'] + 1
-                result['matchs'].append({'home': int(game['teams']['home']['score']), 'away': int(game['teams']['away']['score'])})
+        if 'dates' in schedule:
+            for date in schedule['dates']:
+                game = date['games'][0]
+                game_home_id = game['teams']['home']['team']['id']
+                game_away_id = game['teams']['away']['team']['id']
+                if game_home_id == away:
+                    print(game['gameDate'],game['teams']['away']['score'],game['teams']['home']['score'])
+                    if int(game['teams']['home']['score']) > int(game['teams']['away']['score']):
+                        result['away_win'] = result['away_win'] + 1
+                    elif int(game['teams']['home']['score']) < int(game['teams']['away']['score']):
+                        result['home_win'] = result['home_win'] + 1
+                    result['matchs'].append({'home': int(game['teams']['away']['score']), 'away': int(game['teams']['home']['score'])})
+                if game_away_id == away:
+                    print(game['gameDate'],game['teams']['home']['score'],game['teams']['away']['score'])
+                    if int(game['teams']['home']['score']) > int(game['teams']['away']['score']):
+                        result['home_win'] = result['home_win'] + 1
+                    elif int(game['teams']['home']['score']) < int(game['teams']['away']['score']):
+                        result['away_win'] = result['away_win'] + 1
+                    result['matchs'].append({'home': int(game['teams']['home']['score']), 'away': int(game['teams']['away']['score'])})
+        else:
+            print('No date in get matchup season')
         return result
 
     def get_matchup_result(self, matchup):
@@ -322,12 +328,13 @@ class Updater(object):
 
     def get_schedule(self, team):
         print('Get schedule for ' + str(team))
-        url = 'https://statsapi.web.nhl.com/api/v1/schedule?startDate=' + str(self._year) + '-10-01&endDate=' + str(self._year+1) + '-06-29&expand=schedule.teams,schedule.linescore,schedule.broadcasts,schedule.ticket,schedule.game.content.media.epg&leaderCategories=&site=en_nhlCA&teamId=' + str(team)
+        url = 'https://statsapi.web.nhl.com/api/v1/schedule?startDate=' + str(self._year) + '-10-01&endDate=' + str(self._year+1) + '-05-29&expand=schedule.teams,schedule.linescore,schedule.broadcasts,schedule.ticket,schedule.game.content.media.epg&leaderCategories=&site=en_nhlCA&teamId=' + str(team)
         team_schedule = requests.get(url)
         return team_schedule.json()
 
     def get_playoff_schedule(self, team):
-        url = 'https://statsapi.web.nhl.com/api/v1/schedule?startDate=' + str(self._year+1) + '-04-01&endDate=' + str(self._year+1) + '-06-29&expand=schedule.teams,&site=en_nhlCA&teamId=' + str(team)
+        url = 'https://statsapi.web.nhl.com/api/v1/schedule?startDate=' + str(self._year+1) + '-04-01&endDate=' + str(self._year+1) + '-06-15&expand=schedule.teams,&site=en_nhlCA&teamId=' + str(team)
+        print(url)
         team_schedule = requests.get(url)
         return team_schedule.json()
 
@@ -421,7 +428,7 @@ class Updater(object):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Update the nhlpool database')
-    parser.add_argument('-y','--year', metavar='year', default='2015', nargs='?',
+    parser.add_argument('-y','--year', metavar='year', default='2016', nargs='?',
                        help='The year to work with')
     parser.add_argument('-s', '--server', metavar='server', default='debug', nargs='?',
                        help='The server to use')
