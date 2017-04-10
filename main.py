@@ -43,7 +43,7 @@ def add_player():
     if not players.add(name, psw, email, admin):
         abort(400)
     result = players.login(name, psw)
-    p = players.get(player)
+    p = players.get(name)
     return jsonify({'user':result, 'info': p})
 
 @application.route('/nhlplayoffs/api/v2.0/players/<string:player>', methods=['GET'])

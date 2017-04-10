@@ -96,7 +96,7 @@ def is_round_started(year, round):
     matchups = get_matchups(year, round)
     n = now()
 
-    for matchup in list(matchups.values()):
+    for matchup in list(matchups):
         start = get_start(matchup)
         if start is not None:
             if n > start:
