@@ -141,6 +141,7 @@ def filter_predictions(preds, matchups):
 
 def get(player_id, year):
     result=[]
+    started = matchups_store.is_round_started(year, 1)
     m = matchups_store.get_matchups(year)
     teams = matchups_store.get_teams(year)
     preds = predictions.get_all(year)
@@ -160,5 +161,7 @@ def get(player_id, year):
                 winner = 0
             if player['id'] != player_id:
                 player_preds = filter_predictions(player_preds, m)
+                if not started:
+                    winner = 0
             result.append({'player':player['name'], 'pts':pts, 'oldpts':oldpts, 'winner':winner, 'predictions':player_preds, 'victories':victories})
     return result
