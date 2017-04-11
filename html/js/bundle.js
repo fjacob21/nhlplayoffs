@@ -43880,7 +43880,7 @@
 	                    React.createElement(
 	                        'p',
 	                        null,
-	                        'Matrox NHL Playoffs pool V2.0 ',
+	                        'Matrox NHL Playoffs pool V2.5 ',
 	                        React.createElement('br', null),
 	                        'This is website to manage the unofficial NHL playoffs pool.'
 	                    )
