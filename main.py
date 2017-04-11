@@ -94,10 +94,23 @@ def update_player(player):
 
 @application.route('/nhlplayoffs/api/v2.0/players/<string:player>', methods=['DELETE'])
 def delete_player(player):
-    if not players.remove(player):
+    if not request.json:
+        print('not json')
         abort(400)
 
-    return ""
+    if ("root_psw" not in request.json):
+        print('No root psw')
+        abort(400)
+
+    root_psw = request.json["root_psw"]
+
+    if not players.root_access(root_psw):
+        print('Invalid root psw')
+        abort(403)
+
+    print('Remove player', player)
+    result = players.remove(player)
+    return jsonify({"result":result})
 
 @application.route('/nhlplayoffs/api/v2.0/players/<string:player>/login', methods=['POST'])
 def login_player(player):
