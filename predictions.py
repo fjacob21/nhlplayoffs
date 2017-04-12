@@ -127,3 +127,14 @@ def get_prediction_index(player, year, round, home, away):
             return i
         i = i + 1
     return -1
+
+def get_prediction_count(player):
+    years = _db.get_rows_id('predictions')
+    count = 0
+    for year in years:
+        matchups = get_all(year)
+        for matchup in matchups:
+            if matchup['player'] == player:
+                if matchup['games'] != 0 and matchup['winner'] != 0:
+                    count = count + 1
+    return count

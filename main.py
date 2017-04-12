@@ -22,7 +22,11 @@ def after_request(response):
 
 @application.route('/nhlplayoffs/api/v2.0/players', methods=['GET'])
 def get_all_players():
-    return jsonify({'players':players.get_all()})
+    ps = players.get_all_admin()
+    for p in ps:
+        p['prediction_count'] = predictions.get_prediction_count(p['id'])
+        del p['id']
+    return jsonify({'players': ps})
 
 @application.route('/nhlplayoffs/api/v2.0/players', methods=['POST'])
 def add_player():

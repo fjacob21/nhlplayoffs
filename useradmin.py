@@ -25,31 +25,45 @@ def removeuser(server, user, root_psw):
         print(e)
         return False
 
-def listusers(server):
+def remove_inactive_users(server, root_psw):
+    players = getusers(server, True)
+    for player in players:
+        user = player['name']
+        var = raw_input("Are you sure you want to errase user: {user} on {server}? ".format(server=server,user=user))
+        if var == 'y':
+            removeuser(server, user, root_psw)
+
+def getusers(server, inactive=False):
     try:
         url = 'http://' + server + '/nhlplayoffs/api/v2.0/players'
         headers = {'content-type': 'application/json'}
         r = requests.get(url, headers=headers)
         if not r.ok:
             print('Invalid request!!!!')
-            return False
+            return []
         players = r.json()['players']
-        for player in players:
-            print("\033[0;94m{n}\033[0m".format(n=player['name']))
-            print("\t\033[1;30mEmail:\033[0m{e}".format(e=player['email']))
-        return True
+        players = [p for p in players if p['prediction_count'] == 0 or not inactive ]
+        return players
+
     except Exception as e:
         print(e)
-        return False
+        return []
+
+def listusers(server, inactive=False):
+    players = getusers(server, inactive)
+    for player in players:
+        print("\033[0;94m{n}\033[0m".format(n=player['name']))
+        print("\t\033[1;30mEmail:\033[0m{e}".format(e=player['email']))
+        print("\t\033[1;30mPredictions:\033[0m{p}".format(p=player['prediction_count']))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Manage the nhlpool players')
     parser.add_argument('cmd', metavar='cmd',
                        help='The command to execute')
-    parser.add_argument('user', metavar='user', default='', nargs='?',
-                       help='The user')
     parser.add_argument('root_psw', metavar='password', default='', nargs='?',
                        help='The root password')
+    parser.add_argument('user', metavar='user', default='', nargs='?',
+                       help='The user')
     parser.add_argument('-s', '--server', metavar='server', default='debug', nargs='?',
                        help='The server to use')
 
@@ -67,7 +81,11 @@ if __name__ == '__main__':
     root_psw = args.root_psw
     if cmd == 'list':
         listusers(server)
+    elif cmd == 'listinactive':
+        listusers(server, True)
     elif cmd == 'remove':
         removeuser(server, user, root_psw)
+    elif cmd == 'removeinactive':
+        remove_inactive_users(server, root_psw)
     else:
         print('Invalid command!!!')
