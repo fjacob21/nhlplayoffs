@@ -2,6 +2,7 @@
 #
 import hashlib
 import postgres_store
+from matchupsv2 import now
 
 salt = 'superhero'
 _db = postgres_store.get_default()
@@ -76,6 +77,15 @@ def change_psw(player, old, new, admin=False):
     #Store in DB
     return store_db(players)
 
+def update_last_login(player):
+    players = restore_db()
+    hname = userhash(player)
+    if not players.has_key(hname):
+        return False
+    players[hname]['last_login'] = now().strftime("%Y-%m-%dT%H:%M:%SZ")
+    #Store in DB
+    return store_db(players)
+
 def get_all_admin():
     players = restore_db()
     l = list(players.items())
@@ -119,6 +129,7 @@ def login(player, psw):
         return None
     if not pswcheck(player, psw):
         return None
+    update_last_login(player)
     return hname
 
 def root_access(psw):

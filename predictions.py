@@ -77,6 +77,8 @@ def add(player, year, round, home, away, winner, games):
         return update(player, year, round, home, away, winner, games)
 
     prediction = {'player':player, 'round':round, 'home':home, 'away':away, 'winner':winner, 'games':games}
+    prediction['last_winner_update'] = matchups.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+    prediction['last_games_update'] = matchups.now().strftime("%Y-%m-%dT%H:%M:%SZ")
     predictions['matchups'].append(prediction)
 
     #Store in DB
@@ -100,8 +102,12 @@ def update(player, year, round, home, away, winner, games):
     if prediction_index == -1:
         return False
 
-    predictions['matchups'][prediction_index]['winner'] = winner
-    predictions['matchups'][prediction_index]['games'] = games
+    if predictions['matchups'][prediction_index]['winner'] != winner:
+        predictions['matchups'][prediction_index]['last_winner_update'] = matchups.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        predictions['matchups'][prediction_index]['winner'] = winner
+    if predictions['matchups'][prediction_index]['games'] != games:
+        predictions['matchups'][prediction_index]['last_games_update'] = matchups.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        predictions['matchups'][prediction_index]['games'] = games
 
     #Store in DB
     return store_db(year, predictions)
