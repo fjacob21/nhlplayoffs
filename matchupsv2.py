@@ -27,6 +27,9 @@ def restore_db(year):
 def store_db(year, data):
     return _db.store('datav2', year, data)
 
+def get_years():
+    return _db.get_rows_id('datav2')
+
 def build_matchup_tree(raw_matchups):
     matchups = {}
     for matchup_raw in list(raw_matchups.values()):
@@ -49,9 +52,19 @@ def build_matchup_tree(raw_matchups):
 def get(year):
     return restore_db(year)
 
-def get_teams(year):
-    data = get(year)
-    return data['teams']
+def get_teams(year=0):
+    if year != 0:
+        data = get(year)
+        return data['teams']
+    years = get_years()
+    teams = {}
+    for year in years:
+        data = get(year)['teams']
+        for team in data:
+            team = int(team)
+            if team not in teams:
+                teams[team] = data[team]
+    return teams
 
 #update complete data
 def update(year, data):

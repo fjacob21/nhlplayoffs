@@ -4,7 +4,25 @@ import datetime
 import json
 import sys
 import requests
+from pprint import pprint
 
+def getteams(server):
+    try:
+        url = 'http://' + server + '/nhlplayoffs/api/v2.0/teams'
+        headers = {'content-type': 'application/json'}
+        r = requests.get(url, headers=headers)
+        if not r.ok:
+            print('Invalid request!!!!')
+            return {}
+        rteams = r.json()['teams']
+        teams = {}
+        for t in rteams:
+            teams[int(t)] = rteams[t]
+        return teams
+
+    except Exception as e:
+        print(e)
+        return {}
 
 def removeuser(server, user, root_psw):
     try:
@@ -50,11 +68,16 @@ def getusers(server, inactive=False):
         return []
 
 def listusers(server, inactive=False):
+    teams = getteams(server)
     players = getusers(server, inactive)
     for player in players:
         print("\033[0;94m{n}\033[0m".format(n=player['name']))
-        print("\t\033[1;30mEmail:\033[0m{e}".format(e=player['email']))
-        print("\t\033[1;30mPredictions:\033[0m{p}".format(p=player['prediction_count']))
+        print("\t\033[1;30mEmail:\033[0m {e}".format(e=player['email']))
+        print("\t\033[1;30mPredictions:\033[0m {p}".format(p=player['prediction_count']))
+        if player['favorite_team'] > 0 and player['favorite_team'] in teams:
+            team = teams[player['favorite_team']]
+            team = team['info']['abbreviation']
+            print("\t\033[1;30mFav team:\033[0m {t}".format(t=team))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Manage the nhlpool players')

@@ -20,6 +20,10 @@ def after_request(response):
     response.headers['Cache-Control'] = 'public, max-age=0'
     return response
 
+@application.route('/nhlplayoffs/api/v2.0/teams', methods=['GET'])
+def get_all_teamss():
+    return jsonify({'teams': matchupsv2.get_teams()})
+
 @application.route('/nhlplayoffs/api/v2.0/players', methods=['GET'])
 def get_all_players():
     ps = players.get_all_admin()
