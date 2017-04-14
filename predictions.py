@@ -144,3 +144,29 @@ def get_prediction_count(player):
                 if matchup['games'] != 0 and matchup['winner'] != 0:
                     count = count + 1
     return count
+
+def get_teams_predictions(player):
+    years = _db.get_rows_id('predictions')
+    teams = {}
+    rounds_teams = {1:{}, 2:{}, 3:{}, 4:{}}
+    count = 0
+    for year in years:
+        ms = get_all(year)
+        for matchup in ms:
+            if matchup['player'] == player and  matchup['winner'] !=0:
+                if matchup['winner'] not in teams:
+                    teams[matchup['winner']] = 1
+                else:
+                    teams[matchup['winner']] = teams[matchup['winner']] + 1
+                if matchup['winner'] not in rounds_teams[matchup['round']]:
+                    rounds_teams[matchup['round']][matchup['winner']] = 1
+                else:
+                    rounds_teams[matchup['round']][matchup['winner']] = rounds_teams[matchup['round']][matchup['winner']] + 1
+                count = count + 1
+    return {'total': teams, 'rounds': rounds_teams}
+
+def get_favorite_teams(player):
+    teams = get_teams_predictions(player)['total']
+    if len(teams) == 0:
+        return 0
+    return max(teams, key=teams.get)

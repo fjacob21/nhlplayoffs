@@ -24,6 +24,7 @@ def after_request(response):
 def get_all_players():
     ps = players.get_all_admin()
     for p in ps:
+        p['favorite_team'] = predictions.get_favorite_teams(p['id'])
         p['prediction_count'] = predictions.get_prediction_count(p['id'])
         del p['id']
     return jsonify({'players': ps})
