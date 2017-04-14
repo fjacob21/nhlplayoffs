@@ -145,6 +145,26 @@ def get_prediction_count(player):
                     count = count + 1
     return count
 
+def get_games_predictions(player):
+    years = _db.get_rows_id('predictions')
+    games = {}
+    rounds_games = {1:{}, 2:{}, 3:{}, 4:{}}
+    count = 0
+    for year in years:
+        ms = get_all(year)
+        for matchup in ms:
+            if matchup['player'] == player and  matchup['games'] !=0:
+                if matchup['games'] not in games:
+                    games[matchup['games']] = 1
+                else:
+                    games[matchup['games']] = games[matchup['games']] + 1
+                if matchup['games'] not in rounds_games[matchup['round']]:
+                    rounds_games[matchup['round']][matchup['games']] = 1
+                else:
+                    rounds_games[matchup['round']][matchup['games']] = rounds_games[matchup['round']][matchup['games']] + 1
+                count = count + 1
+    return {'total': games, 'rounds': rounds_games}
+
 def get_teams_predictions(player):
     years = _db.get_rows_id('predictions')
     teams = {}

@@ -78,6 +78,13 @@ def listusers(server, inactive=False):
             team = teams[player['favorite_team']]
             team = team['info']['abbreviation']
             print("\t\033[1;30mFav team:\033[0m {t}".format(t=team))
+        if len(player['games_stats']['total']) > 0:
+            print("\t\033[1;30mGames prediction stats:\033[0m ")
+            for game in player['games_stats']['total']:
+                mean = 0
+                if int(player['prediction_count']) != 0:
+                    mean = (float(player['games_stats']['total'][game])/float(player['prediction_count'])*100)
+                print("\t\t\033[1;30m{g}:\033[0m {n:3.2f}%".format(g=game, n=mean))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Manage the nhlpool players')
