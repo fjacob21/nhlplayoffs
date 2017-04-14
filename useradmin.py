@@ -72,6 +72,8 @@ def listusers(server, inactive=False):
     players = getusers(server, inactive)
     for player in players:
         print("\033[0;94m{n}\033[0m".format(n=player['name']))
+        if 'last_login' in player:
+            print("\t\033[1;30mLast Login:\033[0m {l}".format(l=player['last_login']))
         print("\t\033[1;30mEmail:\033[0m {e}".format(e=player['email']))
         print("\t\033[1;30mPredictions:\033[0m {p}".format(p=player['prediction_count']))
         if player['favorite_team'] > 0 and player['favorite_team'] in teams:
