@@ -51,7 +51,7 @@ def remove_inactive_users(server, root_psw):
         if var == 'y':
             removeuser(server, user, root_psw)
 
-def getusers(server, inactive=False):
+def getusers(server, inactive=False, missing=False):
     try:
         url = 'http://' + server + '/nhlplayoffs/api/v2.0/players'
         headers = {'content-type': 'application/json'}
@@ -61,15 +61,25 @@ def getusers(server, inactive=False):
             return []
         players = r.json()['players']
         players = [p for p in players if p['prediction_count'] == 0 or not inactive ]
+        if missing:
+            ps = []
+            for p in players:
+                if p['prediction_count'] != 0:
+                    for m in p['missings']:
+                        print(p['name'], m, p['missings'][m])
+                        if len(p['missings'][m]):
+                            ps.append(p)
+                            break
+            players = ps
         return players
 
     except Exception as e:
         print(e)
         return []
 
-def listusers(server, inactive=False):
+def listusers(server, inactive=False, missing=False):
     teams = getteams(server)
-    players = getusers(server, inactive)
+    players = getusers(server, inactive, missing)
     for player in players:
         print("\033[0;94m{n}\033[0m".format(n=player['name']))
         if 'last_login' in player:
@@ -115,6 +125,8 @@ if __name__ == '__main__':
         listusers(server)
     elif cmd == 'listinactive':
         listusers(server, True)
+    elif cmd == 'listmissing':
+        listusers(server, False, True)
     elif cmd == 'remove':
         removeuser(server, user, root_psw)
     elif cmd == 'removeinactive':

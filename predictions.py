@@ -190,3 +190,22 @@ def get_favorite_teams(player):
     if len(teams) == 0:
         return 0
     return max(teams, key=teams.get)
+
+def get_missing_predictions(player):
+    years = _db.get_rows_id('predictions')
+    missings = {}
+    count = 0
+    for year in years:
+        missings[year] = []
+        #ms = get_all(year)
+        #results = results.get(player, year)
+        ms = matchups.get_matchups(year)
+        for matchup in list(ms.values()):
+            #print(matchup)
+            pred = get_prediction(player, year, matchup['round'], matchup['home'], matchup['away'])
+            if pred is None or pred['winner'] == 0:
+                copy = matchup.copy()
+                #del copy['player']
+                missings[year].append(copy)
+                count = count + 1
+    return missings

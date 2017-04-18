@@ -31,6 +31,7 @@ def get_all_players():
         p['favorite_team'] = predictions.get_favorite_teams(p['id'])
         p['prediction_count'] = predictions.get_prediction_count(p['id'])
         p['games_stats'] = predictions.get_games_predictions(p['id'])
+        # p['missings'] = predictions.get_missing_predictions(p['id'])
         del p['id']
     return jsonify({'players': ps})
 

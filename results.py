@@ -164,4 +164,6 @@ def get(player_id, year):
                 if not started:
                     winner = 0
             result.append({'player':player['name'], 'pts':pts, 'oldpts':oldpts, 'winner':winner, 'predictions':player_preds, 'victories':victories})
+    from pprint import pprint
+    pprint(result)
     return result
