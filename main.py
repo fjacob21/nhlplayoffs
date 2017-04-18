@@ -20,11 +20,18 @@ def after_request(response):
     response.headers['Cache-Control'] = 'public, max-age=0'
     return response
 
+@application.route('/nhlplayoffs/api/v2.0/teams', methods=['GET'])
+def get_all_teamss():
+    return jsonify({'teams': matchupsv2.get_teams()})
+
 @application.route('/nhlplayoffs/api/v2.0/players', methods=['GET'])
 def get_all_players():
     ps = players.get_all_admin()
     for p in ps:
+        p['favorite_team'] = predictions.get_favorite_teams(p['id'])
         p['prediction_count'] = predictions.get_prediction_count(p['id'])
+        p['games_stats'] = predictions.get_games_predictions(p['id'])
+        # p['missings'] = predictions.get_missing_predictions(p['id'])
         del p['id']
     return jsonify({'players': ps})
 

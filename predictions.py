@@ -77,6 +77,8 @@ def add(player, year, round, home, away, winner, games):
         return update(player, year, round, home, away, winner, games)
 
     prediction = {'player':player, 'round':round, 'home':home, 'away':away, 'winner':winner, 'games':games}
+    prediction['last_winner_update'] = matchups.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+    prediction['last_games_update'] = matchups.now().strftime("%Y-%m-%dT%H:%M:%SZ")
     predictions['matchups'].append(prediction)
 
     #Store in DB
@@ -100,8 +102,12 @@ def update(player, year, round, home, away, winner, games):
     if prediction_index == -1:
         return False
 
-    predictions['matchups'][prediction_index]['winner'] = winner
-    predictions['matchups'][prediction_index]['games'] = games
+    if predictions['matchups'][prediction_index]['winner'] != winner:
+        predictions['matchups'][prediction_index]['last_winner_update'] = matchups.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        predictions['matchups'][prediction_index]['winner'] = winner
+    if predictions['matchups'][prediction_index]['games'] != games:
+        predictions['matchups'][prediction_index]['last_games_update'] = matchups.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        predictions['matchups'][prediction_index]['games'] = games
 
     #Store in DB
     return store_db(year, predictions)
@@ -138,3 +144,68 @@ def get_prediction_count(player):
                 if matchup['games'] != 0 and matchup['winner'] != 0:
                     count = count + 1
     return count
+
+def get_games_predictions(player):
+    years = _db.get_rows_id('predictions')
+    games = {}
+    rounds_games = {1:{}, 2:{}, 3:{}, 4:{}}
+    count = 0
+    for year in years:
+        ms = get_all(year)
+        for matchup in ms:
+            if matchup['player'] == player and  matchup['games'] !=0:
+                if matchup['games'] not in games:
+                    games[matchup['games']] = 1
+                else:
+                    games[matchup['games']] = games[matchup['games']] + 1
+                if matchup['games'] not in rounds_games[matchup['round']]:
+                    rounds_games[matchup['round']][matchup['games']] = 1
+                else:
+                    rounds_games[matchup['round']][matchup['games']] = rounds_games[matchup['round']][matchup['games']] + 1
+                count = count + 1
+    return {'total': games, 'rounds': rounds_games}
+
+def get_teams_predictions(player):
+    years = _db.get_rows_id('predictions')
+    teams = {}
+    rounds_teams = {1:{}, 2:{}, 3:{}, 4:{}}
+    count = 0
+    for year in years:
+        ms = get_all(year)
+        for matchup in ms:
+            if matchup['player'] == player and  matchup['winner'] !=0:
+                if matchup['winner'] not in teams:
+                    teams[matchup['winner']] = 1
+                else:
+                    teams[matchup['winner']] = teams[matchup['winner']] + 1
+                if matchup['winner'] not in rounds_teams[matchup['round']]:
+                    rounds_teams[matchup['round']][matchup['winner']] = 1
+                else:
+                    rounds_teams[matchup['round']][matchup['winner']] = rounds_teams[matchup['round']][matchup['winner']] + 1
+                count = count + 1
+    return {'total': teams, 'rounds': rounds_teams}
+
+def get_favorite_teams(player):
+    teams = get_teams_predictions(player)['total']
+    if len(teams) == 0:
+        return 0
+    return max(teams, key=teams.get)
+
+def get_missing_predictions(player):
+    years = _db.get_rows_id('predictions')
+    missings = {}
+    count = 0
+    for year in years:
+        missings[year] = []
+        #ms = get_all(year)
+        #results = results.get(player, year)
+        ms = matchups.get_matchups(year)
+        for matchup in list(ms.values()):
+            #print(matchup)
+            pred = get_prediction(player, year, matchup['round'], matchup['home'], matchup['away'])
+            if pred is None or pred['winner'] == 0:
+                copy = matchup.copy()
+                #del copy['player']
+                missings[year].append(copy)
+                count = count + 1
+    return missings
