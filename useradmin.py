@@ -97,6 +97,10 @@ def listusers(server, inactive=False, missing=False):
                 if int(player['prediction_count']) != 0:
                     mean = (float(player['games_stats']['total'][game])/float(player['prediction_count'])*100)
                 print("\t\t\033[1;30m{g}:\033[0m {n:3.2f}%".format(g=game, n=mean))
+        if player['missings'] and len(player['missings']) > 0:
+            print("\t\033[1;30mMissings:\033[0m ")
+            for missing in player['missings']:
+                print("\t\tYear:{y} Round:{r} Home:{h} Away:{a} Start:{s}".format(y=missing['year'], r=missing['round'], h=missing['home'], a=missing['away'], s=missing['start']))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Manage the nhlpool players')

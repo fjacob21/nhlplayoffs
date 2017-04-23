@@ -7,11 +7,11 @@ import matchups
 import matchupsv2
 import predictions
 import players
-import results
 import postgres_store
+from data import Data
+from time import time
 
 _db = postgres_store.get_default()
-
 application = Flask(__name__, static_url_path='')
 
 @application.after_request
@@ -26,12 +26,9 @@ def get_all_teamss():
 
 @application.route('/nhlplayoffs/api/v2.0/players', methods=['GET'])
 def get_all_players():
-    ps = players.get_all_admin()
+    _data = Data()
+    ps = _data.get_players()
     for p in ps:
-        p['favorite_team'] = predictions.get_favorite_teams(p['id'])
-        p['prediction_count'] = predictions.get_prediction_count(p['id'])
-        p['games_stats'] = predictions.get_games_predictions(p['id'])
-        # p['missings'] = predictions.get_missing_predictions(p['id'])
         del p['id']
     return jsonify({'players': ps})
 
@@ -227,7 +224,8 @@ def get_results(year):
         abort(400)
     player = request.json["player"]
 
-    r = results.get(player, year)
+    _data = Data()
+    r = _data.get_results(player, year)
     return jsonify({"results": r})
 
 @application.route('/nhlplayoffs/api/v2.0/backup', methods=['POST'])

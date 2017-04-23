@@ -1,5 +1,11 @@
 venv
 *.pyc
 staticfiles
+*.ipynb
+.ipynb_checkpoints
 .env
 db.sqlite3
+*.backup
+data_2015.json
+debugBakup.json
+html/node_modules/
