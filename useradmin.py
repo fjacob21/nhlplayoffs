@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import argparse
-import datetime
+from datetime import datetime
+from dateutil import tz
 import json
 import sys
 import requests
@@ -66,8 +67,7 @@ def getusers(server, inactive=False, missing=False):
             for p in players:
                 if p['prediction_count'] != 0:
                     for m in p['missings']:
-                        print(p['name'], m, p['missings'][m])
-                        if len(p['missings'][m]):
+                        if m['start'] and now() < parse_time(m['start']):
                             ps.append(p)
                             break
             players = ps
@@ -77,9 +77,20 @@ def getusers(server, inactive=False, missing=False):
         print(e)
         return []
 
-def listusers(server, inactive=False, missing=False):
+def parse_time(timestamp):
+    from_zone = tz.gettz('UTC')
+    to_zone = tz.gettz('America/New_York')
+    utc = datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%SZ')
+    utc = utc.replace(tzinfo=from_zone)
+    return utc.astimezone(to_zone)
+
+def now():
+    to_zone = tz.gettz('America/New_York')
+    return datetime.now(tz.tzlocal()).astimezone(to_zone)
+
+def listusers(server, inactive=False, show_missing=False):
     teams = getteams(server)
-    players = getusers(server, inactive, missing)
+    players = getusers(server, inactive, show_missing)
     for player in players:
         print("\033[0;94m{n}\033[0m".format(n=player['name']))
         if 'last_login' in player:
@@ -96,11 +107,12 @@ def listusers(server, inactive=False, missing=False):
                 mean = 0
                 if int(player['prediction_count']) != 0:
                     mean = (float(player['games_stats']['total'][game])/float(player['prediction_count'])*100)
-                print("\t\t\033[1;30m{g}:\033[0m {n:3.2f}%".format(g=game, n=mean))
+                print("\t\t\033[1;30m`{g}:\033[0m {n:3.2f}%".format(g=game, n=mean))
         if player['missings'] and len(player['missings']) > 0:
             print("\t\033[1;30mMissings:\033[0m ")
             for missing in player['missings']:
-                print("\t\tYear:{y} Round:{r} Home:{h} Away:{a} Start:{s}".format(y=missing['year'], r=missing['round'], h=missing['home'], a=missing['away'], s=missing['start']))
+                if show_missing and missing['start'] and now() < parse_time(missing['start']):
+                    print("\t\tYear:{y} Round:{r} Home:{h} Away:{a} Start:{s}".format(y=missing['year'], r=missing['round'], h=missing['home'], a=missing['away'], s=missing['start']))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Manage the nhlpool players')
