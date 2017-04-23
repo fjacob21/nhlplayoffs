@@ -25191,6 +25191,16 @@
 	        render: function render() {
 	                var username = "";
 	                if (sessionStorage.user) username = sessionStorage.user;
+	                var userinfoLink = "";
+	                if (username != 'guest') userinfoLink = _react2.default.createElement(
+	                        _reactRouterBootstrap.LinkContainer,
+	                        { to: '/main/userinfo' },
+	                        _react2.default.createElement(
+	                                _reactBootstrap.NavItem,
+	                                { eventKey: 5, onClick: this.onNavItemClick },
+	                                username
+	                        )
+	                );
 	                return _react2.default.createElement(
 	                        'div',
 	                        { className: 'app' },
@@ -25282,15 +25292,7 @@
 	                                                                'About'
 	                                                        )
 	                                                ),
-	                                                _react2.default.createElement(
-	                                                        _reactRouterBootstrap.LinkContainer,
-	                                                        { to: '/main/userinfo' },
-	                                                        _react2.default.createElement(
-	                                                                _reactBootstrap.NavItem,
-	                                                                { eventKey: 5, onClick: this.onNavItemClick },
-	                                                                username
-	                                                        )
-	                                                ),
+	                                                userinfoLink,
 	                                                _react2.default.createElement(
 	                                                        _reactBootstrap.NavItem,
 	                                                        { eventKey: 6, onClick: this.onLogout },
