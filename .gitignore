@@ -1,7 +1,6 @@
 venv
 *.pyc
 staticfiles
-*.ipynb
 .ipynb_checkpoints
 .env
 db.sqlite3
