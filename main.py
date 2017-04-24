@@ -7,6 +7,7 @@ import matchups
 import matchupsv2
 import predictions
 import players
+import results
 import postgres_store
 from data import Data
 from time import time
@@ -225,7 +226,8 @@ def get_results(year):
     player = request.json["player"]
 
     _data = Data()
-    r = _data.get_results(player, year)
+    # r = _data.get_results(player, year)
+    r = results.get(player, year)
     return jsonify({"results": r})
 
 @application.route('/nhlplayoffs/api/v2.0/backup', methods=['POST'])
