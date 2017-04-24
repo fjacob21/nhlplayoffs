@@ -84,16 +84,20 @@ var Predictions = React.createClass({
                 var homeTeam = store.getTeam(prediction.home);
                 var awayTeam = store.getTeam(prediction.away);
                 var matchup = store.getMatchup(prediction.home, prediction.away, prediction.round);
-                var start  = new Date(matchup.start);
-                var now = new Date(Date.now());
-                var diff = start-now;
-                var diffDay = Math.max(0, Math.floor((start-now)/(1000*60*60*24)));
-                var diffHour = Math.max(0, Math.floor((start-now - (diffDay*(1000*60*60*24)))/(1000*60*60)));
-                var diffMin = Math.max(0, Math.floor((start-now - (diffDay*(1000*60*60*24)) - (diffHour*(1000*60*60)))/(1000*60)));
-                var dstart = start.toLocaleString();
-                var diffStr = diffDay + ' days ' + diffHour+'h'+diffMin +'m';
-                if(diffDay==0 && diffHour==0 && diffMin==0)
-                        diffStr = 'Started';
+                var diffStr = 'Not available';
+                if (matchup.start != '') {
+                        var start  = new Date(matchup.start);
+                        var now = new Date(Date.now());
+                        var diff = start-now;
+                        var diffDay = Math.max(0, Math.floor((start-now)/(1000*60*60*24)));
+                        var diffHour = Math.max(0, Math.floor((start-now - (diffDay*(1000*60*60*24)))/(1000*60*60)));
+                        var diffMin = Math.max(0, Math.floor((start-now - (diffDay*(1000*60*60*24)) - (diffHour*(1000*60*60)))/(1000*60)));
+                        var dstart = start.toLocaleString();
+                        diffStr = diffDay + ' days ' + diffHour+'h'+diffMin +'m';
+                        if(diffDay==0 && diffHour==0 && diffMin==0)
+                                diffStr = 'Started';
+                }
+
                 return (
                         <div key={i} className='prediction'>
                                <div className='round cell'>{matchup.round}</div>
