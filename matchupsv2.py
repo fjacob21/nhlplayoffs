@@ -97,7 +97,7 @@ def parse_time(timestamp):
     return utc.astimezone(to_zone)
 
 def get_start(matchup):
-    if 'start' in matchup:
+    if 'start' in matchup and matchup['start']:
         return parse_time(matchup['start'])
     return None
 
