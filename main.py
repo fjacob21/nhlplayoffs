@@ -1,16 +1,11 @@
 #!/usr/bin/python
-from flask import Flask, jsonify, abort, request, send_from_directory, redirect, url_for
-import json
-import os
-import urlparse
+from flask import Flask, jsonify, abort, request, send_from_directory, redirect
 import matchups
 import matchupsv2
 import predictions
 import players
-import results
 import postgres_store
 from data import Data
-from time import time
 
 _db = postgres_store.get_default()
 application = Flask(__name__, static_url_path='')
@@ -225,9 +220,8 @@ def get_results(year):
         abort(400)
     player = request.json["player"]
 
-    _data = Data()
-    # r = _data.get_results(player, year)
-    r = results.get(player, year)
+    _data = Data(player)
+    r = _data.get_results(player, year)
     return jsonify({"results": r})
 
 @application.route('/nhlplayoffs/api/v2.0/backup', methods=['POST'])
