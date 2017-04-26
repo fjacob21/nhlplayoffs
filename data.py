@@ -34,6 +34,14 @@ class Data():
         else:
             rounds_teams[round][team] = rounds_teams[round][team] + 1
 
+    def add_player_team_result(self, team, has_winner, results):
+        if team not in results:
+            results[team] = {'good': 0, 'bad':0}
+        if has_winner:
+            results[team]['good'] = results[team]['good'] + 1
+        else:
+            results[team]['bad'] = results[team]['bad'] + 1
+
     def add_player_games(self, games, round, total_games, rounds_games):
         if games != 0:
             if games not in total_games:
@@ -68,6 +76,7 @@ class Data():
             p['predictions'] = {}
 
             prediction_count = 0
+            prediction_team_results = {}
             prediction_teams = {}
             rounds_teams = {1: {}, 2: {}, 3: {}, 4: {}}
             total_games = {}
@@ -88,7 +97,8 @@ class Data():
 
                             winner, games = self.matchup_result(m)
                             self.build_player_matchup_result(y, pred, winner, games, result)
-
+                            if winner != 0:
+                                self.add_player_team_result(pred['winner'], result['has_winner'], prediction_team_results)
                             if 'player' in pred:
                                 del pred['player']
                         elif m['home'] != 0 and m['away'] != 0:
@@ -105,6 +115,7 @@ class Data():
             favorite_team = 0
             if len(prediction_teams) > 0:
                 favorite_team = max(prediction_teams, key=prediction_teams.get)
+            p['team_results'] = prediction_team_results
             p['favorite_team'] = favorite_team
             p['games_stats'] = {'total': total_games, 'rounds': rounds_games}
             p['missings'] = missings_predictions
