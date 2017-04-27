@@ -107,13 +107,23 @@ def listusers(server, inactive=False, show_missing=False):
                 mean = 0
                 if int(player['prediction_count']) != 0:
                     mean = (float(player['games_stats']['total'][game])/float(player['prediction_count'])*100)
-                print("\t\t\033[1;30m`{g}:\033[0m {n:3.2f}%".format(g=game, n=mean))
+                print("\t\t\033[1;30m{g}:\033[0m {n:3.2f}%".format(g=game, n=mean))
         if player['missings'] and len(player['missings']) > 0:
             print("\t\033[1;30mMissings:\033[0m ")
             for missing in player['missings']:
                 if show_missing and missing['start'] and now() < parse_time(missing['start']):
                     print("\t\tYear:{y} Round:{r} Home:{h} Away:{a} Start:{s}".format(y=missing['year'], r=missing['round'], h=missing['home'], a=missing['away'], s=missing['start']))
-
+        print("\t\033[1;30mTeam result stats:\033[0m ")
+        team_results = sorted(player['team_results'].items(), key=lambda x: -x[1])
+        for t in team_results:
+            team = teams[int(t[0])]
+            team = team['info']['abbreviation']
+            result = t[1]
+            print("\t\t\033[1;30m{t}:\033[0m {r:3.2f}%".format(t=team, r=result))
+        print("\t\033[1;30mGames result stats:\033[0m ")
+        games_results = sorted(player['games_results'].items(), key=lambda x: -x[1])
+        for t in games_results:
+            print("\t\t\033[1;30m{g}:\033[0m {r:3.2f}%".format(g=t[0], r=t[1]))
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Manage the nhlpool players')
     parser.add_argument('cmd', metavar='cmd',
