@@ -3,9 +3,8 @@ import argparse
 from datetime import datetime
 from dateutil import tz
 import json
-import sys
 import requests
-from pprint import pprint
+
 
 def getteams(server):
     try:
@@ -25,12 +24,13 @@ def getteams(server):
         print(e)
         return {}
 
+
 def removeuser(server, user, root_psw):
     try:
-        url = 'http://' + server + '/nhlplayoffs/api/v2.0/players/'+user
+        url = 'http://' + server + '/nhlplayoffs/api/v2.0/players/' + user
         headers = {'content-type': 'application/json'}
-        data = {'root_psw':root_psw}
-        r = requests.delete(url, data = json.dumps(data), headers=headers)
+        data = {'root_psw': root_psw}
+        r = requests.delete(url, data=json.dumps(data), headers=headers)
         if not r.ok:
             print('Invalid request!!!!')
             return False
@@ -38,19 +38,21 @@ def removeuser(server, user, root_psw):
             print('Remove {0} successful'.format(user))
             return True
         else:
-            print('Invalid parameter');
+            print('Invalid parameter')
             return False
     except Exception as e:
         print(e)
         return False
 
+
 def remove_inactive_users(server, root_psw):
     players = getusers(server, True)
     for player in players:
         user = player['name']
-        var = raw_input("Are you sure you want to errase user: {user} on {server}? ".format(server=server,user=user))
+        var = raw_input("Are you sure you want to errase user: {user} on {server}? ".format(server=server, user=user))
         if var == 'y':
             removeuser(server, user, root_psw)
+
 
 def getusers(server, inactive=False, missing=False):
     try:
@@ -61,7 +63,7 @@ def getusers(server, inactive=False, missing=False):
             print('Invalid request!!!!')
             return []
         players = r.json()['players']
-        players = [p for p in players if p['prediction_count'] == 0 or not inactive ]
+        players = [p for p in players if p['prediction_count'] == 0 or not inactive]
         if missing:
             ps = []
             for p in players:
@@ -77,6 +79,7 @@ def getusers(server, inactive=False, missing=False):
         print(e)
         return []
 
+
 def parse_time(timestamp):
     from_zone = tz.gettz('UTC')
     to_zone = tz.gettz('America/New_York')
@@ -84,9 +87,11 @@ def parse_time(timestamp):
     utc = utc.replace(tzinfo=from_zone)
     return utc.astimezone(to_zone)
 
+
 def now():
     to_zone = tz.gettz('America/New_York')
     return datetime.now(tz.tzlocal()).astimezone(to_zone)
+
 
 def listusers(server, inactive=False, show_missing=False):
     teams = getteams(server)
@@ -106,7 +111,7 @@ def listusers(server, inactive=False, show_missing=False):
             for game in player['games_stats']['total']:
                 mean = 0
                 if int(player['prediction_count']) != 0:
-                    mean = (float(player['games_stats']['total'][game])/float(player['prediction_count'])*100)
+                    mean = (float(player['games_stats']['total'][game]) / float(player['prediction_count']) * 100)
                 print("\t\t\033[1;30m{g}:\033[0m {n:3.2f}%".format(g=game, n=mean))
         if player['missings'] and len(player['missings']) > 0:
             print("\t\033[1;30mMissings:\033[0m ")
@@ -124,16 +129,18 @@ def listusers(server, inactive=False, show_missing=False):
         games_results = sorted(player['games_results'].items(), key=lambda x: -x[1])
         for t in games_results:
             print("\t\t\033[1;30m{g}:\033[0m {r:3.2f}%".format(g=t[0], r=t[1]))
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Manage the nhlpool players')
     parser.add_argument('cmd', metavar='cmd',
-                       help='The command to execute')
+                        help='The command to execute')
     parser.add_argument('root_psw', metavar='password', default='', nargs='?',
-                       help='The root password')
+                        help='The root password')
     parser.add_argument('user', metavar='user', default='', nargs='?',
-                       help='The user')
+                        help='The user')
     parser.add_argument('-s', '--server', metavar='server', default='debug', nargs='?',
-                       help='The server to use')
+                        help='The server to use')
 
     args = parser.parse_args()
 

@@ -6,29 +6,33 @@ from dateutil import tz
 
 _db = postgres_store.get_default()
 
+
 def restore_db(year):
     data = _db.restore('datav2', year)
     if data == '':
-        data = {"matchups":{},
-                "teams":{},
-               "current_round":0}
+        data = {"matchups": {},
+                "teams": {},
+                "current_round": 0}
     else:
         teams = {}
         for m in data['teams'].items():
-            teams[int(m[0])]=m[1]
+            teams[int(m[0])] = m[1]
         current_round = data['current_round']
-        matchups = data['matchups'] #build_matchup_tree(data['matchups'])
+        matchups = data['matchups']
         data = {}
         data['teams'] = teams
         data['current_round'] = current_round
         data['matchups'] = matchups
     return data
 
+
 def store_db(year, data):
     return _db.store('datav2', year, data)
 
+
 def get_years():
     return _db.get_rows_id('datav2')
+
 
 def build_matchup_tree(raw_matchups):
     matchups = {}
@@ -48,9 +52,11 @@ def build_matchup_tree(raw_matchups):
             matchup['left'] = matchups[left]
     return matchups
 
-#get complete data
+
+# get complete data
 def get(year):
     return restore_db(year)
+
 
 def get_teams(year=0):
     if year != 0:
@@ -66,13 +72,16 @@ def get_teams(year=0):
                 teams[team] = data[team]
     return teams
 
-#update complete data
+
+# update complete data
 def update(year, data):
     return store_db(year, data)
+
 
 def get_current_round(year):
     data = get(year)
     return int(data['current_round'])
+
 
 def get_matchups(year, round=0):
     data = get(year)
@@ -80,6 +89,7 @@ def get_matchups(year, round=0):
         return data['matchups']
     matchups = [m for m in list(data['matchups'].values()) if m['round'] == int(round)]
     return matchups
+
 
 def get_matchup(year, home, away):
     matchups = get_matchups(year, 0)
@@ -89,6 +99,7 @@ def get_matchup(year, home, away):
             return matchup
     return None
 
+
 def parse_time(timestamp):
     from_zone = tz.gettz('UTC')
     to_zone = tz.gettz('America/New_York')
@@ -96,14 +107,17 @@ def parse_time(timestamp):
     utc = utc.replace(tzinfo=from_zone)
     return utc.astimezone(to_zone)
 
+
 def get_start(matchup):
     if 'start' in matchup and matchup['start']:
         return parse_time(matchup['start'])
     return None
 
+
 def now():
     to_zone = tz.gettz('America/New_York')
     return datetime.now(tz.tzlocal()).astimezone(to_zone)
+
 
 def is_round_started(year, round):
     matchups = get_matchups(year, round)
@@ -115,6 +129,7 @@ def is_round_started(year, round):
             if n > start:
                 return True
     return False
+
 
 def is_matchup_started(matchup):
     n = now()

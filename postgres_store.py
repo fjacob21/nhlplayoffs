@@ -3,10 +3,12 @@
 import json
 import psycopg2
 
+
 def get_default():
-    #return postgres_store('postgres', 'postgres', 'mysecretpassword', '172.17.0.3', 5432)
-    #return postgres_store('fred', 'fred', '763160', 'localhost', 5432)
+    # return postgres_store('postgres', 'postgres', 'mysecretpassword', '172.17.0.3', 5432)
+    # return postgres_store('fred', 'fred', '763160', 'localhost', 5432)
     return postgres_store('dc7m5co1u7n7ka', 'vfumyroepkgfsd', 'AsRCUy1JTkf500s_2pfXZK9qwR', 'ec2-107-22-246-250.compute-1.amazonaws.com', 5432)
+
 
 class postgres_store(object):
 
@@ -33,7 +35,7 @@ class postgres_store(object):
 
     def table_exist(self, table):
         con = self.connect()
-        if con :
+        if con:
             try:
                 cur = con.cursor()
                 cur.execute("SELECT * FROM information_schema.tables WHERE table_name='" + table + "';")
@@ -47,7 +49,7 @@ class postgres_store(object):
 
     def row_exist(self, table, id):
         con = self.connect()
-        if con :
+        if con:
             try:
                 cur = con.cursor()
                 cur.execute("SELECT * FROM " + table + " WHERE ID='" + str(id) + "';")
@@ -61,7 +63,7 @@ class postgres_store(object):
 
     def create_table(self, table):
         con = self.connect()
-        if con :
+        if con:
             try:
                 cur = con.cursor()
                 cur.execute('CREATE TABLE ' + table + '(ID INT PRIMARY KEY NOT NULL, data TEXT NOT NULL)')
@@ -76,13 +78,13 @@ class postgres_store(object):
 
     def create_row(self, table, id, data):
         con = self.connect()
-        if con :
+        if con:
             try:
                 cur = con.cursor()
-                cur.execute("INSERT INTO " + table + "(ID,data) " + "VALUES("+ str(id) + ", '"+ json.dumps(data) + "')" )
+                cur.execute("INSERT INTO " + table + "(ID,data) " + "VALUES(" + str(id) + ", '" + json.dumps(data) + "')")
                 con.commit()
             except Exception as e:
-                print('row',e)
+                print('row', e)
                 return False
 
             con.close()
@@ -91,12 +93,12 @@ class postgres_store(object):
 
     def delete_table(self, table):
         con = self.connect()
-        if con :
+        if con:
             try:
                 cur = con.cursor()
                 cur.execute('DROP TABLE ' + table)
                 con.commit()
-            except Exception as e:
+            except:
                 return False
 
             con.close()
@@ -105,7 +107,7 @@ class postgres_store(object):
 
     def get_rows_id(self, table):
         con = self.connect()
-        if con :
+        if con:
             try:
                 cur = con.cursor()
                 cur.execute("SELECT ID FROM " + table)
@@ -128,12 +130,12 @@ class postgres_store(object):
             self.create_row(table, id, data)
 
         con = self.connect()
-        if con :
+        if con:
             try:
                 cur = con.cursor()
-                cur.execute('UPDATE ' + table + ' SET data=\''+ json.dumps(data) +'\' WHERE ID=' + str(id))
+                cur.execute('UPDATE ' + table + ' SET data=\'' + json.dumps(data) + '\' WHERE ID=' + str(id))
                 con.commit()
-            except Exception as e:
+            except:
                 return False
 
             con.close()
@@ -145,13 +147,13 @@ class postgres_store(object):
             return ''
 
         con = self.connect()
-        if con :
+        if con:
             try:
                 cur = con.cursor()
                 cur.execute('SELECT data FROM ' + table + ' WHERE ID=' + str(id))
                 records = cur.fetchall()
                 data = json.loads(records[0][0])
-            except Exception as e:
+            except:
                 return None
 
             con.close()
@@ -161,8 +163,8 @@ class postgres_store(object):
     def backup(self):
         req_tables = "SELECT table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema = 'public' ORDER BY table_schema,table_name;"
         con = self.connect()
-        data={}
-        if con :
+        data = {}
+        if con:
             try:
                 cur = con.cursor()
                 cur.execute(req_tables)
@@ -175,7 +177,7 @@ class postgres_store(object):
                     rows = cur.fetchall()
                     for row in rows:
                         data[table][row[0]] = json.loads(row[1])
-            except Exception as e:
+            except:
                 pass
             con.close()
         return data
@@ -183,7 +185,7 @@ class postgres_store(object):
     def restore_backup(self, data):
         req_tables = "SELECT table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema = 'public' ORDER BY table_schema,table_name;"
         con = self.connect()
-        if con :
+        if con:
             try:
                 cur = con.cursor()
                 cur.execute(req_tables)
