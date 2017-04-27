@@ -53,6 +53,14 @@ class Data():
             else:
                 rounds_games[round][games] = rounds_games[round][games] + 1
 
+    def add_player_game_result(self, games, has_games, results):
+        if games not in results:
+            results[games] = {'good': 0, 'bad':0}
+        if has_games:
+            results[games]['good'] = results[games]['good'] + 1
+        else:
+            results[games]['bad'] = results[games]['bad'] + 1
+
     def matchup_result(self, matchup):
         winner = 0
         games = 0
@@ -77,6 +85,7 @@ class Data():
 
             prediction_count = 0
             prediction_team_results = {}
+            prediction_game_results = {}
             prediction_teams = {}
             rounds_teams = {1: {}, 2: {}, 3: {}, 4: {}}
             total_games = {}
@@ -99,6 +108,8 @@ class Data():
                             self.build_player_matchup_result(y, pred, winner, games, result)
                             if winner != 0:
                                 self.add_player_team_result(pred['winner'], result['has_winner'], prediction_team_results)
+                            if games != 0:
+                                self.add_player_game_result(pred['games'], result['has_games'], prediction_game_results)
                             if 'player' in pred:
                                 del pred['player']
                         elif m['home'] != 0 and m['away'] != 0:
@@ -115,7 +126,18 @@ class Data():
             favorite_team = 0
             if len(prediction_teams) > 0:
                 favorite_team = max(prediction_teams, key=prediction_teams.get)
-            p['team_results'] = prediction_team_results
+            team_results = {}
+            for r in prediction_team_results:
+                result = prediction_team_results[r]
+                total = result['good'] + result['bad']
+                team_results[r] = float(result['good'])/float(total) * 100
+            games_results = {}
+            for r in prediction_game_results:
+                result = prediction_game_results[r]
+                total = result['good'] + result['bad']
+                games_results[r] = float(result['good'])/float(total) * 100
+            p['team_results'] = team_results
+            p['games_results'] = games_results
             p['favorite_team'] = favorite_team
             p['games_stats'] = {'total': total_games, 'rounds': rounds_games}
             p['missings'] = missings_predictions
@@ -194,7 +216,10 @@ class Data():
                         player_preds.append(pred['prediction'])
                     pts = pts + self.calculate_result_pts(pred['result'])
                 victories = {'winner_count': 0, 'games_count': 0}
-                results.append({'player': player['name'], 'pts': pts, 'oldpts': oldpts, 'winner': winner, 'predictions': player_preds, 'victories': victories})
+                result = {'player': player['name'], 'pts': pts, 'oldpts': oldpts, 'winner': winner, 'predictions': player_preds, 'victories': victories, 'favorite_team': player['favorite_team']}
+                result['games_stats'] = player['games_stats']
+                result['team_results'] = player['team_results']
+                results.append(result)
         return results
 
     class RawData():

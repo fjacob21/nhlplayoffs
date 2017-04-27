@@ -114,15 +114,16 @@ def listusers(server, inactive=False, show_missing=False):
                 if show_missing and missing['start'] and now() < parse_time(missing['start']):
                     print("\t\tYear:{y} Round:{r} Home:{h} Away:{a} Start:{s}".format(y=missing['year'], r=missing['round'], h=missing['home'], a=missing['away'], s=missing['start']))
         print("\t\033[1;30mTeam result stats:\033[0m ")
-        for t in player['team_results']:
-            team = teams[int(t)]
+        team_results = sorted(player['team_results'].items(), key=lambda x: -x[1])
+        for t in team_results:
+            team = teams[int(t[0])]
             team = team['info']['abbreviation']
-            result = player['team_results'][t]
-            total = result['good'] + result['bad']
-            good = 0
-            if result['good']:
-                good = float(result['good'])/float(total)
-            print("\t\t\033[1;30m{t}:\033[0m {r:3.2f}%".format(t=team, r=good))
+            result = t[1]
+            print("\t\t\033[1;30m{t}:\033[0m {r:3.2f}%".format(t=team, r=result))
+        print("\t\033[1;30mGames result stats:\033[0m ")
+        games_results = sorted(player['games_results'].items(), key=lambda x: -x[1])
+        for t in games_results:
+            print("\t\t\033[1;30m{g}:\033[0m {r:3.2f}%".format(g=t[0], r=t[1]))
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Manage the nhlpool players')
     parser.add_argument('cmd', metavar='cmd',
