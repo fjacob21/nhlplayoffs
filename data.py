@@ -36,7 +36,7 @@ class Data():
 
     def add_player_team_result(self, team, has_winner, results):
         if team not in results:
-            results[team] = {'good': 0, 'bad':0}
+            results[team] = {'good': 0, 'bad': 0}
         if has_winner:
             results[team]['good'] = results[team]['good'] + 1
         else:
@@ -55,7 +55,7 @@ class Data():
 
     def add_player_game_result(self, games, has_games, results):
         if games not in results:
-            results[games] = {'good': 0, 'bad':0}
+            results[games] = {'good': 0, 'bad': 0}
         if has_games:
             results[games]['good'] = results[games]['good'] + 1
         else:
@@ -130,12 +130,12 @@ class Data():
             for r in prediction_team_results:
                 result = prediction_team_results[r]
                 total = result['good'] + result['bad']
-                team_results[r] = float(result['good'])/float(total) * 100
+                team_results[r] = float(result['good']) / float(total) * 100
             games_results = {}
             for r in prediction_game_results:
                 result = prediction_game_results[r]
                 total = result['good'] + result['bad']
-                games_results[r] = float(result['good'])/float(total) * 100
+                games_results[r] = float(result['good']) / float(total) * 100
             p['team_results'] = team_results
             p['games_results'] = games_results
             p['favorite_team'] = favorite_team

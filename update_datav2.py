@@ -6,6 +6,7 @@ import json
 import sys
 import requests
 
+
 class Updater(object):
 
     def __init__(self, server, year):
@@ -91,10 +92,10 @@ class Updater(object):
         matchup['right'] = right
 
     def create_matchup(self, id, round, next):
-        matchup = {'id': id, 'home':0, 'away':0, 'round':round, 'start':'', 'result':{}, 'schedule':[], 'season':{}, 'next': next}
+        matchup = {'id': id, 'home': 0, 'away': 0, 'round': round, 'start': '', 'result': {}, 'schedule': [], 'season': {}, 'next': next}
         matchup['left'] = None
         matchup['right'] = None
-        matchup['result'] = {'home_win':0, 'away_win':0}
+        matchup['result'] = {'home_win': 0, 'away_win': 0}
         return matchup
 
     def create_matchups_tree(self):
@@ -133,7 +134,7 @@ class Updater(object):
         matchups[p1['id']] = p1
         matchups[p2['id']] = p2
 
-        #build tree
+        # build tree
         self.set_matchup_childs(sc, e, w)
 
         self.set_matchup_childs(w, p, c)
@@ -152,21 +153,21 @@ class Updater(object):
         return team['teams'][0]
 
     def get_teams(self):
-        ystr = str(self._year) + str(self._year+1)
+        ystr = str(self._year) + str(self._year + 1)
         url = 'https://statsapi.web.nhl.com/api/v1/standings?season=' + ystr
         standings = requests.get(url).json()
         teams = {}
         for record in standings["records"]:
             for team in record['teamRecords']:
                 info = self.get_team(team['team']['id'])
-                team_record = {'info':info, 'standings':team, 'schedule':[]}
+                team_record = {'info': info, 'standings': team, 'schedule': []}
                 teams[team['team']['id']] = team_record
         return teams
 
     def get_standings(self, teams):
-        standings = {'Eastern':{'Atlantic':[], 'Metropolitan':[], 'teams':[]},
-                     'Western':{'Central':[], 'Pacific':[], 'teams':[]},
-                     'teams':[]}
+        standings = {'Eastern': {'Atlantic': [], 'Metropolitan': [], 'teams': []},
+                     'Western': {'Central': [], 'Pacific': [], 'teams': []},
+                     'teams': []}
 
         league = sorted(teams, key=lambda k: int(k['standings']['divisionRank']))
         for team in league:
@@ -218,11 +219,11 @@ class Updater(object):
         return matchup['schedule'][0]['gameDate']
 
     def get_matchup_season_result(self, home, away):
-        result = {'home_win':0, 'away_win':0, 'matchs':[]}
+        result = {'home_win': 0, 'away_win': 0, 'matchs': []}
         schedule = self._teams[home]['schedule']
         if len(schedule) == 0:
             schedule = self.get_schedule(home)
-            #self._teams[home]['schedule'] = schedule
+            # self._teams[home]['schedule'] = schedule
 
         if 'dates' in schedule:
             for date in schedule['dates']:
@@ -230,14 +231,14 @@ class Updater(object):
                 game_home_id = game['teams']['home']['team']['id']
                 game_away_id = game['teams']['away']['team']['id']
                 if game_home_id == away:
-                    print(game['gameDate'],game['teams']['away']['score'],game['teams']['home']['score'])
+                    print(game['gameDate'], game['teams']['away']['score'], game['teams']['home']['score'])
                     if int(game['teams']['home']['score']) > int(game['teams']['away']['score']):
                         result['away_win'] = result['away_win'] + 1
                     elif int(game['teams']['home']['score']) < int(game['teams']['away']['score']):
                         result['home_win'] = result['home_win'] + 1
                     result['matchs'].append({'home': int(game['teams']['away']['score']), 'away': int(game['teams']['home']['score'])})
                 if game_away_id == away:
-                    print(game['gameDate'],game['teams']['home']['score'],game['teams']['away']['score'])
+                    print(game['gameDate'], game['teams']['home']['score'], game['teams']['away']['score'])
                     if int(game['teams']['home']['score']) > int(game['teams']['away']['score']):
                         result['home_win'] = result['home_win'] + 1
                     elif int(game['teams']['home']['score']) < int(game['teams']['away']['score']):
@@ -249,7 +250,7 @@ class Updater(object):
 
     def get_matchup_result(self, matchup):
         result = {}
-        home_id = matchup['home']
+        # home_id = matchup['home']
         away_id = matchup['away']
         home_win = 0
         away_win = 0
@@ -258,7 +259,7 @@ class Updater(object):
             game_away_id = game['teams']['away']['team']['id']
             if game['gameType'] == 'P':
                 if game_home_id == away_id or game_away_id == away_id:
-                    if game_home_id == away_id: #reverse
+                    if game_home_id == away_id:  # reverse
                         away_score = game['teams']['home']['score']
                         home_score = game['teams']['away']['score']
                     else:
@@ -272,7 +273,7 @@ class Updater(object):
                     elif int(game['status']['statusCode']) == 3:
                         hi = self._teams[matchup['home']]
                         ai = self._teams[matchup['away']]
-                        print("Game in progress {0} {1}-{2} {3}".format(hi['info']['abbreviation'],home_score,away_score,ai['info']['abbreviation']))
+                        print("Game in progress {0} {1}-{2} {3}".format(hi['info']['abbreviation'], home_score, away_score, ai['info']['abbreviation']))
         result['home_win'] = home_win
         result['away_win'] = away_win
         return result
@@ -292,13 +293,13 @@ class Updater(object):
             return
 
         if matchup['home'] != 0 and matchup['away'] != 0:
-            #update result and maybe pass to next stage
+            # update result and maybe pass to next stage
             matchup['schedule'] = self.get_matchup_schedule(matchup)
             if matchup['start'] == '':
                 matchup['start'] = self.get_matchup_start(matchup)
             matchup['result'] = self.get_matchup_result(matchup)
             if self.is_matchup_finished(matchup) and matchup['next'] is not None:
-                print('Finished',matchup['id'])
+                print('Finished', matchup['id'])
                 self.update_matchup(matchup['next'], self.get_matchup_winner(matchup))
         else:
             if matchup['home'] == 0:
@@ -308,7 +309,7 @@ class Updater(object):
                 matchup['away'] = home
 
             if matchup['home'] != 0 and matchup['away'] != 0:
-                #Begin matchup
+                # Begin matchup
                 hi = self._teams[matchup['home']]
                 ai = self._teams[matchup['away']]
                 if int(hi['standings']['leagueRank']) > int(ai['standings']['leagueRank']):
@@ -328,12 +329,12 @@ class Updater(object):
 
     def get_schedule(self, team):
         print('Get schedule for ' + str(team))
-        url = 'https://statsapi.web.nhl.com/api/v1/schedule?startDate=' + str(self._year) + '-10-01&endDate=' + str(self._year+1) + '-05-29&expand=schedule.teams,schedule.linescore,schedule.broadcasts,schedule.ticket,schedule.game.content.media.epg&leaderCategories=&site=en_nhlCA&teamId=' + str(team)
+        url = 'https://statsapi.web.nhl.com/api/v1/schedule?startDate=' + str(self._year) + '-10-01&endDate=' + str(self._year + 1) + '-05-29&expand=schedule.teams,schedule.linescore,schedule.broadcasts,schedule.ticket,schedule.game.content.media.epg&leaderCategories=&site=en_nhlCA&teamId=' + str(team)
         team_schedule = requests.get(url)
         return team_schedule.json()
 
     def get_playoff_schedule(self, team):
-        url = 'https://statsapi.web.nhl.com/api/v1/schedule?startDate=' + str(self._year+1) + '-04-01&endDate=' + str(self._year+1) + '-06-15&expand=schedule.teams,&site=en_nhlCA&teamId=' + str(team)
+        url = 'https://statsapi.web.nhl.com/api/v1/schedule?startDate=' + str(self._year + 1) + '-04-01&endDate=' + str(self._year + 1) + '-06-15&expand=schedule.teams,&site=en_nhlCA&teamId=' + str(team)
         print(url)
         team_schedule = requests.get(url)
         return team_schedule.json()
@@ -345,7 +346,7 @@ class Updater(object):
     def update_data(self, data):
         url = 'http://' + self._server + '/nhlplayoffs/api/v3.0/' + str(self._year) + '/data'
         headers = {'content-type': 'application/json'}
-        requests.post(url, data = json.dumps(data), headers=headers)
+        requests.post(url, data=json.dumps(data), headers=headers)
 
     def build_matchup_tree(self, raw_matchups):
         matchups = {}
@@ -382,7 +383,7 @@ class Updater(object):
         data = self.fetch_data()
         self._teams = {}
         for m in data['teams'].items():
-            self._teams[int(m[0])]=m[1]
+            self._teams[int(m[0])] = m[1]
         self._current_round = data['current_round']
         self._matchups = self.build_matchup_tree(data['matchups'])
 
@@ -396,14 +397,15 @@ class Updater(object):
     def display(self):
         nb_round = 4
         width = (nb_round * 2) - 1
-        heigh = (2**(nb_round-1)) -1
+        heigh = (2**(nb_round - 1)) - 1
         display = [['' for x in range(width)] for y in range(heigh)]
+
         def walk_matchup_tree(root, x, y, dx):
             display[x][y] = root['id']
             if root['left'] is not None:
-                walk_matchup_tree(root['left'], x+dx, y-(root['round']-1), dx)
+                walk_matchup_tree(root['left'], x + dx, y - (root['round'] - 1), dx)
             if root['right'] is not None:
-                walk_matchup_tree(root['right'], x+dx, y+(root['round']-1), dx)
+                walk_matchup_tree(root['right'], x + dx, y + (root['round'] - 1), dx)
 
         display[3][2] = 'sc'
         walk_matchup_tree(self._matchups['w'], 2, 3, -1)
@@ -421,17 +423,18 @@ class Updater(object):
                         away = '?'
                         if matchup['away'] != 0:
                             away = self._teams[matchup['away']]['info']['abbreviation']
-                        sys.stdout.write('{0:3}-{2} vs {3}-{1:3}'.format(home,away,matchup['result']['home_win'],matchup['result']['away_win']))
+                        sys.stdout.write('{0:3}-{2} vs {3}-{1:3}'.format(home, away, matchup['result']['home_win'], matchup['result']['away_win']))
                 else:
                     sys.stdout.write('{0:15}'.format(id))
             sys.stdout.write('\n')
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Update the nhlpool database')
-    parser.add_argument('-y','--year', metavar='year', default='2016', nargs='?',
-                       help='The year to work with')
+    parser.add_argument('-y', '--year', metavar='year', default='2016', nargs='?',
+                        help='The year to work with')
     parser.add_argument('-s', '--server', metavar='server', default='debug', nargs='?',
-                       help='The server to use')
+                        help='The server to use')
 
     args = parser.parse_args()
 
