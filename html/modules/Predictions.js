@@ -1,6 +1,6 @@
 var React = require('react');
 var TeamSelector = require('./teamSelector');
-import { Navbar, NavItem, NavDropdown, MenuItem, Nav, Button, DropdownButton, PageHeader } from 'react-bootstrap';
+import { Navbar, NavItem, NavDropdown, MenuItem, Nav, Button, DropdownButton, PageHeader, Alert } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap'
 import { Router, Route, Link } from 'react-router'
 var Store = require('./store');
@@ -13,6 +13,9 @@ var Predictions = React.createClass({
                         this.props.history.push('/')
                 store.load(function(data) {
                         var state = {
+                                "msgstyle": {"opacity":0.0, "transition": "opacity 0s", "top": window.pageYOffset+50 },
+                                "messsage": "",
+                                "msgtype": "danger",
                                 "predictions":store.getPredictions(sessionStorage.userId),
                                 "teams":store.getTeams(true),
                                 "winner":store.getWinner(sessionStorage.userId),
@@ -31,6 +34,10 @@ var Predictions = React.createClass({
         tick: function(){
                 this.setState(this.state);
         },
+        msgofftick: function(){
+                this.state.msgstyle = {"opacity":0.0, "transition": "opacity 2s", "top": window.pageYOffset+50 };
+                this.setState(this.state);
+        },
         getInitialState: function() {
           return {predictions: [], teams:[], winner:null, currentround:0};
         },
@@ -40,7 +47,21 @@ var Predictions = React.createClass({
                 this.state.winner = event.target.value;
                 this.setState(this.state);
                 if (sessionStorage.user != 'guest')
-                        store.setWinner(sessionStorage.userId, this.state.winner, function(data){this.setState(this.state);}.bind(this), function(){alert('Error!!!');}.bind(this));
+                        store.setWinner(sessionStorage.userId, this.state.winner,
+                                function(data){
+                                        this.state.msgstyle = {"opacity":1.0, "transition": "opacity 0s", "top": window.pageYOffset+50 };
+                                        this.state.msgtype = "success";
+                                        this.state.messsage = "Winner prediction success";
+                                        this.setState(this.state);
+                                        setTimeout(this.msgofftick, 1000);
+                                }.bind(this),
+                                function(){
+                                        this.state.msgstyle = {"opacity":1.0, "transition": "opacity 0s", "top": window.pageYOffset+50 };
+                                        this.state.msgtype = "danger";
+                                        this.state.messsage = "Cannot set Winner";
+                                        this.setState(this.state);
+                                        setTimeout(this.msgofftick, 1000);
+                                }.bind(this));
         },
         predictionChange: function(event) {
                 var prediction = this.state.predictions[event.target.id];
@@ -49,7 +70,21 @@ var Predictions = React.createClass({
                 this.state.predictions[event.target.id].winner = Number(event.target.value);
                 this.setState(this.state);
                 if (sessionStorage.user != 'guest')
-                        store.setPrediction(sessionStorage.userId, prediction.round, prediction.home, prediction.away, prediction.winner, prediction.games, function(data){}.bind(this), function(){alert('Error!!!');}.bind(this));
+                        store.setPrediction(sessionStorage.userId, prediction.round, prediction.home, prediction.away, prediction.winner, prediction.games,
+                                function(data){
+                                        this.state.msgstyle = {"opacity":1.0, "transition": "opacity 0s", "top": window.pageYOffset+50 };
+                                        this.state.msgtype = "success";
+                                        this.state.messsage = "Team prediction success";
+                                        this.setState(this.state);
+                                        setTimeout(this.msgofftick, 1000);
+                                }.bind(this),
+                                function(){
+                                        this.state.msgstyle = {"opacity":1.0, "transition": "opacity 0s", "top": window.pageYOffset+50 };
+                                        this.state.msgtype = "danger";
+                                        this.state.messsage = "Cannot set predictions team";
+                                        this.setState(this.state);
+                                        setTimeout(this.msgofftick, 1000);
+                                }.bind(this));
         },
         gamesChange: function(event) {
                 var prediction = this.state.predictions[event.target.id];
@@ -58,7 +93,21 @@ var Predictions = React.createClass({
                 this.state.predictions[event.target.id].games = Number(event.target.value);
                 this.setState(this.state);
                 if (sessionStorage.user != 'guest')
-                        store.setPrediction(sessionStorage.userId, prediction.round, prediction.home, prediction.away, prediction.winner, prediction.games, function(data){}.bind(this), function(){alert('Error!!!');}.bind(this));
+                        store.setPrediction(sessionStorage.userId, prediction.round, prediction.home, prediction.away, prediction.winner, prediction.games,
+                                function(data){
+                                        this.state.msgstyle = {"opacity":1.0, "transition": "opacity 0s", "top": window.pageYOffset+50 };
+                                        this.state.msgtype = "success";
+                                        this.state.messsage = "Games prediction success";
+                                        this.setState(this.state);
+                                        setTimeout(this.msgofftick, 1000);
+                                }.bind(this),
+                                function(){
+                                        this.state.msgstyle = {"opacity":1.0, "transition": "opacity 0s", "top": window.pageYOffset+50 };
+                                        this.state.msgtype = "danger";
+                                        this.state.messsage = "Cannot set predictions games";
+                                        this.setState(this.state);
+                                        setTimeout(this.msgofftick, 1000);
+                                }.bind(this));
         },
         render: function() {
         var teams = this.state.teams.map(function(team) {
@@ -97,7 +146,6 @@ var Predictions = React.createClass({
                         if(diffDay==0 && diffHour==0 && diffMin==0)
                                 diffStr = 'Started';
                 }
-
                 return (
                         <div key={i} className='prediction'>
                                <div className='round cell'>{matchup.round}</div>
@@ -115,16 +163,22 @@ var Predictions = React.createClass({
                                 <div className='time-left cell'>
                                         {diffStr}
                                 </div>
+
                         </div>
                 );
         }.bind(this));
         var emptyPrediction = <option disabled></option>;
         if (this.state.winner == null) {
-                //this.state.winner = -1;
                 emptyPrediction = <option>Select a winning teams</option>;
         }
+        const alertInstance = (
+                <Alert bsStyle={this.state.msgtype} className='msg' style={this.state.msgstyle}>
+                        {this.state.messsage}
+                </Alert>
+        );
         return (
                 <div>
+                        {alertInstance}
                         <h1>Predictions</h1>
                         <div className='predictions table table-hover'>
                                 <div className='header'>

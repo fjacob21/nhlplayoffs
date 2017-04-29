@@ -44689,6 +44689,9 @@
 	                if (!sessionStorage.user) this.props.history.push('/');
 	                store.load(function (data) {
 	                        var state = {
+	                                "msgstyle": { "opacity": 0.0, "transition": "opacity 0s", "top": window.pageYOffset + 50 },
+	                                "messsage": "",
+	                                "msgtype": "danger",
 	                                "predictions": store.getPredictions(sessionStorage.userId),
 	                                "teams": store.getTeams(true),
 	                                "winner": store.getWinner(sessionStorage.userId),
@@ -44707,6 +44710,10 @@
 	        tick: function tick() {
 	                this.setState(this.state);
 	        },
+	        msgofftick: function msgofftick() {
+	                this.state.msgstyle = { "opacity": 0.0, "transition": "opacity 2s", "top": window.pageYOffset + 50 };
+	                this.setState(this.state);
+	        },
 	        getInitialState: function getInitialState() {
 	                return { predictions: [], teams: [], winner: null, currentround: 0 };
 	        },
@@ -44715,9 +44722,17 @@
 	                this.state.winner = event.target.value;
 	                this.setState(this.state);
 	                if (sessionStorage.user != 'guest') store.setWinner(sessionStorage.userId, this.state.winner, function (data) {
+	                        this.state.msgstyle = { "opacity": 1.0, "transition": "opacity 0s", "top": window.pageYOffset + 50 };
+	                        this.state.msgtype = "success";
+	                        this.state.messsage = "Winner prediction success";
 	                        this.setState(this.state);
+	                        setTimeout(this.msgofftick, 1000);
 	                }.bind(this), function () {
-	                        alert('Error!!!');
+	                        this.state.msgstyle = { "opacity": 1.0, "transition": "opacity 0s", "top": window.pageYOffset + 50 };
+	                        this.state.msgtype = "danger";
+	                        this.state.messsage = "Cannot set Winner";
+	                        this.setState(this.state);
+	                        setTimeout(this.msgofftick, 1000);
 	                }.bind(this));
 	        },
 	        predictionChange: function predictionChange(event) {
@@ -44725,8 +44740,18 @@
 	                if (sessionStorage.user != 'guest' && store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round))) return;
 	                this.state.predictions[event.target.id].winner = Number(event.target.value);
 	                this.setState(this.state);
-	                if (sessionStorage.user != 'guest') store.setPrediction(sessionStorage.userId, prediction.round, prediction.home, prediction.away, prediction.winner, prediction.games, function (data) {}.bind(this), function () {
-	                        alert('Error!!!');
+	                if (sessionStorage.user != 'guest') store.setPrediction(sessionStorage.userId, prediction.round, prediction.home, prediction.away, prediction.winner, prediction.games, function (data) {
+	                        this.state.msgstyle = { "opacity": 1.0, "transition": "opacity 0s", "top": window.pageYOffset + 50 };
+	                        this.state.msgtype = "success";
+	                        this.state.messsage = "Team prediction success";
+	                        this.setState(this.state);
+	                        setTimeout(this.msgofftick, 1000);
+	                }.bind(this), function () {
+	                        this.state.msgstyle = { "opacity": 1.0, "transition": "opacity 0s", "top": window.pageYOffset + 50 };
+	                        this.state.msgtype = "danger";
+	                        this.state.messsage = "Cannot set predictions team";
+	                        this.setState(this.state);
+	                        setTimeout(this.msgofftick, 1000);
 	                }.bind(this));
 	        },
 	        gamesChange: function gamesChange(event) {
@@ -44734,8 +44759,18 @@
 	                if (sessionStorage.user != 'guest' && store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round))) return;
 	                this.state.predictions[event.target.id].games = Number(event.target.value);
 	                this.setState(this.state);
-	                if (sessionStorage.user != 'guest') store.setPrediction(sessionStorage.userId, prediction.round, prediction.home, prediction.away, prediction.winner, prediction.games, function (data) {}.bind(this), function () {
-	                        alert('Error!!!');
+	                if (sessionStorage.user != 'guest') store.setPrediction(sessionStorage.userId, prediction.round, prediction.home, prediction.away, prediction.winner, prediction.games, function (data) {
+	                        this.state.msgstyle = { "opacity": 1.0, "transition": "opacity 0s", "top": window.pageYOffset + 50 };
+	                        this.state.msgtype = "success";
+	                        this.state.messsage = "Games prediction success";
+	                        this.setState(this.state);
+	                        setTimeout(this.msgofftick, 1000);
+	                }.bind(this), function () {
+	                        this.state.msgstyle = { "opacity": 1.0, "transition": "opacity 0s", "top": window.pageYOffset + 50 };
+	                        this.state.msgtype = "danger";
+	                        this.state.messsage = "Cannot set predictions games";
+	                        this.setState(this.state);
+	                        setTimeout(this.msgofftick, 1000);
 	                }.bind(this));
 	        },
 	        render: function render() {
@@ -44771,7 +44806,6 @@
 	                                diffStr = diffDay + ' days ' + diffHour + 'h' + diffMin + 'm';
 	                                if (diffDay == 0 && diffHour == 0 && diffMin == 0) diffStr = 'Started';
 	                        }
-
 	                        return React.createElement(
 	                                'div',
 	                                { key: i, className: 'prediction' },
@@ -44822,16 +44856,21 @@
 	                }.bind(this));
 	                var emptyPrediction = React.createElement('option', { disabled: true });
 	                if (this.state.winner == null) {
-	                        //this.state.winner = -1;
 	                        emptyPrediction = React.createElement(
 	                                'option',
 	                                null,
 	                                'Select a winning teams'
 	                        );
 	                }
+	                var alertInstance = React.createElement(
+	                        _reactBootstrap.Alert,
+	                        { bsStyle: this.state.msgtype, className: 'msg', style: this.state.msgstyle },
+	                        this.state.messsage
+	                );
 	                return React.createElement(
 	                        'div',
 	                        null,
+	                        alertInstance,
 	                        React.createElement(
 	                                'h1',
 	                                null,

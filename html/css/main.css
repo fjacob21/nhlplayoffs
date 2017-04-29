@@ -7,6 +7,15 @@ html, body {
 body {
   padding-top: 70px; }
 
+.msg {
+  z-index: 100;
+  position: absolute;
+  transition: opacity 0s;
+  opacity: 0.0;
+  top: 50px;
+  height: 30px;
+  padding: 0; }
+
 .btn-primary.predictionSel {
   border-color: red;
   border-width: medium; }
