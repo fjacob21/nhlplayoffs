@@ -328,14 +328,14 @@ class Updater(object):
             self.update_matchup(matchup)
 
     def get_schedule(self, team):
-        print('Get schedule for ' + str(team))
+        # print('Get schedule for ' + str(team))
         url = 'https://statsapi.web.nhl.com/api/v1/schedule?startDate=' + str(self._year) + '-10-01&endDate=' + str(self._year + 1) + '-05-29&expand=schedule.teams,schedule.linescore,schedule.broadcasts,schedule.ticket,schedule.game.content.media.epg&leaderCategories=&site=en_nhlCA&teamId=' + str(team)
         team_schedule = requests.get(url)
         return team_schedule.json()
 
     def get_playoff_schedule(self, team):
         url = 'https://statsapi.web.nhl.com/api/v1/schedule?startDate=' + str(self._year + 1) + '-04-01&endDate=' + str(self._year + 1) + '-06-15&expand=schedule.teams,&site=en_nhlCA&teamId=' + str(team)
-        print(url)
+        # print(url)
         team_schedule = requests.get(url)
         return team_schedule.json()
 
