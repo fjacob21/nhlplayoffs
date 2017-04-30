@@ -1,6 +1,5 @@
 #!/usr/bin/python
 from flask import Flask, jsonify, abort, request, send_from_directory, redirect
-import matchups
 import matchupsv2
 import predictions
 import players
@@ -53,14 +52,6 @@ def add_player():
     result = players.login(name, psw)
     p = players.get(name)
     return jsonify({'user': result, 'info': p})
-
-
-@application.route('/nhlplayoffs/api/v2.0/players/<string:player>', methods=['GET'])
-def get_player(player):
-    p = players.get(player)
-    if p is None:
-        abort(400)
-    return jsonify(p)
 
 
 @application.route('/nhlplayoffs/api/v2.0/players/<string:player>/reset', methods=['POST'])
@@ -143,19 +134,6 @@ def login_player(player):
     return jsonify({'user': result, 'info': p})
 
 
-@application.route('/nhlplayoffs/api/v2.0/<int:year>/data', methods=['GET'])
-def get_data(year):
-    return jsonify(matchups.get(year))
-
-
-@application.route('/nhlplayoffs/api/v2.0/<int:year>/data', methods=['POST'])
-def update_data(year):
-    if not request.json:
-        abort(400)
-    matchups.update(year, request.json)
-    return ''
-
-
 @application.route('/nhlplayoffs/api/v3.0/<int:year>/data', methods=['GET'])
 def get_datav3(year):
     return jsonify(matchupsv2.get(year))
@@ -167,16 +145,6 @@ def update_datav3(year):
         abort(400)
     matchupsv2.update(year, request.json)
     return ''
-
-
-@application.route('/nhlplayoffs/api/v2.0/<int:year>/currentround', methods=['GET'])
-def get_current_roundv2(year):
-    return jsonify({'current_round': matchups.get_current_round(year)})
-
-
-@application.route('/nhlplayoffs/api/v2.0/<int:year>/matchups', methods=['GET'])
-def get_matchups(year):
-    return jsonify(matchups.get_matchups(year))
 
 
 @application.route('/nhlplayoffs/api/v2.0/<int:year>/winners', methods=['GET'])
