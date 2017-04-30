@@ -273,7 +273,7 @@ class Updater(object):
                     elif int(game['status']['statusCode']) == 3:
                         hi = self._teams[matchup['home']]
                         ai = self._teams[matchup['away']]
-                        print("Game in progress {0} {1}-{2} {3}".format(hi['info']['abbreviation'], home_score, away_score, ai['info']['abbreviation']))
+                        print("Game in progress \033[0;94m{0}\033[0m {1}-{2} \033[0;94m{3}\033[0m".format(hi['info']['abbreviation'], home_score, away_score, ai['info']['abbreviation']))
         result['home_win'] = home_win
         result['away_win'] = away_win
         return result
@@ -423,7 +423,7 @@ class Updater(object):
                         away = '?'
                         if matchup['away'] != 0:
                             away = self._teams[matchup['away']]['info']['abbreviation']
-                        sys.stdout.write('{0:3}-{2} vs {3}-{1:3}'.format(home, away, matchup['result']['home_win'], matchup['result']['away_win']))
+                        sys.stdout.write('\033[0;94m{0:3}\033[0m-{2} vs {3}-\033[0;94m{1:3}\033[0m'.format(home, away, matchup['result']['home_win'], matchup['result']['away_win']))
                 else:
                     sys.stdout.write('{0:15}'.format(id))
             sys.stdout.write('\n')
