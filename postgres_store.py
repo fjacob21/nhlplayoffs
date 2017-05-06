@@ -10,9 +10,9 @@ _db = None
 def get_default():
     global _db
     if not _db:
-        # _db postgres_store('postgres', 'postgres', 'mysecretpassword', '172.17.0.3', 5432)
-        _db = postgres_store('fred', 'fred', '763160', 'localhost', 5432)
-        # _db postgres_store('dc7m5co1u7n7ka', 'vfumyroepkgfsd', 'AsRCUy1JTkf500s_2pfXZK9qwR', 'ec2-107-22-246-250.compute-1.amazonaws.com', 5432)
+        # _db = postgres_store('postgres', 'postgres', 'mysecretpassword', '172.17.0.3', 5432)
+        # _db = postgres_store('fred', 'fred', '763160', 'localhost', 5432)
+        _db = postgres_store('dc7m5co1u7n7ka', 'vfumyroepkgfsd', 'AsRCUy1JTkf500s_2pfXZK9qwR', 'ec2-107-22-246-250.compute-1.amazonaws.com', 5432)
     return _db
 
 
