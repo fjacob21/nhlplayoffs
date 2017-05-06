@@ -18,7 +18,7 @@ def after_request(response):
 
 
 @application.route('/nhlplayoffs/api/v2.0/teams', methods=['GET'])
-def get_all_teamss():
+def get_all_teams():
     return jsonify({'teams': matchupsv2.get_teams()})
 
 
