@@ -10,6 +10,16 @@ _db = postgres_store.get_default()
 application = Flask(__name__, static_url_path='')
 
 
+@application.before_request
+def before_request():
+    _db.connect()
+
+
+@application.teardown_request
+def teardown_request(exception):
+    _db.disconnect()
+
+
 @application.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Origin', '*')
@@ -80,8 +90,7 @@ def change_psw_player(player):
         abort(400)
     old_psw = request.json["old_psw"]
     new_psw = request.json["new_psw"]
-    result = players.change_psw(player, old_psw, new_psw)
-    return jsonify({"result": result})
+    return jsonify({"result": players.change_psw(player, old_psw, new_psw)})
 
 
 @application.route('/nhlplayoffs/api/v2.0/players/<string:player>', methods=['PUT'])
@@ -92,8 +101,7 @@ def update_player(player):
     if "email" in request.json:
         email = request.json["email"]
 
-    result = players.change_email(player, email)
-    return jsonify({'result': result})
+    return jsonify({'result': players.change_email(player, email)})
 
 
 @application.route('/nhlplayoffs/api/v2.0/players/<string:player>', methods=['DELETE'])
@@ -109,12 +117,10 @@ def delete_player(player):
     root_psw = request.json["root_psw"]
 
     if not players.root_access(root_psw):
-        print('Invalid root psw')
         abort(403)
 
     print('Remove player', player)
-    result = players.remove(player)
-    return jsonify({"result": result})
+    return jsonify({"result": players.remove(player)})
 
 
 @application.route('/nhlplayoffs/api/v2.0/players/<string:player>/login', methods=['POST'])
@@ -149,8 +155,7 @@ def update_datav3(year):
 
 @application.route('/nhlplayoffs/api/v2.0/<int:year>/winners', methods=['GET'])
 def get_winnersv2(year):
-    p = predictions.get_winners(year)
-    return jsonify({'winners': p})
+    return jsonify({'winners': predictions.get_winners(year)})
 
 
 @application.route('/nhlplayoffs/api/v2.0/<int:year>/winners', methods=['POST'])
@@ -171,8 +176,7 @@ def add_winner(year):
 
 @application.route('/nhlplayoffs/api/v2.0/<int:year>/predictions', methods=['GET'])
 def get_predictionsv2(year):
-    p = predictions.get_all(year)
-    return jsonify({'predictions': p})
+    return jsonify({'predictions': predictions.get_all(year)})
 
 
 @application.route('/nhlplayoffs/api/v2.0/<int:year>/predictions', methods=['POST'])
@@ -209,8 +213,7 @@ def get_results(year):
     player = request.json["player"]
 
     _data = Data(player)
-    r = _data.get_results(player, year)
-    return jsonify({"results": r})
+    return jsonify({"results": _data.get_results(player, year)})
 
 
 @application.route('/nhlplayoffs/api/v2.0/backup', methods=['POST'])
@@ -225,7 +228,6 @@ def backup():
     root_psw = request.json["root_psw"]
     if not players.root_access(root_psw):
         abort(403)
-
     return jsonify(_db.backup())
 
 
