@@ -91,20 +91,6 @@ class postgres_store(object):
             return True
         return False
 
-    def delete_table(self, table):
-        con = self.connect()
-        if con:
-            try:
-                cur = con.cursor()
-                cur.execute('DROP TABLE ' + table)
-                con.commit()
-            except:
-                return False
-
-            con.close()
-            return True
-        return False
-
     def get_rows_id(self, table):
         con = self.connect()
         if con:

@@ -34,25 +34,6 @@ def get_years():
     return _db.get_rows_id('datav2')
 
 
-def build_matchup_tree(raw_matchups):
-    matchups = {}
-    for matchup_raw in list(raw_matchups.values()):
-        matchup = matchup_raw.copy()
-        matchups[matchup['id']] = matchup
-
-    for matchup in list(matchups.values()):
-        next = matchup['next']
-        right = matchup['right']
-        left = matchup['left']
-        if next in raw_matchups:
-            matchup['next'] = matchups[next]
-        if right in raw_matchups:
-            matchup['right'] = matchups[right]
-        if left in raw_matchups:
-            matchup['left'] = matchups[left]
-    return matchups
-
-
 # get complete data
 def get(year):
     return restore_db(year)
@@ -76,11 +57,6 @@ def get_teams(year=0):
 # update complete data
 def update(year, data):
     return store_db(year, data)
-
-
-def get_current_round(year):
-    data = get(year)
-    return int(data['current_round'])
 
 
 def get_matchups(year, round=0):
