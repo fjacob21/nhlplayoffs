@@ -1,11 +1,10 @@
 # Players management module
 #
 import hashlib
-import postgres_store
+import stores
 from matchupsv2 import now
 
 salt = 'superhero'
-_db = postgres_store.get_default()
 
 
 def userhash(name):
@@ -21,7 +20,7 @@ def pswhash(name, psw):
 
 
 def pswcheck(player, psw):
-    players = _db.restore('players', 1)
+    players = stores.get().restore('players', 1)
     hname = userhash(player)
     if hname not in players:
         return False
@@ -30,14 +29,14 @@ def pswcheck(player, psw):
 
 
 def restore_db():
-    players = _db.restore('players', 1)
+    players = stores.get().restore('players', 1)
     if players == '':
         players = {}
     return players
 
 
 def store_db(players):
-    return _db.store('players', 1, players)
+    return stores.get().store('players', 1, players)
 
 
 # add players

@@ -1,14 +1,12 @@
 # Matchups management module v2
 #
-import postgres_store
+import stores
 from datetime import datetime
 from dateutil import tz
 
-_db = postgres_store.get_default()
-
 
 def restore_db(year):
-    data = _db.restore('datav2', year)
+    data = stores.get().restore('datav2', year)
     if data == '':
         data = {"matchups": {},
                 "teams": {},
@@ -27,11 +25,11 @@ def restore_db(year):
 
 
 def store_db(year, data):
-    return _db.store('datav2', year, data)
+    return stores.get().store('datav2', year, data)
 
 
 def get_years():
-    return _db.get_rows_id('datav2')
+    return stores.get().get_rows_id('datav2')
 
 
 # get complete data
