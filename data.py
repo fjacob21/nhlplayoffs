@@ -1,6 +1,6 @@
 from datetime import datetime
 from dateutil import tz
-import postgres_store
+import stores
 
 
 class Data():
@@ -224,7 +224,7 @@ class Data():
 
     class RawData():
         def __init__(self):
-            _db = postgres_store.get_default()
+            _db = stores.get()
             self._data = _db.backup()
 
         def get_years(self):

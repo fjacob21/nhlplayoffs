@@ -7,13 +7,24 @@ import psycopg2
 _db = None
 
 
-def get_default():
+def get_prod():
+    global _db
+    if not _db:
+        _db = postgres_store('dc7m5co1u7n7ka', 'vfumyroepkgfsd', 'AsRCUy1JTkf500s_2pfXZK9qwR', 'ec2-107-22-246-250.compute-1.amazonaws.com', 5432)
+    return _db
+
+
+def get_debug():
     global _db
     if not _db:
         # _db = postgres_store('postgres', 'postgres', 'mysecretpassword', '172.17.0.3', 5432)
-        # _db = postgres_store('fred', 'fred', '763160', 'localhost', 5432)
-        _db = postgres_store('dc7m5co1u7n7ka', 'vfumyroepkgfsd', 'AsRCUy1JTkf500s_2pfXZK9qwR', 'ec2-107-22-246-250.compute-1.amazonaws.com', 5432)
+        _db = postgres_store('fred', 'fred', '763160', 'localhost', 5432)
     return _db
+
+
+def release():
+    global _db
+    _db = None
 
 
 class postgres_store(object):
@@ -122,7 +133,8 @@ class postgres_store(object):
                 cur = self._con.cursor()
                 cur.execute('UPDATE ' + table + ' SET data=\'' + json.dumps(data) + '\' WHERE ID=' + str(id))
                 self._con.commit()
-            except:
+            except Exception as e:
+                print(e)
                 return False
 
             return True
@@ -131,14 +143,15 @@ class postgres_store(object):
     def restore(self, table, id):
         if not self.table_exist(table) or not self.row_exist(table, id):
             return ''
-
+        print('restore', table, id)
         if self._con:
             try:
                 cur = self._con.cursor()
                 cur.execute('SELECT data FROM ' + table + ' WHERE ID=' + str(id))
                 records = cur.fetchall()
                 data = json.loads(records[0][0])
-            except:
+            except Exception as e:
+                print(e)
                 return None
 
             return data
@@ -160,12 +173,14 @@ class postgres_store(object):
                     rows = cur.fetchall()
                     for row in rows:
                         data[table][row[0]] = json.loads(row[1])
-            except:
+            except Exception as e:
+                print(e)
                 pass
         return data
 
     def restore_backup(self, data):
         req_tables = "SELECT table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema = 'public' ORDER BY table_schema,table_name;"
+        print(self._con)
         if self._con:
             try:
                 cur = self._con.cursor()

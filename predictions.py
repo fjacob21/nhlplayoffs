@@ -1,14 +1,12 @@
 # Predictions management module
 #
-import postgres_store
+import stores
 import matchupsv2 as matchups
 import players
 
-_db = postgres_store.get_default()
-
 
 def restore_db(year):
-    predictions = _db.restore('predictions', year)
+    predictions = stores.get().restore('predictions', year)
     if predictions == '':
         predictions = {'matchups': [],
                        'winners': []}
@@ -16,7 +14,7 @@ def restore_db(year):
 
 
 def store_db(year, predictions):
-    return _db.store('predictions', year, predictions)
+    return stores.get().store('predictions', year, predictions)
 
 
 # add big winner prediction
@@ -139,7 +137,7 @@ def get_prediction_index(player, year, round, home, away):
 
 
 def get_teams_predictions(player):
-    years = _db.get_rows_id('predictions')
+    years = stores.get().get_rows_id('predictions')
     teams = {}
     rounds_teams = {1: {}, 2: {}, 3: {}, 4: {}}
     count = 0

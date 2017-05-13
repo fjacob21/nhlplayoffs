@@ -3,21 +3,20 @@ from flask import Flask, jsonify, abort, request, send_from_directory, redirect
 import matchupsv2
 import predictions
 import players
-import postgres_store
+import stores
 from data import Data
 
-_db = postgres_store.get_default()
 application = Flask(__name__, static_url_path='')
 
 
 @application.before_request
 def before_request():
-    _db.connect()
+    stores.get().connect()
 
 
 @application.teardown_request
 def teardown_request(exception):
-    _db.disconnect()
+    stores.get().disconnect()
 
 
 @application.after_request
@@ -260,4 +259,6 @@ def root():
 
 
 if __name__ == '__main__':
+    stores.set_type(stores.DB_TYPE_DEBUG)
+    _db = stores.get()
     application.run(debug=True, host='0.0.0.0', port=5000)
