@@ -1,13 +1,14 @@
 import unittest
 import players
-import postgres_store
+import stores
 
 
 class TestPlayersMethods(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls._db = postgres_store.get_default()
+        stores.set_type(stores.DB_TYPE_TEST)
+        cls._db = stores.get()
         cls._db.connect()
 
     @classmethod
