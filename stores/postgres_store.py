@@ -143,7 +143,6 @@ class postgres_store(object):
     def restore(self, table, id):
         if not self.table_exist(table) or not self.row_exist(table, id):
             return ''
-        print('restore', table, id)
         if self._con:
             try:
                 cur = self._con.cursor()
@@ -180,7 +179,6 @@ class postgres_store(object):
 
     def restore_backup(self, data):
         req_tables = "SELECT table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema = 'public' ORDER BY table_schema,table_name;"
-        print(self._con)
         if self._con:
             try:
                 cur = self._con.cursor()
