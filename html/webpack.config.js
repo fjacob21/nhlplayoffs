@@ -1,9 +1,41 @@
+const webpack = require('webpack');
+
 module.exports = {
+  devtool: 'cheap-module-source-map',
   entry: './modules/main.js',
   output: {
     filename: './js/bundle.js'
   },
+  plugins: [
+ new webpack.DefinePlugin({
+  'process.env': {
+    'NODE_ENV': JSON.stringify('production')
+  }
+ }),
+ new webpack.optimize.UglifyJsPlugin({
+         sourcemap: true,
+             beautify: false,
+             comments: false,
+             compress: {
+               warnings: false,
+               drop_console: true,
+               screw_ie8: true
+             },
+             mangle: {
+               except: [
+                 '$', 'webpackJsonp'
+               ],
+               screw_ie8: true,
+               keep_fnames: true
+             },
+             output: {
+               comments: false,
+               screw_ie8: true
+             }
+})
+ ],
   module: {
+
     loaders: [
       {
         test: /\.js$/,
