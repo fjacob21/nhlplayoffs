@@ -147,6 +147,11 @@ class Updater(object):
 
         return matchups
 
+    def get_live_result(self, link):
+        url = 'https://statsapi.web.nhl.com' + link
+        live = requests.get(url).json()
+        return live
+
     def get_team(self, id):
         url = 'https://statsapi.web.nhl.com/api/v1/teams/' + str(id)
         team = requests.get(url).json()
@@ -249,6 +254,15 @@ class Updater(object):
         return result
 
     def get_matchup_result(self, matchup):
+        # statuscode = {}
+        # statuscode[1] = 'Scheduled'
+        # statuscode[2] = 'Pre-Game'
+        # statuscode[3] = 'In Progress'
+        # statuscode[4] = 'In Progress - Critical'
+        # statuscode[5] = 'Game Over'
+        # statuscode[6] = 'Final'
+        # statuscode[7] = 'Final'
+
         result = {}
         # home_id = matchup['home']
         away_id = matchup['away']
@@ -262,18 +276,33 @@ class Updater(object):
                     if game_home_id == away_id:  # reverse
                         away_score = game['teams']['home']['score']
                         home_score = game['teams']['away']['score']
+                        away_shots = game['linescore']['teams']['home']['shotsOnGoal']
+                        home_shots = game['linescore']['teams']['away']['shotsOnGoal']
                     else:
                         away_score = game['teams']['away']['score']
                         home_score = game['teams']['home']['score']
+                        away_shots = game['linescore']['teams']['away']['shotsOnGoal']
+                        home_shots = game['linescore']['teams']['home']['shotsOnGoal']
                     if int(game['status']['statusCode']) == 7:
                         if home_score > away_score:
                             home_win = home_win + 1
                         elif home_score < away_score:
                             away_win = away_win + 1
-                    elif int(game['status']['statusCode']) == 3:
+                    elif int(game['status']['statusCode']) in [3, 4, 5, 6]:
                         hi = self._teams[matchup['home']]
                         ai = self._teams[matchup['away']]
-                        print("Game in progress \033[0;94m{0}\033[0m {1}-{2} \033[0;94m{3}\033[0m".format(hi['info']['abbreviation'], home_score, away_score, ai['info']['abbreviation']))
+                        # period = game['linescore']['currentPeriod']
+                        result = self.get_live_result(game['link'])
+                        if game_home_id == away_id:
+                            away_stats = result['liveData']['boxscore']['teams']['home']['teamStats']['teamSkaterStats']
+                            home_stats = result['liveData']['boxscore']['teams']['away']['teamStats']['teamSkaterStats']
+                        else:
+                            away_stats = result['liveData']['boxscore']['teams']['away']['teamStats']['teamSkaterStats']
+                            home_stats = result['liveData']['boxscore']['teams']['home']['teamStats']['teamSkaterStats']
+
+                        period = game['linescore']['currentPeriodOrdinal']
+                        rtime = game['linescore']['currentPeriodTimeRemaining']
+                        print("Game {status} \033[0;94m{h}\033[0m {hsc}-{asc} \033[0;94m{a}\033[0m - {t} of {p} - Shots:\033[0;94m{h}\033[0m {hsh}-{ash} \033[0;94m{a}\033[0m - Faceoff:\033[0;94m{h}\033[0m {hf}-{af} \033[0;94m{a}\033[0m".format(hf=home_stats['faceOffWinPercentage'], af=away_stats['faceOffWinPercentage'], status=game['status']['detailedState'], h=hi['info']['abbreviation'], hsc=home_score, asc=away_score, a=ai['info']['abbreviation'], p=period, t=rtime, hsh=home_shots, ash=away_shots))
         result['home_win'] = home_win
         result['away_win'] = away_win
         return result
@@ -334,7 +363,7 @@ class Updater(object):
         return team_schedule.json()
 
     def get_playoff_schedule(self, team):
-        url = 'https://statsapi.web.nhl.com/api/v1/schedule?startDate=' + str(self._year + 1) + '-04-01&endDate=' + str(self._year + 1) + '-06-15&expand=schedule.teams,&site=en_nhlCA&teamId=' + str(team)
+        url = 'https://statsapi.web.nhl.com/api/v1/schedule?startDate=' + str(self._year + 1) + '-04-01&endDate=' + str(self._year + 1) + '-06-15&expand=schedule.teams,schedule.linescore,&site=en_nhlCA&teamId=' + str(team)
         # print(url)
         team_schedule = requests.get(url)
         return team_schedule.json()
