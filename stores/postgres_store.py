@@ -131,10 +131,10 @@ class postgres_store(object):
         if self._con:
             try:
                 cur = self._con.cursor()
-                cur.execute('UPDATE ' + table + ' SET data=\'' + json.dumps(data) + '\' WHERE ID=' + str(id))
+                cur.execute('UPDATE ' + table + ' SET data=\'' + json.dumps(data).replace('\' ', "") + '\' WHERE ID=' + str(id))
                 self._con.commit()
             except Exception as e:
-                print(e)
+                print('store', e)
                 return False
 
             return True
