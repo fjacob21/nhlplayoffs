@@ -41,7 +41,6 @@ class postgres_store(object):
         if self._con:
             return self._con
         try:
-            print('connect', self._host)
             self._con = psycopg2.connect(database=self._db,
                                          user=self._user,
                                          password=self._psw,
