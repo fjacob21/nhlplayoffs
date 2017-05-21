@@ -159,7 +159,6 @@ class postgres_store(object):
     def backup(self):
         req_tables = "SELECT table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema = 'public' ORDER BY table_schema,table_name;"
         data = {}
-        print('backup')
         if self._con:
             try:
                 cur = self._con.cursor()
@@ -167,7 +166,6 @@ class postgres_store(object):
                 records = cur.fetchall()
                 for record in records:
                     table = record[0]
-                    print('backup table ', table)
                     data[table] = {}
                     data_req = 'SELECT * FROM {table};'.format(table=table)
                     cur.execute(data_req)
