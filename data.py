@@ -215,6 +215,9 @@ class Data():
                     if pred['prediction']:
                         player_preds.append(pred['prediction'])
                     pts = pts + self.calculate_result_pts(pred['result'])
+                scwinner, games = self.matchup_result(self._matchups[year]['sc'])
+                if int(scwinner) == int(winner):
+                    pts = pts + 50
                 victories = {'winner_count': 0, 'games_count': 0}
                 result = {'player': player['name'], 'pts': pts, 'oldpts': oldpts, 'winner': winner, 'predictions': player_preds, 'victories': victories, 'favorite_team': player['favorite_team']}
                 result['games_stats'] = player['games_stats']
