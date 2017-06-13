@@ -1,5 +1,6 @@
 import unittest
 import pooldata.pooldatafactory as pooldatafactory
+from pooldata import GAME_STATE_FINISHED
 
 
 class TestPoolDataFactoryMethods(unittest.TestCase):
@@ -54,9 +55,34 @@ class TestPoolDataFactoryMethods(unittest.TestCase):
         self.assertEqual(standing.extra_info['info'], 'info')
 
     def test_matchup(self):
-        # id, round, home=0, away=0, start='', schedule={}, season_results={}, results=None
-        matchup = pooldatafactory.create_matchup('a1', 1, 1, 2)
-        self.assertEqual(matchup.id, 'a1')
+        extradata = {'extra': 'data'}
+        schedule = [pooldatafactory.create_matchup_game(1, 2, '', GAME_STATE_FINISHED, 1, 0, extradata)]
+        seasonresults = pooldatafactory.create_matchup_season_results(1, 0, schedule)
+        results = pooldatafactory.create_matchup_results(1, 0)
+        matchup = pooldatafactory.create_matchup('m', 1, 1, 2, '', schedule, seasonresults, results)
+        self.assertEqual(matchup.id, 'm')
+        self.assertEqual(matchup.round, 1)
+        self.assertEqual(matchup.home, 1)
+        self.assertEqual(matchup.away, 2)
+        self.assertEqual(matchup.start, '')
+        self.assertEqual(matchup.schedule[0].home, 1)
+        self.assertEqual(matchup.schedule[0].away, 2)
+        self.assertEqual(matchup.schedule[0].date, '')
+        self.assertEqual(matchup.schedule[0].state, GAME_STATE_FINISHED)
+        self.assertEqual(matchup.schedule[0].home_goal, 1)
+        self.assertEqual(matchup.schedule[0].away_goal, 0)
+        self.assertEqual(matchup.schedule[0].extra_data['extra'], 'data')
+        self.assertEqual(matchup.season_results.home_win, 1)
+        self.assertEqual(matchup.season_results.away_win, 0)
+        self.assertEqual(matchup.season_results.games[0].home, 1)
+        self.assertEqual(matchup.season_results.games[0].away, 2)
+        self.assertEqual(matchup.season_results.games[0].date, '')
+        self.assertEqual(matchup.season_results.games[0].state, GAME_STATE_FINISHED)
+        self.assertEqual(matchup.season_results.games[0].home_goal, 1)
+        self.assertEqual(matchup.season_results.games[0].away_goal, 0)
+        self.assertEqual(matchup.season_results.games[0].extra_data['extra'], 'data')
+        self.assertEqual(matchup.results.home_win, 1)
+        self.assertEqual(matchup.results.away_win, 0)
 
 
 if __name__ == '__main__':
