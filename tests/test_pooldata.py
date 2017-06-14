@@ -1,3 +1,5 @@
+from datetime import datetime
+from dateutil import tz
 import unittest
 import pooldata.pooldatafactory as pooldatafactory
 from pooldata import GAME_STATE_FINISHED
@@ -56,7 +58,7 @@ class TestPoolDataFactoryMethods(unittest.TestCase):
 
     def test_matchup(self):
         extradata = {'extra': 'data'}
-        schedule = [pooldatafactory.create_matchup_game(1, 2, '', GAME_STATE_FINISHED, 1, 0, extradata)]
+        schedule = [pooldatafactory.create_matchup_game(1, 2, '2017-04-10T00:41:45Z', GAME_STATE_FINISHED, 1, 0, extradata)]
         seasonresults = pooldatafactory.create_matchup_season_results(1, 0, schedule)
         results = pooldatafactory.create_matchup_results(1, 0)
         matchup = pooldatafactory.create_matchup('m', 1, 1, 2, '', schedule, seasonresults, results)
@@ -67,7 +69,7 @@ class TestPoolDataFactoryMethods(unittest.TestCase):
         self.assertEqual(matchup.start, '')
         self.assertEqual(matchup.schedule[0].home, 1)
         self.assertEqual(matchup.schedule[0].away, 2)
-        self.assertEqual(matchup.schedule[0].date, '')
+        self.assertEqual(matchup.schedule[0].date, '2017-04-10T00:41:45Z')
         self.assertEqual(matchup.schedule[0].state, GAME_STATE_FINISHED)
         self.assertEqual(matchup.schedule[0].home_goal, 1)
         self.assertEqual(matchup.schedule[0].away_goal, 0)
@@ -76,13 +78,19 @@ class TestPoolDataFactoryMethods(unittest.TestCase):
         self.assertEqual(matchup.season_results.away_win, 0)
         self.assertEqual(matchup.season_results.games[0].home, 1)
         self.assertEqual(matchup.season_results.games[0].away, 2)
-        self.assertEqual(matchup.season_results.games[0].date, '')
+        self.assertEqual(matchup.season_results.games[0].date, '2017-04-10T00:41:45Z')
         self.assertEqual(matchup.season_results.games[0].state, GAME_STATE_FINISHED)
         self.assertEqual(matchup.season_results.games[0].home_goal, 1)
         self.assertEqual(matchup.season_results.games[0].away_goal, 0)
         self.assertEqual(matchup.season_results.games[0].extra_data['extra'], 'data')
         self.assertEqual(matchup.results.home_win, 1)
         self.assertEqual(matchup.results.away_win, 0)
+
+    def test_date(self):
+        date = "2017-04-10T00:41:45Z"
+        self.assertTrue(isinstance(pooldatafactory.now(), datetime))
+        self.assertEqual(pooldatafactory.date_to_string(pooldatafactory.string_to_date(date)), date)
+        self.assertEqual(pooldatafactory.date_to_string(pooldatafactory.date(2017, 4, 10, 0, 41, 45, tzinfo=tz.gettz('UTC'))), date)
 
 
 if __name__ == '__main__':

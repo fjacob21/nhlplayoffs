@@ -1,3 +1,5 @@
+from datetime import datetime
+from dateutil import tz
 from game import Game, GAME_STATE_SCHEDULED
 from matchup import Matchup
 from matchupresult import MatchupResult
@@ -35,3 +37,25 @@ def create_matchup(id, round, home=0, away=0, start='', schedule={}, season_resu
     if not results:
         results = results = create_matchup_results()
     return Matchup(id, round, home, away, start, schedule, season_results, results)
+
+
+def string_to_date(date):
+    from_zone = tz.gettz('UTC')
+    to_zone = tz.gettz('America/New_York')
+    utc = datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')
+    utc = utc.replace(tzinfo=from_zone)
+    return utc.astimezone(to_zone)
+
+
+def date_to_string(date):
+    to_zone = tz.gettz('UTC')
+    return date.astimezone(to_zone).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+
+def now():
+    to_zone = tz.gettz('America/New_York')
+    return datetime.now(tz.tzlocal()).astimezone(to_zone)
+
+
+def date(year, month, day, hour=0, minute=0, second=0, tzinfo=tz.gettz('America/New_York')):
+    return datetime(year, month, day, hour, minute, second, tzinfo=tzinfo)
