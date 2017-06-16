@@ -3,7 +3,7 @@ from powerdict import PowerDict
 
 class Matchup(PowerDict):
 
-    def __init__(self, id, round, home=0, away=0, start='', schedule={}, season_results={}, results=None):
+    def __init__(self, id=0, round=0, home=0, away=0, start='', schedule={}, season_results={}, results=None):
         matchup = {}
         matchup['id'] = id
         matchup['home'] = home

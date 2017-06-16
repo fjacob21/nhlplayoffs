@@ -1,5 +1,6 @@
 import unittest
-from powerdict import PowerDict
+import json
+from powerdict import PowerDict, PowerDictEncoder, PowerDictDecoder
 
 
 class TestPowerDictMethods(unittest.TestCase):
@@ -41,6 +42,16 @@ class TestPowerDictMethods(unittest.TestCase):
         testdict = PowerDict()
         testdict['test'] = 12
         self.assertEqual(testdict.data, {'test': 12})
+
+    def test_json(self):
+        testdict = PowerDict()
+        testdict.test = 12
+        testdict['test2'] = 'test'
+        tjson = json.dumps(testdict, cls=PowerDictEncoder)
+        dec_testdict = json.loads(tjson, cls=PowerDictDecoder)
+        self.assertIsInstance(dec_testdict, PowerDict)
+        self.assertEqual(dec_testdict.test, testdict.test)
+        self.assertEqual(dec_testdict['test2'], testdict['test2'])
 
 
 if __name__ == '__main__':

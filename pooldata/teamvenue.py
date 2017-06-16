@@ -3,7 +3,7 @@ from powerdict import PowerDict
 
 class TeamVenue(PowerDict):
 
-    def __init__(self, city, name='', timezone='', address=''):
+    def __init__(self, city='', name='', timezone='', address=''):
         venue = {}
         venue['city'] = city
         venue['name'] = name

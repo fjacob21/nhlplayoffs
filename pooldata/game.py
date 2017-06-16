@@ -7,7 +7,7 @@ GAME_STATE_FINISHED = 3
 
 class Game(PowerDict):
 
-    def __init__(self, home, away, date='', state=GAME_STATE_SCHEDULED, home_goal=0, away_goal=0, extra_data=None):
+    def __init__(self, home=0, away=0, date='', state=GAME_STATE_SCHEDULED, home_goal=0, away_goal=0, extra_data=None):
         game = {}
         game['home'] = home
         game['away'] = away

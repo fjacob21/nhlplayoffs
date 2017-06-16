@@ -3,7 +3,7 @@ from powerdict import PowerDict
 
 class MatchupSeasonResults(PowerDict):
 
-    def __init__(self, home_win, away_win, games=[]):
+    def __init__(self, home_win=0, away_win=0, games=[]):
         results = {}
         results['home_win'] = home_win
         results['away_win'] = away_win

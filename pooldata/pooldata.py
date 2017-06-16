@@ -5,7 +5,7 @@ from matchuptree import MatchupTree
 
 class PoolDataYear(PowerDict):
 
-    def __init__(self, year):
+    def __init__(self, year=0):
         yeardata = {}
         yeardata['year'] = year
         yeardata['matchups'] = MatchupTree()

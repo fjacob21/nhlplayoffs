@@ -3,7 +3,7 @@ from powerdict import PowerDict
 
 class Standing(PowerDict):
 
-    def __init__(self, team_id, pts, win, losses, ot, games_played, goals_against, goals_scored, ranks, extra_info={}):
+    def __init__(self, team_id=0, pts=0, win=0, losses=0, ot=0, games_played=0, goals_against=0, goals_scored=0, ranks=0, extra_info={}):
         standing = {}
         standing['team_id'] = team_id
         standing['pts'] = pts

@@ -3,7 +3,7 @@ from powerdict import PowerDict
 
 class Team(PowerDict):
 
-    def __init__(self, id, abbreviation, name, fullname, city, active=False, creation_year=0, website='', venue=None, league_info=None):
+    def __init__(self, id=0, abbreviation='', name='', fullname='', city='', active=False, creation_year=0, website='', venue=None, league_info=None):
         team = {}
         team['id'] = id
         team['abbreviation'] = abbreviation
