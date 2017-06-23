@@ -1,3 +1,4 @@
+import pooldatafactory
 from powerdict import PowerDict
 
 
@@ -16,3 +17,6 @@ class Team(PowerDict):
         team['venue'] = venue
         team['league_info'] = league_info
         self._data = team
+
+    def add_venue(self, city, name='', timezone='', address=''):
+        self.venue = pooldatafactory.create_team_venue(city, name, timezone, address)

@@ -15,22 +15,23 @@ class PoolDataYear(PowerDict):
         self._data = yeardata
 
 
-class PoolData(object):
+class PoolData(PowerDict):
     def __init__(self):
-        self._teams = {}
-        self._players = []
-        self._years = {}
+        self._data = {}
+        self.teams = {}
+        self.players = []
+        self.years = {}
 
     def add_team(self, id, abbreviation, name, fullname, city, active=False, creation_year=0, website='', venue=None, league_info=None):
-        if id not in self._teams:
+        if id not in self.teams:
             team = pooldatafactory.create_team(id, abbreviation, name, fullname, city, active, creation_year, website, venue, league_info)
-            self._teams[id] = team
-        return self._teams[id]
+            self.teams[id] = team
+        return self.teams[id]
 
-    def add_standings(self, year, team_id, pts, win, losses, ot, games_played, goals_against, goals_scored, ranks, extra_info={}):
+    def add_standing(self, year, team_id, pts, win, losses, ot, games_played, goals_against, goals_scored, ranks, extra_info={}):
         yeardata = self.add_year(year)
         if team_id not in yeardata.standings:
-            standing = pooldatafactory.create_standings(team_id, pts, win, losses, ot, games_played, goals_against, goals_scored, ranks, extra_info)
+            standing = pooldatafactory.create_standing(team_id, pts, win, losses, ot, games_played, goals_against, goals_scored, ranks, extra_info)
             yeardata.standings[team_id] = standing
         return yeardata.standings[team_id]
 
@@ -42,6 +43,6 @@ class PoolData(object):
         return yeardata.matchups[id]
 
     def add_year(self, year):
-        if year not in self._years:
-            self._years[year] = PoolDataYear(year)
-        return self._years[year]
+        if year not in self.years:
+            self.years[year] = PoolDataYear(year)
+        return self.years[year]
