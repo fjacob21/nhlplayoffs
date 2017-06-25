@@ -40,6 +40,17 @@ class TestMatchupTreeMethods(unittest.TestCase):
         tree = self.create_tree()
         self.assertEqual(tree['t1'].id, 't1')
 
+    def test_set_error_items(self):
+        tree = self.create_tree()
+        with self.assertRaises(AttributeError):
+            tree.t1 = 12
+        with self.assertRaises(AttributeError):
+            tree['12'] = 12
+
+    def test_set_get_attr(self):
+        tree = self.create_tree()
+        self.assertEqual(tree.t1.id, 't1')
+
     def test_keys(self):
         tree = self.create_tree()
         self.assertEqual(len(tree.keys()), 3)

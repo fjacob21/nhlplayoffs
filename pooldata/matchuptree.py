@@ -34,8 +34,20 @@ class MatchupTree(object):
     def __getitem__(self, key):
         return self._nodes[key]
 
+    def __setitem__(self, key, value):
+        raise AttributeError("Invalid node id: '" + key + "'")
+
+    def __contains__(self, key):
+        return key in self._nodes
+
     def __getattr__(self, key):
         return self._nodes[key]
+
+    def __setattr__(self, name, value):
+        if not name.startswith('_'):
+            raise AttributeError("Invalid node id: '" + name + "'")
+        else:
+            return object.__setattr__(self, name, value)
 
 
 class MatchupTreeNode(PowerDict):
