@@ -1,4 +1,6 @@
+from game import GAME_STATE_SCHEDULED, GAME_STATE_FINISHED
 from matchupresult import MatchupResult
+import pooldatafactory
 from powerdict import PowerDict
 
 
@@ -14,6 +16,16 @@ class Matchup(PowerDict):
         matchup['playoff'] = playoff
         matchup['season'] = season
         self._data = matchup
+
+    def add_playoff_game(self, date='', state=GAME_STATE_SCHEDULED, home_goal=0, away_goal=0, extra_data=None):
+        game = pooldatafactory.create_matchup_game(self.home, self.away, date, state, home_goal, away_goal, extra_data)
+        self.playoff.games.append(game)
+        return game
+
+    def add_season_game(self, date, home_goal, away_goal, extra_data=None):
+        game = pooldatafactory.create_matchup_game(self.home, self.away, date, GAME_STATE_FINISHED, home_goal, away_goal, extra_data)
+        self.season.games.append(game)
+        return game
 
     @property
     def started(self):

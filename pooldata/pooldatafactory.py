@@ -3,7 +3,6 @@ from dateutil import tz
 from game import Game, GAME_STATE_SCHEDULED
 from matchup import Matchup
 from matchupresult import MatchupResult
-from matchupseasonresults import MatchupSeasonResults
 from standing import Standing
 from team import Team
 from teamvenue import TeamVenue
