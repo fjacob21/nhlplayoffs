@@ -216,7 +216,8 @@ class Data():
                         player_preds.append(pred['prediction'])
                     pts = pts + self.calculate_result_pts(pred['result'])
                 scwinner, games = self.matchup_result(self._matchups[year]['sc'])
-                if int(scwinner) == int(winner):
+                print(scwinner, winner)
+                if int(scwinner) and int(scwinner) == int(winner):
                     pts = pts + 50
                 victories = {'winner_count': 0, 'games_count': 0}
                 result = {'player': player['name'], 'pts': pts, 'oldpts': oldpts, 'winner': winner, 'predictions': player_preds, 'victories': victories, 'favorite_team': player['favorite_team']}
@@ -255,7 +256,11 @@ class Data():
             return self._data['datav2'][year]['matchups']
 
         def get_predictions(self, year):
-            return self._data['predictions'][year]['matchups']
+            if year in self._data['predictions']:
+                return self._data['predictions'][year]['matchups']
+            return {}
 
         def get_winners(self, year):
-            return self._data['predictions'][year]['winners']
+            if year in self._data['predictions']:
+                return self._data['predictions'][year]['winners']
+            return {}

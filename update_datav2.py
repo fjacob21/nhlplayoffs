@@ -25,7 +25,12 @@ class Updater(object):
                 standings = self.get_standings(list(self._teams.values()))
                 self.create_matchups(standings)
             if self.is_season_finished():
+                print('Playoff starting')
                 self._current_round = 1
+                self.store()
+            else:
+                print("Storing prelim results")
+                self._current_round = 0
                 self.store()
         else:
             self.update_matchups()
