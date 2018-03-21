@@ -121,16 +121,33 @@ class GameInfo extends React.Component{
                 var LastGame = this.findLastMatch(this.props.matchup);
 
                 //console.debug(this.props.matchup.schedule);
-                if (this.props.matchup.home != 0)
-                  homeImg = <img className='matchup-img' src={store.getTeamImgUrl(this.props.matchup.home)} />;
-                if (this.props.matchup.away != 0)
+                if (this.props.matchup.home != 0) {
+                  homeImg =<img className='matchup-img' src={store.getTeamImgUrl(this.props.matchup.home)} />;
+                  homeImg = '<use xlink:href="' + store.getTeamImgUrl(this.props.matchup.home) + '" />';
+                }
+                //
+
+                if (this.props.matchup.away != 0) {
                   awayImg = <img className='matchup-img' src={store.getTeamImgUrl(this.props.matchup.away)} />;
+                  awayImg = '<use xlink:href="' + store.getTeamImgUrl(this.props.matchup.away) + '" />';
+                }
                 return (
                         <div className='matchup' onTouchStart={this.onTouch.bind(this)} onClick={this.onTouch.bind(this)}>
                            <div className='teams'>
-                                   <div className='matchup-cell'>{homeImg}</div>
-                                   <div className='matchup-result matchup-cell'><div>{this.props.matchup.result.home_win} - {this.props.matchup.result.away_win}</div><div>...</div></div>
-                                   <div className='matchup-cell'>{awayImg}</div>
+                                   <div className='matchup-cell'>
+                                           <svg viewBox="0 0 5 5">
+                                                   <svg dangerouslySetInnerHTML={{__html: homeImg }} />
+                                           </svg>
+                                   </div>
+                                   <div className='matchup-result matchup-cell'>
+                                           <div className='matchup-result-wins'>{this.props.matchup.result.home_win} - {this.props.matchup.result.away_win}</div>
+                                           <div className='matchup-result-dots'>...</div>
+                                   </div>
+                                   <div className='matchup-cell'>
+                                           <svg viewBox="0 0 5 5">
+                                                   <svg dangerouslySetInnerHTML={{__html: awayImg }} />
+                                           </svg>
+                                   </div>
                            </div>
 
                               <Modal show={this.state.showModal} onHide={this.close.bind(this)}>
@@ -139,9 +156,17 @@ class GameInfo extends React.Component{
                                   </Modal.Header>
                                   <Modal.Body className='matchup'>
                                   <div className='teams'>
-                                      <div className='matchup-cell'>{homeImg}</div>
+                                      <div className='matchup-cell'>
+                                              <svg viewBox="0 0 5 5">
+                                                      <svg dangerouslySetInnerHTML={{__html: homeImg }} />
+                                              </svg>
+                                      </div>
                                       <div className='modal-result matchup-cell'>{this.props.matchup.result.home_win} - {this.props.matchup.result.away_win}</div>
-                                      <div className='matchup-cell'>{awayImg}</div>
+                                      <div className='matchup-cell'>
+                                              <svg viewBox="0 0 5 5">
+                                                      <svg dangerouslySetInnerHTML={{__html: awayImg }} />
+                                              </svg>
+                                      </div>
                                   </div>
                                   <div className='info'>
                                           <div className='next'>

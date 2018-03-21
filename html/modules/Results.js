@@ -82,6 +82,7 @@ class Results extends React.Component{
                                                 var predClass = '';
                                                 var p = this.findPrediction(result.predictions, home, away);
                                                 if(p != null){
+                                                        var predImg = '<use xlink:href="' + store.getTeamImgUrl(p.winner) + '" />';
                                                         if(matchupResult.winner !=0 && matchupResult.winner != p.winner){
                                                                 if(matchupResult.isFinish)
                                                                         predClass = 'teamLoser';
@@ -89,8 +90,8 @@ class Results extends React.Component{
                                                                         predClass = 'teamLosing';
                                                         }
                                                         return (
-                                                                <th style={{width: '10px'}} key={j}>
-                                                                        <div><img className={predClass} src={store.getTeamImgUrl(p.winner)} style={{width: '100%', height: 'auto'}}/></div><div>{p.games}</div>
+                                                                <th style={{width: '1%', height: '10px'}} key={j}>
+                                                                        <div className={predClass} style={{width: '35px', height: '23px'}}><svg width="100%" height="100%"><svg dangerouslySetInnerHTML={{__html: predImg }} /></svg></div><div>{p.games}</div>
                                                                 </th>);
                                                 } else{
                                                         return (
@@ -104,9 +105,12 @@ class Results extends React.Component{
                         var winner = <div></div>;
                         var winnerstar = <div></div>;
                         if (i==0 && this.isFinished())
-                                winnerstar = <Glyphicon className='winner-star' glyph="star" />;;
-                        if(result.winner != 0)
+                                winnerstar = <Glyphicon className='winner-star' glyph="star" />;
+                        if(result.winner != 0){
+                                var predImg = '<use xlink:href="' + store.getTeamImgUrl(result.winner) + '" />';
                                 winner = <img className={winnerClass} src={store.getTeamImgUrl(result.winner)} style={{width: '50px', height: 'auto'}} />
+                                winner = <div style={{width: '35px', height: '23px'}}><svg width="100%" height="100%"><svg dangerouslySetInnerHTML={{__html: predImg }} /></svg></div>
+                        }
                         return (<tr key={i}><th className='rank'>{i+1}</th><th style={{width: '50px',verticalAlign: 'middle'}}>{result.player}</th>{m}<th style={{width: '50px',verticalAlign: 'middle'}} >{winner}</th><th style={{width: '50px',verticalAlign: 'middle'}}><div>{result.pts}{winnerstar}</div></th></tr>);
                 }.bind(this));
 
@@ -130,6 +134,10 @@ class Results extends React.Component{
                                         var result = store.getMatchupResult(matchup);
                                         var homeClass = '';
                                         var awayClass = '';
+                                        var homeImg = '<use xlink:href="' + store.getTeamImgUrl(home) + '" />';
+                                        var awayImg = '<use xlink:href="' + store.getTeamImgUrl(away) + '" />';
+                                        //<img className={homeClass} src={store.getTeamImgUrl(home)} style={{width: '100%', height: 'auto'}} />{homeWin}
+                                        //<img className={awayClass} src={store.getTeamImgUrl(away)} style={{width: '100%', height: 'auto'}} />{awayWin}
                                         if(result.isFinish){
                                                 if(result.winner == home)
                                                         awayClass = 'teamLoser';
@@ -138,8 +146,18 @@ class Results extends React.Component{
                                         }
                                         return (
                                                 <th style={{width: '10px'}} key={j}>
-                                                        <img className={homeClass} src={store.getTeamImgUrl(home)} style={{width: '100%', height: 'auto'}} />{homeWin}
-                                                        <img className={awayClass} src={store.getTeamImgUrl(away)} style={{width: '100%', height: 'auto'}} />{awayWin}
+                                                        <div className={homeClass} style={{width: '35px', height: '23px'}}>
+                                                                <svg  width="100%" height="100%">
+                                                                <svg dangerouslySetInnerHTML={{__html: homeImg }} />
+                                                                </svg>
+                                                        </div>
+                                                        <div>{homeWin}</div>
+                                                        <div className={awayClass} style={{width: '35px', height: '23px'}}>
+                                                        <svg  width="100%" height="100%">
+                                                                <svg dangerouslySetInnerHTML={{__html: awayImg }} />
+                                                        </svg>
+                                                        </div>
+                                                        <div>{awayWin}</div>
                                                 </th>);
                                        }
                                 }.bind(this));
@@ -150,7 +168,7 @@ class Results extends React.Component{
                                         <th>Rank</th>
                                         <th>Player</th>
                                         {matchsHead}
-                                        <th style={{width: '10px'}}>Winner</th>
+                                        <th>Winner</th>
                                         <th>Pts</th>
                                     </tr>
                                 </thead>

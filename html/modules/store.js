@@ -77,7 +77,8 @@ class Store {
         }
 
         getTeamImgUrl(team){
-                return 'https://www-league.nhlstatic.com/builds/site-core/284dc4ec70e4bee8802842e5e700157f45660a48_1457473228/images/team/logo/current/' + team + '_dark.svg';
+                return 'res/logo.svg#team-' + team + '-20172018-light'
+                //return 'https://www-league.nhlstatic.com/builds/site-core/284dc4ec70e4bee8802842e5e700157f45660a48_1457473228/images/team/logo/current/' + team + '_dark.svg';
         }
 
         getWinner(player){
@@ -85,7 +86,7 @@ class Store {
                         if(winner.player == player)
                                 return winner.winner;
                 }
-                return null;
+                return 0;
         }
 
         setWinner(player, winner, success, error){

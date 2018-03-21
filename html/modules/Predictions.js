@@ -39,11 +39,13 @@ var Predictions = React.createClass({
                 this.setState(this.state);
         },
         getInitialState: function() {
-          return {predictions: [], teams:[], winner:null, currentround:0};
+          return {predictions: [], teams:[], winner:0, currentround:0};
         },
         winnerChange: function(event) {
-                if (sessionStorage.user != 'guest' && store.isRountStarted(1))
+                if ((sessionStorage.user != 'guest' && store.isRountStarted(1)) || store.currentround==0){
+                        this.setState(this.state);
                         return;
+                }
                 this.state.winner = event.target.value;
                 this.setState(this.state);
                 if (sessionStorage.user != 'guest')
@@ -65,7 +67,7 @@ var Predictions = React.createClass({
         },
         predictionChange: function(event) {
                 var prediction = this.state.predictions[event.target.id];
-                if(sessionStorage.user != 'guest' && store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round)))
+                if((sessionStorage.user != 'guest' && store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round))) || store.currentround==0)
                         return;
                 this.state.predictions[event.target.id].winner = Number(event.target.value);
                 this.setState(this.state);
@@ -88,7 +90,7 @@ var Predictions = React.createClass({
         },
         gamesChange: function(event) {
                 var prediction = this.state.predictions[event.target.id];
-                if(sessionStorage.user != 'guest' && store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round)))
+                if((sessionStorage.user != 'guest' && store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round))) || store.currentround==0)
                         return;
                 this.state.predictions[event.target.id].games = Number(event.target.value);
                 this.setState(this.state);
@@ -168,8 +170,8 @@ var Predictions = React.createClass({
                 );
         }.bind(this));
         var emptyPrediction = <option disabled></option>;
-        if (this.state.winner == null) {
-                emptyPrediction = <option>Select a winning teams</option>;
+        if (this.state.winner == 0) {
+                emptyPrediction = <option value={0}>Select a winning teams</option>;
         }
         const alertInstance = (
                 <Alert bsStyle={this.state.msgtype} className='msg' style={this.state.msgstyle}>

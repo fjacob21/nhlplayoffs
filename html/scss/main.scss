@@ -46,7 +46,9 @@ body {
         height: 100%;
 }
 .matchup-cell {
-    display: table-cell;
+    display: flex;
+    flex-direction: row;
+    flex-flow: column;
     padding: 1px;
     vertical-align: middle;
     text-align: center;
@@ -58,7 +60,7 @@ body {
     background-color:$itemColor;
     height:100%;
     width:100%;
-    display: block;
+    display: flex;
     border: 2px solid black;
     overflow: hidden;
     color: white;
@@ -68,9 +70,10 @@ body {
 
 .matchup .teams{
     display: flex;
+    flex-direction: row;
     width: 100%;
     font-size: 50%;
-    align-items: baseline;
+    //align-items: baseline;
     height: 100%
 }
 
@@ -275,6 +278,14 @@ body {
     1px 1px 0 #000;
 }
 
+.matchup-result-wins {
+        height: 50%;
+}
+
+.matchup-result-dots {
+        height: 50%;
+}
+
 .modal-result  {
         font-size: 300%;
         text-shadow:
@@ -370,7 +381,7 @@ body {
 }
 
 .matchup-result  {
-        font-size: 160%;
+        font-size: 150%;
         font-weight: bold;
         text-shadow:
     -1px -1px 0 #000,
