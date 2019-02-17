@@ -465,7 +465,7 @@ class Updater(object):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Update the nhlpool database')
-    parser.add_argument('-y', '--year', metavar='year', default='2017', nargs='?',
+    parser.add_argument('-y', '--year', metavar='year', default='2018', nargs='?',
                         help='The year to work with')
     parser.add_argument('-s', '--server', metavar='server', default='debug', nargs='?',
                         help='The server to use')
