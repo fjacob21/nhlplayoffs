@@ -6,6 +6,7 @@ import players
 import stores
 from data import Data
 
+__version__ = 2
 application = Flask(__name__, static_url_path='')
 
 
