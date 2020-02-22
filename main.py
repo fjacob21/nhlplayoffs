@@ -260,6 +260,6 @@ def root():
 
 
 if __name__ == '__main__':
-    stores.set_type(stores.DB_TYPE_DEBUG)
+    # stores.set_type(stores.DB_TYPE_DEBUG)
     _db = stores.get()
     application.run(debug=True, host='0.0.0.0', port=5000)
