@@ -10,7 +10,7 @@ _db = None
 def get_prod():
     global _db
     if not _db:
-        _db = postgres_store('dc7m5co1u7n7ka', 'vfumyroepkgfsd', 'AsRCUy1JTkf500s_2pfXZK9qwR', 'ec2-107-22-246-250.compute-1.amazonaws.com', 5432)
+        _db = postgres_store('d5senndqeuasbn', 'yfgawzvfiieind', '5cb3b4c0c6a5a49180f8edbd0271e7f0ac44459834119dbf9126eee22b7fa455', 'ec2-174-129-253-140.compute-1.amazonaws.com', 5432)
     return _db
 
 
