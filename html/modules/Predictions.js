@@ -42,10 +42,10 @@ var Predictions = React.createClass({
           return {predictions: [], teams:[], winner:0, currentround:0};
         },
         winnerChange: function(event) {
-                if ((sessionStorage.user != 'guest' && store.isRountStarted(1)) || store.currentround==0){
-                        this.setState(this.state);
-                        return;
-                }
+                // if ((sessionStorage.user != 'guest' && store.isRountStarted(1)) || store.currentround==0){
+                //         this.setState(this.state);
+                //         return;
+                // }
                 this.state.winner = event.target.value;
                 this.setState(this.state);
                 if (sessionStorage.user != 'guest')
@@ -67,8 +67,8 @@ var Predictions = React.createClass({
         },
         predictionChange: function(event) {
                 var prediction = this.state.predictions[event.target.id];
-                if((sessionStorage.user != 'guest' && store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round))) || store.currentround==0)
-                        return;
+                // if((sessionStorage.user != 'guest' && store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round))) || store.currentround==0)
+                //         return;
                 this.state.predictions[event.target.id].winner = Number(event.target.value);
                 this.setState(this.state);
                 if (sessionStorage.user != 'guest')
@@ -90,8 +90,8 @@ var Predictions = React.createClass({
         },
         gamesChange: function(event) {
                 var prediction = this.state.predictions[event.target.id];
-                if((sessionStorage.user != 'guest' && store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round))) || store.currentround==0)
-                        return;
+                // if((sessionStorage.user != 'guest' && store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round))) || store.currentround==0)
+                //         return;
                 this.state.predictions[event.target.id].games = Number(event.target.value);
                 this.setState(this.state);
                 if (sessionStorage.user != 'guest')

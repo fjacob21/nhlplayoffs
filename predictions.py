@@ -21,8 +21,8 @@ def store_db(year, predictions):
 def add_winner(player, year, winner):
     predictions = restore_db(year)
     # check if round 1 is started
-    if matchups.is_round_started(year, 1):
-        return False
+    # if matchups.is_round_started(year, 1):
+    #     return False
 
     if not players.is_valid_player(player):
         return False
@@ -66,8 +66,8 @@ def add(player, year, round, home, away, winner, games):
         return False
 
     ####################################################
-    if matchups.is_matchup_started(matchup):
-        return False
+    # if matchups.is_matchup_started(matchup):
+    #     return False
 
     prediction_index = get_prediction_index(player, year, round, home, away)
     if prediction_index != -1:
@@ -93,8 +93,8 @@ def update(player, year, round, home, away, winner, games):
     if matchup is None:
         return False
 
-    if matchups.is_matchup_started(matchup):
-        return False
+    # if matchups.is_matchup_started(matchup):
+    #     return False
 
     prediction_index = get_prediction_index(player, year, round, home, away)
     if prediction_index == -1:
