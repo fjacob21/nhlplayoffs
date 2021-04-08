@@ -8,6 +8,7 @@ _db = None
 def get():
     global _db
     if not _db:
+        print("Connect to memory database")
         _db = memory_store()
     return _db
 

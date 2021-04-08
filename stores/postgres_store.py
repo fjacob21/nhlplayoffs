@@ -7,20 +7,12 @@ import psycopg2
 _db = None
 
 
-def get_prod():
+def get(user, password, database, server, port):
     global _db
     if not _db:
-        _db = postgres_store('d5senndqeuasbn', 'yfgawzvfiieind', '5cb3b4c0c6a5a49180f8edbd0271e7f0ac44459834119dbf9126eee22b7fa455', 'ec2-174-129-253-140.compute-1.amazonaws.com', 5432)
+        print("Connect to postgres database", user, database, password, server, port)
+        _db = postgres_store(user, database, password, server, port)
     return _db
-
-
-def get_debug():
-    global _db
-    if not _db:
-        # _db = postgres_store('postgres', 'postgres', 'mysecretpassword', '172.17.0.3', 5432)
-        _db = postgres_store('fred', 'fred', '763160', 'localhost', 5432)
-    return _db
-
 
 def release():
     global _db
@@ -47,7 +39,7 @@ class postgres_store(object):
                                          host=self._host,
                                          port=self._port)
 
-        except psycopg2.DatabaseError, e:
+        except psycopg2.DatabaseError as e:
             print('Error %s' % e)
         return self._con
 
