@@ -18,7 +18,7 @@ class Updater2021(Updater):
                 self.create_matchups(self._standings, 0)
                 if self.is_season_finished():
                     self._current_round += 1
-                    self.store()
+            self.store()
         else:
             self.update_matchups()
             if self.is_round_finished(self._current_round):
