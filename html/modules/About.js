@@ -10,7 +10,7 @@ var About = React.createClass({
               <div className="container theme-showcase" role="main" id="about">
                   <div className="well">
                       <p>
-                          Matrox NHL Playoffs pool V2.6 <br/>
+                          NHL Playoffs pool V2.7 <br/>
                           This is website to manage the unofficial NHL playoffs pool.
                       </p>
                   </div>

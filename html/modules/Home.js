@@ -215,7 +215,7 @@ class Home extends React.Component{
 
         display() {
              //console.debug(this.state.matchups);
-             if(this.state.matchups.w == undefined)
+             if(this.state.matchups.sc1 == undefined)
                return;
              var nb_round = 4;
              var width = (nb_round * 2) - 1;
@@ -257,8 +257,8 @@ class Home extends React.Component{
                 }
             }
             display[2][3] = 'sc';
-            walk_matchup_tree(this.state.matchups.w, 2, 3, -1);
-            walk_matchup_tree(this.state.matchups.e, 4, 3, 1);
+            walk_matchup_tree(this.state.matchups.sc1, 2, 3, -1);
+            walk_matchup_tree(this.state.matchups.sc2, 4, 3, 1);
 
             if (this.state.matchups.sc.result.home_win == 4)
                 display[0][3] = this.state.matchups.sc.home;
@@ -293,7 +293,7 @@ class Home extends React.Component{
                 var tree = this.display();
                 return (
                     <div className='home'>
-                            <div>Welcome to the 2020 NHL playoffs pool 🏒🏒🏒</div>
+                            <div>Welcome to the 2021 NHL playoffs pool 🏒🏒🏒</div>
                             <div className='matchups'> {tree}</div>
                     </div>
                 )
