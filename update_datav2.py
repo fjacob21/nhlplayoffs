@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 import argparse
 from datetime import datetime
 from dateutil import tz
@@ -474,7 +474,7 @@ if __name__ == '__main__':
 
     if args.server == 'prod':
         print('Using production server')
-        server = 'nhlpool.herokuapp.com/'
+        server = 'nhlpool.roblab.net/'
     else:
         print('Using debug server')
         server = 'localhost:5000'

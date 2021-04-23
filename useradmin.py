@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 import argparse
 from datetime import datetime
 from dateutil import tz
@@ -49,7 +49,7 @@ def remove_inactive_users(server, root_psw):
     players = getusers(server, True)
     for player in players:
         user = player['name']
-        var = raw_input("Are you sure you want to errase user: {user} on {server}? ".format(server=server, user=user))
+        var = input("Are you sure you want to errase user: {user} on {server}? ".format(server=server, user=user))
         if var == 'y':
             removeuser(server, user, root_psw)
 
@@ -94,6 +94,7 @@ def now():
 
 
 def listusers(server, inactive=False, show_missing=False):
+    print("listusers")
     teams = getteams(server)
     players = getusers(server, inactive, show_missing)
     for player in players:
@@ -155,6 +156,7 @@ if __name__ == '__main__':
     user = args.user
     root_psw = args.root_psw
     if cmd == 'list':
+        print("list server")
         listusers(server)
     elif cmd == 'listinactive':
         listusers(server, True)

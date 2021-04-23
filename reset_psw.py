@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 import json
 import sys
 import requests
@@ -25,6 +25,6 @@ if __name__ == '__main__':
     new_psw = sys.argv[2]
     root_psw = sys.argv[3]
 
-    # server = 'localhost:5000'
-    server = 'nhlpool.herokuapp.com/'
+    server = 'localhost:5000'
+    # server = 'nhlpool.roblab.net/'
     reset_psw(server, player, new_psw, root_psw)

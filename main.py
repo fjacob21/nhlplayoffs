@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 from flask import Flask, jsonify, abort, request, send_from_directory, redirect
 import matchupsv2
 import predictions
