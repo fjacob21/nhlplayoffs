@@ -75,7 +75,7 @@ class Data():
     def build_player_matchup_result(self, year, pred, winner, games, result):
         if pred['winner'] == winner:
             result['has_winner'] = True
-            result['winner_rank'] = self._teams[year][winner]['standings']['conferenceRank']
+            result['winner_rank'] = self._teams[year][winner]['standings']['divisionRank']
             if pred['games'] == games:
                 result['has_games'] = True
 
@@ -141,6 +141,7 @@ class Data():
             p['favorite_team'] = favorite_team
             p['games_stats'] = {'total': total_games, 'rounds': rounds_games}
             p['missings'] = missings_predictions
+            p['has_winner'] = False
         # pprint(self._players)
 
     def parse_time(self, timestamp):

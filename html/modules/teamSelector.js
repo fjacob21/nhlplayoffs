@@ -46,11 +46,11 @@ class TeamSelector extends React.Component{
                 awayImg = '<use xlink:href="' + store.getTeamImgUrl(this.props.matchup.away) + '" />';
                 return (
                         <div className='team-selector'>
-                                <div className={homeImgStyle} onClick={this.homeSelect.bind(this)}><div className='team-rank'>{homeTeam.standings.conferenceRank}</div> <svg viewBox="0 0 5 5">
+                                <div className={homeImgStyle} onClick={this.homeSelect.bind(this)}><div className='team-rank'>{homeTeam.standings.divisionRank}</div> <svg viewBox="0 0 5 5">
                                         <svg dangerouslySetInnerHTML={{__html: homeImg }} />
                                 </svg> </div>
                                 <div className='results'>{matchup.season.home_win + " - " + matchup.season.away_win}</div>
-                                <div className={awayImgStyle} onClick={this.awaySelect.bind(this)}><div className='team-rank'>{awayTeam.standings.conferenceRank}</div> <svg viewBox="0 0 5 5">
+                                <div className={awayImgStyle} onClick={this.awaySelect.bind(this)}><div className='team-rank'>{awayTeam.standings.divisionRank}</div> <svg viewBox="0 0 5 5">
                                         <svg dangerouslySetInnerHTML={{__html: awayImg }} />
                                 </svg> </div>
                         </div>

@@ -46,15 +46,19 @@ def removeuser(server, user, root_psw):
 
 
 def remove_inactive_users(server, root_psw):
-    players = getusers(server, True)
-    for player in players:
+    _, _, inactives,_ = getusers(server)
+    for player in inactives:
         user = player['name']
         var = input("Are you sure you want to errase user: {user} on {server}? ".format(server=server, user=user))
         if var == 'y':
             removeuser(server, user, root_psw)
 
 
-def getusers(server, inactive=False, missing=False):
+def getusers(server):
+    users = []
+    actives = []
+    inactives = []
+    missings = []
     try:
         url = 'http://' + server + '/nhlplayoffs/api/v2.0/players'
         headers = {'content-type': 'application/json'}
@@ -62,22 +66,18 @@ def getusers(server, inactive=False, missing=False):
         if not r.ok:
             print('Invalid request!!!!')
             return []
-        players = r.json()['players']
-        players = [p for p in players if p['prediction_count'] == 0 or not inactive]
-        if missing:
-            ps = []
-            for p in players:
-                if p['prediction_count'] != 0:
-                    for m in p['missings']:
-                        if m['start'] and now() < parse_time(m['start']):
-                            ps.append(p)
-                            break
-            players = ps
-        return players
-
+        users = r.json()['players']
+        inactives = [p for p in users if p['prediction_count'] == 0]
+        for user in users:
+            if user['prediction_count'] != 0:
+                actives.append(user)
+                for m in user['missings']:
+                    if m['start'] and now() < parse_time(m['start']):
+                        missings.append(user)
+                        break
     except Exception as e:
         print(e)
-        return []
+    return users, actives, inactives, missings
 
 
 def parse_time(timestamp):
@@ -93,11 +93,33 @@ def now():
     return datetime.now(tz.tzlocal()).astimezone(to_zone)
 
 
-def listusers(server, inactive=False, show_missing=False):
-    print("listusers")
+def list_inactive_users(server):
+    print("list inactive users")
     teams = getteams(server)
-    players = getusers(server, inactive, show_missing)
-    for player in players:
+    _, _, inactive, _  = getusers(server)
+    print_users(inactive, teams)
+
+def list_users(server):
+    print("list users")
+    teams = getteams(server)
+    users, _, _, _  = getusers(server)
+    print_users(users, teams)
+
+def list_active_users(server):
+    print("list active users")
+    teams = getteams(server)
+    _, actives, _, _  = getusers(server)
+    print_users(actives, teams)
+
+def list_missing_users(server):
+    print("list missing users")
+    teams = getteams(server)
+    _, _, _, missings  = getusers(server)
+    print_users(missings, teams, True)
+
+
+def print_users(users, teams, show_missing=False):
+    for player in users:
         print("\033[0;94m{n}\033[0m".format(n=player['name']))
         if 'last_login' in player:
             print("\t\033[1;30mLast Login:\033[0m {l}".format(l=player['last_login']))
@@ -156,12 +178,13 @@ if __name__ == '__main__':
     user = args.user
     root_psw = args.root_psw
     if cmd == 'list':
-        print("list server")
-        listusers(server)
+        list_users(server)
     elif cmd == 'listinactive':
-        listusers(server, True)
+        list_inactive_users(server)
+    elif cmd == 'listactive':
+        list_active_users(server)
     elif cmd == 'listmissing':
-        listusers(server, False, True)
+        list_missing_users(server)
     elif cmd == 'remove':
         removeuser(server, user, root_psw)
     elif cmd == 'removeinactive':

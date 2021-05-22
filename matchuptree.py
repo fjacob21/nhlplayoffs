@@ -26,22 +26,21 @@ class MatchupTree(object):
         return list(self._matchups.values())
 
     def restore(self, raw_matchups):
-        matchups = {}
+        self._matchups = {}
         for matchup_raw in list(raw_matchups.values()):
             matchup = matchup_raw.copy()
-            matchups[matchup['id']] = matchup
+            self._matchups[matchup['id']] = matchup
 
-        for matchup in list(matchups.values()):
+        for matchup in list(self._matchups.values()):
             next = matchup['next']
             right = matchup['right']
             left = matchup['left']
-            if next in raw_matchups:
-                matchup['next'] = matchups[next]
-            if right in raw_matchups:
-                matchup['right'] = matchups[right]
-            if left in raw_matchups:
-                matchup['left'] = matchups[left]
-        return matchups
+            if next in self._matchups:
+                matchup['next'] = self._matchups[next]
+            if right in self._matchups:
+                matchup['right'] = self._matchups[right]
+            if left in self._matchups:
+                matchup['left'] = self._matchups[left]
 
     def store(self):
         raw_matchups = {}
