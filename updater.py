@@ -69,6 +69,9 @@ class Updater(object):
                 id = display[x][y]
                 if id != '':
                     matchup = self._matchups[id]
+                    start = ""
+                    if matchup["start"]:
+                        start = "*"
                     if matchup['home'] == 0:
                         sys.stdout.write('{0:15}'.format(id))
                     else:
@@ -76,7 +79,7 @@ class Updater(object):
                         away = '?'
                         if matchup['away'] != 0:
                             away = self._teams[matchup['away']]['info']['abbreviation']
-                        sys.stdout.write('\033[0;94m{0:3}\033[0m-{2} vs {3}-\033[0;94m{1:3}\033[0m'.format(home, away, matchup['result']['home_win'], matchup['result']['away_win']))
+                        sys.stdout.write('\033[0;94m{0:3}\033[0m-{2} vs {3}-\033[0;94m{1:3}{4}\033[0m'.format(home, away, matchup['result']['home_win'], matchup['result']['away_win'], start))
                 else:
                     sys.stdout.write('{0:15}'.format(id))
             sys.stdout.write('\n')
@@ -88,6 +91,13 @@ class Updater(object):
                 return False
         return True
     
+    def is_all_matchup_have_start(self, round):
+        matchups = self._matchups.get_matchup_round(round)
+        for matchup in matchups:
+            if matchup['start'] == '':
+                return False
+        return True
+
     def is_round_finished(self, round):
         matchups = self._matchups.get_matchup_round(round)
         for matchup in matchups:

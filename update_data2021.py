@@ -9,6 +9,7 @@ class Updater2021(Updater):
         self._season_games = 56
     
     def run(self):
+        print(f"Updater 2021 round:{self._current_round}")
         if self._current_round == 0:
             self._teams = self._query.get_teams()
             self.create_matchups_tree()
@@ -16,12 +17,14 @@ class Updater2021(Updater):
             if len(self.teams) > 0:
                 self._standings = self.get_season_standings()
                 self.create_matchups(self._standings, 0)
-                if self.is_season_finished():
+                if self.is_season_finished() or self.is_all_matchup_have_start(1):
+                    print("Playoffs ready to begin!!!!!")
                     self._current_round += 1
             self.store()
         else:
             self.update_matchups()
             if self.is_round_finished(self._current_round):
+                print(f"Round {self._current_round} finished!!!")
                 self.create_matchups(self.get_round_winners_standings(self._current_round), self._current_round)
                 self._current_round += 1
             self.store()
