@@ -13,6 +13,7 @@ class Updater(object):
         self._year = year
         self._season_games = 82
         self._current_round = 0
+        self._auto_move = False
         self._teams = {}
         self._standings = {}
         self._query = NHLQuery(self._year)
@@ -286,9 +287,10 @@ class Updater(object):
             if matchup['start'] == '':
                 matchup['start'] = self._matchups.get_matchup_start(matchup)
             matchup['result'] = self.get_matchup_result(matchup)
-            # if self.is_matchup_finished(matchup) and matchup['next'] is not None:
-            #     print('Finished', matchup['id'])
-            #     self.update_matchup(matchup['next'], self.get_matchup_winner(matchup))
+            if self._auto_move:
+                if self.is_matchup_finished(matchup) and matchup['next'] is not None:
+                    print('Finished', matchup['id'])
+                    self.update_matchup(matchup['next'], self.get_matchup_winner(matchup))
         else:
             if matchup['home'] == 0:
                 matchup['home'] = home
