@@ -121,7 +121,8 @@ class Updater(object):
         matchups = self._matchups.get_matchup_round(round)
         for matchup in matchups:
             winner = self._matchups.get_matchup_winner(matchup)
-            teams.append(self._teams[winner])
+            if winner:
+                teams.append(self._teams[winner])
         return self.get_standings(teams)
 
     def get_matchup_schedule(self, matchup, schedules=None):
@@ -231,16 +232,20 @@ class Updater(object):
             game_away_id = game['teams']['away']['team']['id']
             if game['gameType'] == 'P':
                 if game_home_id == away_id or game_away_id == away_id:
+                    away_shots = 0
+                    home_shots = 0
                     if game_home_id == away_id:  # reverse
                         away_score = game['teams']['home']['score']
                         home_score = game['teams']['away']['score']
-                        away_shots = game['linescore']['teams']['home']['shotsOnGoal']
-                        home_shots = game['linescore']['teams']['away']['shotsOnGoal']
+                        if 'linescore' in game:
+                            away_shots = game['linescore']['teams']['home']['shotsOnGoal']
+                            home_shots = game['linescore']['teams']['away']['shotsOnGoal']
                     else:
                         away_score = game['teams']['away']['score']
                         home_score = game['teams']['home']['score']
-                        away_shots = game['linescore']['teams']['away']['shotsOnGoal']
-                        home_shots = game['linescore']['teams']['home']['shotsOnGoal']
+                        if 'linescore' in game:
+                            away_shots = game['linescore']['teams']['away']['shotsOnGoal']
+                            home_shots = game['linescore']['teams']['home']['shotsOnGoal']
                     if int(game['status']['statusCode']) == 7:
                         if home_score > away_score:
                             home_win = home_win + 1

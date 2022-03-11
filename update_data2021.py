@@ -25,8 +25,14 @@ class Updater2021(Updater):
             self.update_matchups()
             if self.is_round_finished(self._current_round):
                 print(f"Round {self._current_round} finished!!!")
-                self.create_matchups(self.get_round_winners_standings(self._current_round), self._current_round)
                 self._current_round += 1
+            round1_standing = self.get_round_winners_standings(1)
+            round2_standing = self.get_round_winners_standings(2)
+            round3_standing = self.get_round_winners_standings(3)
+            self.create_matchups(round1_standing, 1)
+            self.create_matchups(round2_standing, 2)
+            self.create_matchups(round3_standing, 3)
+            # self.create_matchups(self.get_round_winners_standings(self._current_round), self._current_round)
             self.store()
     
     def create_matchups_tree(self):
@@ -109,28 +115,44 @@ class Updater2021(Updater):
         self.update_matchup(w2, standings['Honda West'][1]['info']['id'], standings['Honda West'][2]['info']['id'])
 
     def create_matchups_round1(self, standings):
-        n = self._matchups['n']
-        c = self._matchups['c']
         if len(standings['Scotia North']) == 2:
-            self.update_matchup(n, standings['Scotia North'][0]['info']['id'], standings['Scotia North'][1]['info']['id'])
+            n = self._matchups['n']
+            if not n["start"]:
+                print(f"Create Scotia North final {standings['Scotia North'][0]['info']['abbreviation']} vs {standings['Scotia North'][1]['info']['abbreviation']}")
+                self.update_matchup(n, standings['Scotia North'][0]['info']['id'], standings['Scotia North'][1]['info']['id'])
         if len(standings['Discover Central']) == 2:
-            self.update_matchup(c, standings['Discover Central'][0]['info']['id'], standings['Discover Central'][1]['info']['id'])
-        e = self._matchups['e']
-        w = self._matchups['w']
+            c = self._matchups['c']
+            if not c["start"]:
+                print(f"Create Discover Central final {standings['Discover Central'][0]['info']['abbreviation']} vs {standings['Discover Central'][1]['info']['abbreviation']}")
+                self.update_matchup(c, standings['Discover Central'][0]['info']['id'], standings['Discover Central'][1]['info']['id'])
         if len(standings['MassMutual East']) == 2:
-            self.update_matchup(e, standings['MassMutual East'][0]['info']['id'], standings['MassMutual East'][1]['info']['id'])
+            e = self._matchups['e']
+            if not e["start"]:
+                print(f"Create MassMutual East final {standings['MassMutual East'][0]['info']['abbreviation']} vs {standings['MassMutual East'][1]['info']['abbreviation']}")
+                self.update_matchup(e, standings['MassMutual East'][0]['info']['id'], standings['MassMutual East'][1]['info']['id'])
         if len(standings['Honda West']) == 2:
-            self.update_matchup(w, standings['Honda West'][0]['info']['id'], standings['Honda West'][1]['info']['id'])
+            w = self._matchups['w']
+            if not w["start"]:
+                print(f"Create Honda West final {standings['Honda West'][0]['info']['abbreviation']} vs {standings['Honda West'][1]['info']['abbreviation']}")
+                self.update_matchup(w, standings['Honda West'][0]['info']['id'], standings['Honda West'][1]['info']['id'])
 
     def create_matchups_round2(self, standings):
-        sc1 = self._matchups['sc1']
-        self.update_matchup(sc1, standings['teams'][0]['info']['id'], standings['teams'][3]['info']['id'])
-        sc2 = self._matchups['sc2']
-        self.update_matchup(sc2, standings['teams'][1]['info']['id'], standings['teams'][2]['info']['id'])
+        if len(standings["teams"]) == 4:
+            sc1 = self._matchups['sc1']
+            if not sc1["start"]:
+                print(f"Create Stanley cup semi final #1 {standings['teams'][0]['info']['abbreviation']} vs {standings['teams'][3]['info']['abbreviation']}")
+                self.update_matchup(sc1, standings['teams'][0]['info']['id'], standings['teams'][3]['info']['id'])
+            sc2 = self._matchups['sc2']
+            if not sc2["start"]:
+                print(f"Create Stanley cup semi final #2 {standings['teams'][1]['info']['abbreviation']} vs {standings['teams'][2]['info']['abbreviation']}")
+                self.update_matchup(sc2, standings['teams'][1]['info']['id'], standings['teams'][2]['info']['id'])
 
     def create_matchups_round3(self, standings):
-        sc = self._matchups['sc']
-        self.update_matchup(sc, standings['teams'][0]['info']['id'], standings['teams'][1]['info']['id'])
+        if len(standings["teams"]) == 2:
+            sc = self._matchups['sc']
+            if not sc["start"]:
+                print(f"Create Stanley cup matchup {standings['teams'][0]['info']['abbreviation']} vs {standings['teams'][1]['info']['abbreviation']}")
+                self.update_matchup(sc, standings['teams'][0]['info']['id'], standings['teams'][1]['info']['id'])
     
 
 if __name__ == '__main__':

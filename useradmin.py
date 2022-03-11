@@ -111,6 +111,15 @@ def list_active_users(server):
     _, actives, _, _  = getusers(server)
     print_users(actives, teams)
 
+def print_active_users_email(server):
+    print("print active users email")
+    _, users, _, _  = getusers(server)
+    email_list = ""
+    for player in users:
+        print(f"\033[0;94m{player['name']}\033[0m : {player['email']}")
+        email_list += f"{player['email']}; "
+    print(email_list[:-2])
+
 def list_missing_users(server):
     print("list missing users")
     teams = getteams(server)
@@ -183,6 +192,8 @@ if __name__ == '__main__':
         list_inactive_users(server)
     elif cmd == 'listactive':
         list_active_users(server)
+    elif cmd == 'printemail':
+        print_active_users_email(server)
     elif cmd == 'listmissing':
         list_missing_users(server)
     elif cmd == 'remove':
