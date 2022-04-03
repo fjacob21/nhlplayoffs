@@ -75,7 +75,7 @@ class Data():
     def build_player_matchup_result(self, year, pred, winner, games, result):
         if pred['winner'] == winner:
             result['has_winner'] = True
-            result['winner_rank'] = self._teams[year][winner]['standings']['divisionRank']
+            result['winner_rank'] = self._teams[year][winner]['standings']['conferenceRank']
             if pred['games'] == games:
                 result['has_games'] = True
 

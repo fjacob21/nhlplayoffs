@@ -84,6 +84,14 @@ class Updater(object):
                 else:
                     sys.stdout.write('{0:15}'.format(id))
             sys.stdout.write('\n')
+        
+        league = self.get_league_standing()
+        print("\nLeague standing")
+        print(f"Tea gp wi lo ot pts")
+        print("-------------------")
+        for team in league:
+            print(f"\033[0;94m{team['info']['abbreviation']}\033[0m {team['standings']['gamesPlayed']:2} {team['standings']['leagueRecord']['wins']:2} {team['standings']['leagueRecord']['losses']:2} {team['standings']['leagueRecord']['ot']:2} {team['standings']['points']:3}")
+
     
     def is_season_finished(self):
         for team in self.teams:
@@ -105,6 +113,9 @@ class Updater(object):
             if not self._matchups.is_matchup_finished(matchup):
                 return False
         return True
+
+    def get_league_standing(self):
+        return sorted(list(self._teams.values()), key=lambda k: int(k['standings']['leagueRank']))
 
     def get_season_standings(self):
         return self.get_standings(self.teams)
