@@ -75,7 +75,7 @@ class Updater2022(Updater):
     def get_standings(self, teams):
         standings = {'Eastern': {'Atlantic': [], 'Metropolitan': [], 'teams': []}, 'Western': {'Central': [], 'Pacific': [], 'teams': []}, 'teams': []}
 
-        league = sorted(list(upd._teams.values()), key=lambda k: int(k['standings']['divisionRank']))
+        league = sorted(list(self._teams.values()), key=lambda k: int(k['standings']['divisionRank']))
         for team in league:
             standings['teams'].append(team)
             standings[team['info']['conference']['name']]['teams'].append(team)

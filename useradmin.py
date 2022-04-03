@@ -113,7 +113,7 @@ def list_active_users(server):
 
 def print_active_users_email(server):
     print("print active users email")
-    _, users, _, _  = getusers(server)
+    users, _, _, _  = getusers(server)
     email_list = ""
     for player in users:
         print(f"\033[0;94m{player['name']}\033[0m : {player['email']}")
