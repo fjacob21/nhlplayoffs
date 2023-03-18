@@ -3,7 +3,7 @@ class Store {
                 if(server == undefined)
                         server = '';
                 if(year == undefined)
-                        year = 2021;
+                        year = 2022;
                 this.year = year;
                 this.server = server;
                 this.matchups = {};
