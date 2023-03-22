@@ -77,7 +77,8 @@ class Store {
         }
 
         getTeamImgUrl(team){
-                return 'res/logo.svg#team-' + team + '-20172018-light'
+                return 'res/logo.svg#team-' + team + '-light'
+                // https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/sprite/teams-light.svg
                 //return 'https://www-league.nhlstatic.com/builds/site-core/284dc4ec70e4bee8802842e5e700157f45660a48_1457473228/images/team/logo/current/' + team + '_dark.svg';
         }
 
