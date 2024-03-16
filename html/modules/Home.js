@@ -123,30 +123,26 @@ class GameInfo extends React.Component{
                 //console.debug(this.props.matchup.schedule);
                 if (this.props.matchup.home != 0) {
                   homeImg =<img className='matchup-img' src={store.getTeamImgUrl(this.props.matchup.home)} />;
-                  homeImg = '<use xlink:href="' + store.getTeamImgUrl(this.props.matchup.home) + '" />';
+                //   homeImg = '<use xlink:href="' + store.getTeamImgUrl(this.props.matchup.home) + '" />';
                 }
                 //
 
                 if (this.props.matchup.away != 0) {
                   awayImg = <img className='matchup-img' src={store.getTeamImgUrl(this.props.matchup.away)} />;
-                  awayImg = '<use xlink:href="' + store.getTeamImgUrl(this.props.matchup.away) + '" />';
+                //   awayImg = '<use xlink:href="' + store.getTeamImgUrl(this.props.matchup.away) + '" />';
                 }
                 return (
                         <div className='matchup' onTouchStart={this.onTouch.bind(this)} onClick={this.onTouch.bind(this)}>
                            <div className='teams'>
                                    <div className='matchup-cell'>
-                                           <svg viewBox="0 0 5 5">
-                                                   <svg dangerouslySetInnerHTML={{__html: homeImg }} />
-                                           </svg>
+                                        {homeImg }
                                    </div>
                                    <div className='matchup-result matchup-cell'>
                                            <div className='matchup-result-wins'>{this.props.matchup.result.home_win} - {this.props.matchup.result.away_win}</div>
                                            <div className='matchup-result-dots'>...</div>
                                    </div>
                                    <div className='matchup-cell'>
-                                           <svg viewBox="0 0 5 5">
-                                                   <svg dangerouslySetInnerHTML={{__html: awayImg }} />
-                                           </svg>
+                                        {awayImg }
                                    </div>
                            </div>
 
@@ -293,7 +289,7 @@ class Home extends React.Component{
                 var tree = this.display();
                 return (
                     <div className='home'>
-                            <div>Welcome to the 2023 NHL playoffs pool 🏒🏒🏒</div>
+                            <div>Welcome to the 2024 NHL playoffs pool 🏒🏒🏒</div>
                             <div className='matchups'> {tree}</div>
                     </div>
                 )

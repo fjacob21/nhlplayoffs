@@ -14,7 +14,7 @@ def restore_db(year):
     else:
         teams = {}
         for m in data['teams'].items():
-            teams[int(m[0])] = m[1]
+            teams[m[0]] = m[1]
         current_round = data['current_round']
         matchups = data['matchups']
         data = {}
@@ -46,7 +46,7 @@ def get_teams(year=0):
     for year in years:
         data = get(year)['teams']
         for team in data:
-            team = int(team)
+            team = team
             if team not in teams:
                 teams[team] = data[team]
     return teams
@@ -69,7 +69,7 @@ def get_matchup(year, home, away):
     matchups = get_matchups(year, 0)
 
     for matchup in list(matchups.values()):
-        if matchup['home'] == int(home) and matchup['away'] == int(away):
+        if matchup['home'] == home and matchup['away'] == away:
             return matchup
     return None
 

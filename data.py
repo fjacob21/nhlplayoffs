@@ -250,7 +250,7 @@ class Data():
             dbteams = self._data['datav2'][year]['teams']
             teams = {}
             for m in dbteams.items():
-                teams[int(m[0])] = m[1]
+                teams[m[0]] = m[1]
             return teams
 
         def get_matchups(self, year):

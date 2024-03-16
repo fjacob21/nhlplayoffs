@@ -3,7 +3,7 @@ class Store {
                 if(server == undefined)
                         server = '';
                 if(year == undefined)
-                        year = 2022;
+                        year = 2023;
                 this.year = year;
                 this.server = server;
                 this.matchups = {};
@@ -77,6 +77,7 @@ class Store {
         }
 
         getTeamImgUrl(team){
+                return 'https://assets.nhle.com/logos/nhl/svg/' + team + '_light.svg'
                 return 'res/logo.svg#team-' + team + '-light'
                 // https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/sprite/teams-light.svg
                 //return 'https://www-league.nhlstatic.com/builds/site-core/284dc4ec70e4bee8802842e5e700157f45660a48_1457473228/images/team/logo/current/' + team + '_dark.svg';

@@ -28,7 +28,7 @@ class Updater(object):
         data = self.fetch_data()
         self._teams = {}
         for m in data['teams'].items():
-            self._teams[int(m[0])] = m[1]
+            self._teams[m[0]] = m[1]
         self._current_round = data['current_round']
         self._matchups.restore(data['matchups'])
 
@@ -143,7 +143,7 @@ class Updater(object):
         result = []
         s = schedules
         if schedules is None:
-            s = self._query.get_playoff_schedule(int(home_id))
+            s = self._query.get_playoff_schedule(home_id)
         if 'dates' in s:
             for date in s['dates']:
                 game = date['games'][0]
@@ -200,7 +200,6 @@ class Updater(object):
         if len(schedule) == 0:
             schedule = self._query.get_schedule(home)
             # self._teams[home]['schedule'] = schedule
-
         if 'dates' in schedule:
             for date in schedule['dates']:
                 game = date['games'][0]
@@ -308,7 +307,7 @@ class Updater(object):
                 matchup['away'] = away
             else:
                 matchup['away'] = home
-
+            print(self._teams)
             if matchup['home'] != 0 and matchup['away'] != 0:
                 # Begin matchup
                 hi = self._teams[matchup['home']]
