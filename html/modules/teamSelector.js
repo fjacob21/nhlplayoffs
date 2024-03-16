@@ -41,18 +41,14 @@ class TeamSelector extends React.Component{
                         awayImgStyle += " selected";
 
                 var homeImg = <img id={'img-' + this.props.matchup.home} className='matchup-img' src={store.getTeamImgUrl(this.props.matchup.home)} />;
-                homeImg = '<use xlink:href="' + store.getTeamImgUrl(this.props.matchup.home) + '" />';
+                // homeImg = '<use xlink:href="' + store.getTeamImgUrl(this.props.matchup.home) + '" />';
                 var awayImg = <img className='matchup-img' src={store.getTeamImgUrl(this.props.matchup.away)} />;
-                awayImg = '<use xlink:href="' + store.getTeamImgUrl(this.props.matchup.away) + '" />';
+                // awayImg = '<use xlink:href="' + store.getTeamImgUrl(this.props.matchup.away) + '" />';
                 return (
                         <div className='team-selector'>
-                                <div className={homeImgStyle} onClick={this.homeSelect.bind(this)}><div className='team-rank'>{homeTeam.standings.conferenceRank}</div> <svg viewBox="0 0 5 5">
-                                        <svg dangerouslySetInnerHTML={{__html: homeImg }} />
-                                </svg> </div>
+                                <div className={homeImgStyle} onClick={this.homeSelect.bind(this)}><div className='team-rank'>{homeTeam.standings.conferenceRank}</div>{homeImg}</div>
                                 <div className='results'>{matchup.season.home_win + " - " + matchup.season.away_win}</div>
-                                <div className={awayImgStyle} onClick={this.awaySelect.bind(this)}><div className='team-rank'>{awayTeam.standings.conferenceRank}</div> <svg viewBox="0 0 5 5">
-                                        <svg dangerouslySetInnerHTML={{__html: awayImg }} />
-                                </svg> </div>
+                                <div className={awayImgStyle} onClick={this.awaySelect.bind(this)}><div className='team-rank'>{awayTeam.standings.conferenceRank}</div>{awayImg}</div>
                         </div>
                 );
         }
