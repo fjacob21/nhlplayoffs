@@ -82,14 +82,17 @@ class NHLQuery2(object):
             if game_data["gameType"] == 3:
                 home_score = 0
                 away_score = 0
+                status = 1
                 if game_data["gameState"] == "OFF":
                     home_score = game_data["homeTeam"]["score"]
                     away_score = game_data["awayTeam"]["score"]
+                    status = 7
                 home_team = {"id": game_data["homeTeam"]["abbrev"]}
                 home_team_game = {"team": home_team, "score": home_score}
                 away_team = {"id": game_data["awayTeam"]["abbrev"]}
                 away_team_game = {"team": away_team, "score": away_score}
-                game = {"teams": {"home": home_team_game, "away": away_team_game}, "gameType": "P", "gameDate": game_data["startTimeUTC"]}
+                game_status = {"statusCode": status}
+                game = {"teams": {"home": home_team_game, "away": away_team_game}, "gameType": "P", "gameDate": game_data["startTimeUTC"], "status": game_status}
                 dates.append({"games": [game]})
         schedules = {"dates": dates}
         return schedules

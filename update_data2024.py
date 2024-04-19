@@ -26,7 +26,7 @@ class Updater2024(Updater):
             # if self.is_round_finished(self._current_round):
             #     self.create_matchups(self.get_round_winners_standings(self._current_round), self._current_round)
             #     self._current_round += 1
-            # self.store()
+            self.store()
     
     def create_matchups_tree(self):
         sc = self._matchups.create_matchup('sc', 4, None)

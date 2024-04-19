@@ -298,7 +298,7 @@ class Updater(object):
                 matchup['start'] = self._matchups.get_matchup_start(matchup)
             matchup['result'] = self.get_matchup_result(matchup)
             if self._auto_move:
-                if self.is_matchup_finished(matchup) and matchup['next'] is not None:
+                if self._matchups.is_matchup_finished(matchup) and matchup['next'] is not None:
                     print('Finished', matchup['id'])
                     self.update_matchup(matchup['next'], self.get_matchup_winner(matchup))
         else:
