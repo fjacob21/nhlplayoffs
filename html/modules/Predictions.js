@@ -69,7 +69,7 @@ var Predictions = React.createClass({
                 var prediction = this.state.predictions[event.target.id];
                 if((sessionStorage.user != 'guest' && store.isMatchupStarted(store.getMatchup(prediction.home, prediction.away, prediction.round))) || store.currentround==0)
                         return;
-                this.state.predictions[event.target.id].winner = Number(event.target.value);
+                this.state.predictions[event.target.id].winner = event.target.value;
                 this.setState(this.state);
                 if (sessionStorage.user != 'guest')
                         store.setPrediction(sessionStorage.userId, prediction.round, prediction.home, prediction.away, prediction.winner, prediction.games,
