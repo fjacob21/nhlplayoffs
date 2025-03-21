@@ -134,7 +134,7 @@ def print_users(users, teams, show_missing=False):
             print("\t\033[1;30mLast Login:\033[0m {l}".format(l=player['last_login']))
         print("\t\033[1;30mEmail:\033[0m {e}".format(e=player['email']))
         print("\t\033[1;30mPredictions:\033[0m {p}".format(p=player['prediction_count']))
-        if player['favorite_team'] > 0 and player['favorite_team'] in teams:
+        if player['favorite_team'] and player['favorite_team'] in teams:
             team = teams[player['favorite_team']]
             team = team['info']['abbreviation']
             print("\t\033[1;30mFav team:\033[0m {t}".format(t=team))
@@ -152,11 +152,11 @@ def print_users(users, teams, show_missing=False):
                     print("\t\tYear:{y} Round:{r} Home:{h} Away:{a} Start:{s}".format(y=missing['year'], r=missing['round'], h=missing['home'], a=missing['away'], s=missing['start']))
         print("\t\033[1;30mTeam result stats:\033[0m ")
         team_results = sorted(player['team_results'].items(), key=lambda x: -x[1])
-        for t in team_results:
-            team = teams[int(t[0])]
-            team = team['info']['abbreviation']
-            result = t[1]
-            print("\t\t\033[1;30m{t}:\033[0m {r:3.2f}%".format(t=team, r=result))
+        # for t in team_results:
+        #     team = teams[t[0]]
+        #     team = team['info']['abbreviation']
+        #     result = t[1]
+        #     print("\t\t\033[1;30m{t}:\033[0m {r:3.2f}%".format(t=team, r=result))
         print("\t\033[1;30mGames result stats:\033[0m ")
         games_results = sorted(player['games_results'].items(), key=lambda x: -x[1])
         for t in games_results:

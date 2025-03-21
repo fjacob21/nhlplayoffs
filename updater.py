@@ -84,13 +84,13 @@ class Updater(object):
                 else:
                     sys.stdout.write('{0:15}'.format(id))
             sys.stdout.write('\n')
-        
-        league = self.get_league_standing()
-        print("\nLeague standing")
-        print(f"Tea gp wi lo ot pts")
-        print("-------------------")
-        for team in league:
-            print(f"\033[0;94m{team['info']['abbreviation']}\033[0m {team['standings']['gamesPlayed']:2} {team['standings']['leagueRecord']['wins']:2} {team['standings']['leagueRecord']['losses']:2} {team['standings']['leagueRecord']['ot']:2} {team['standings']['points']:3}")
+        if not self.is_season_finished():
+            league = self.get_league_standing()
+            print("\nLeague standing")
+            print(f"Tea gp wi lo ot pts")
+            print("-------------------")
+            for team in league:
+                print(f"\033[0;94m{team['info']['abbreviation']}\033[0m {team['standings']['gamesPlayed']:2} {team['standings']['leagueRecord']['wins']:2} {team['standings']['leagueRecord']['losses']:2} {team['standings']['leagueRecord']['ot']:2} {team['standings']['points']:3}")
 
     
     def is_season_finished(self):
@@ -266,17 +266,33 @@ class Updater(object):
                         hi = self._teams[matchup['home']]
                         ai = self._teams[matchup['away']]
                         # period = game['linescore']['currentPeriod']
-                        result = self._query.get_live_result(game['link'])
+                        live_result = self._query.get_live_result(game['link'])
+                        stats = {i["category"]:i for i in live_result["summary"]["teamGameStats"]}
+                        period = live_result['periodDescriptor']['number']
+                        rtime = live_result['clock']['timeRemaining']
+                        home_faceoff_win_percentage = 0
+                        away_faceoff_win_percentage = 0
                         if game_home_id == away_id:
-                            away_stats = result['liveData']['boxscore']['teams']['home']['teamStats']['teamSkaterStats']
-                            home_stats = result['liveData']['boxscore']['teams']['away']['teamStats']['teamSkaterStats']
+                            away_faceoff_win_percentage = stats["faceoffWinningPctg"]["homeValue"]
+                            home_faceoff_win_percentage = stats["faceoffWinningPctg"]["awayValue"]
+                            away_shots = stats["sog"]["homeValue"]
+                            home_shots = stats["sog"]["awayValue"]
+                            away_score = live_result["summary"]['linescore']['totals']['home']
+                            home_score = live_result["summary"]['linescore']['totals']['away']
+                            # away_stats = result['liveData']['boxscore']['teams']['home']['teamStats']['teamSkaterStats']
+                            # home_stats = result['liveData']['boxscore']['teams']['away']['teamStats']['teamSkaterStats']
                         else:
-                            away_stats = result['liveData']['boxscore']['teams']['away']['teamStats']['teamSkaterStats']
-                            home_stats = result['liveData']['boxscore']['teams']['home']['teamStats']['teamSkaterStats']
+                            away_faceoff_win_percentage = stats["faceoffWinningPctg"]["awayValue"]
+                            home_faceoff_win_percentage = stats["faceoffWinningPctg"]["homeValue"]
+                            away_shots = stats["sog"]["awayValue"]
+                            home_shots = stats["sog"]["homeValue"]
+                            away_score = live_result["summary"]['linescore']['totals']['away']
+                            home_score = live_result["summary"]['linescore']['totals']['home']
+                            # away_stats = result['liveData']['boxscore']['teams']['away']['teamStats']['teamSkaterStats']
+                            # home_stats = result['liveData']['boxscore']['teams']['home']['teamStats']['teamSkaterStats']
+                        
 
-                        period = game['linescore']['currentPeriodOrdinal']
-                        rtime = game['linescore']['currentPeriodTimeRemaining']
-                        print("Game {status} \033[0;94m{h}\033[0m {hsc}-{asc} \033[0;94m{a}\033[0m - {t} of {p} - Shots:\033[0;94m{h}\033[0m {hsh}-{ash} \033[0;94m{a}\033[0m - Faceoff:\033[0;94m{h}\033[0m {hf}-{af} \033[0;94m{a}\033[0m".format(hf=home_stats['faceOffWinPercentage'], af=away_stats['faceOffWinPercentage'], status=game['status']['detailedState'], h=hi['info']['abbreviation'], hsc=home_score, asc=away_score, a=ai['info']['abbreviation'], p=period, t=rtime, hsh=home_shots, ash=away_shots))
+                        print("Game {status} \033[0;94m{h}\033[0m {hsc}-{asc} \033[0;94m{a}\033[0m - {t} of {p} - Shots:\033[0;94m{h}\033[0m {hsh}-{ash} \033[0;94m{a}\033[0m - Faceoff:\033[0;94m{h}\033[0m {hf:0.2f}-{af:0.2f} \033[0;94m{a}\033[0m".format(hf=home_faceoff_win_percentage, af=away_faceoff_win_percentage, status=game['status']['detailedState'], h=hi['info']['abbreviation'], hsc=home_score, asc=away_score, a=ai['info']['abbreviation'], p=period, t=rtime, hsh=home_shots, ash=away_shots))
         result['home_win'] = home_win
         result['away_win'] = away_win
         return result
@@ -307,7 +323,7 @@ class Updater(object):
                 matchup['away'] = away
             else:
                 matchup['away'] = home
-            print(self._teams)
+            # print(self._teams)
             if matchup['home'] != 0 and matchup['away'] != 0:
                 # Begin matchup
                 hi = self._teams[matchup['home']]

@@ -218,7 +218,7 @@ class Data():
                     pts = pts + self.calculate_result_pts(pred['result'])
                 scwinner, games = self.matchup_result(self._matchups[year]['sc'])
                 print(scwinner, winner)
-                if int(scwinner) and int(scwinner) == int(winner):
+                if scwinner and scwinner == winner:
                     pts = pts + 50
                 victories = {'winner_count': 0, 'games_count': 0}
                 result = {'player': player['name'], 'pts': pts, 'oldpts': oldpts, 'winner': winner, 'predictions': player_preds, 'victories': victories, 'favorite_team': player['favorite_team']}

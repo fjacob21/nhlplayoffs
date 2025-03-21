@@ -1,4 +1,5 @@
 import requests
+import pprint
 
 class NHLQuery2(object):
 
@@ -6,9 +7,9 @@ class NHLQuery2(object):
         self._year = year
     
     def get_live_result(self, link):
-        url = 'https://statsapi.web.nhl.com' + link
-        live = requests.get(url).json()
-        return live
+        url = 'https://api-web.nhle.com/v1/gamecenter/' + link + '/landing'
+        live = requests.get(url)
+        return live.json()
 
     def get_team(self, id):
         url = 'https://statsapi.web.nhl.com/api/v1/teams/' + str(id)
@@ -49,6 +50,18 @@ class NHLQuery2(object):
             teams[team_id] = team_record
         return teams
     
+    def _convert_game_state(self, new_state):
+        if new_state == "FUT":
+            return 1
+        if new_state == "PRE":
+            return 2
+        if new_state in ["LIVE", "CRIT", "FINAL"] :
+            return 3
+        if new_state == "OFF":
+            return 7
+        print(f"Unknow state {new_state}")
+        return 1
+
     def get_schedule(self, team):
         print('Get schedule for ' + str(team))
         url = 'https://api-web.nhle.com/v1/club-schedule-season/' + str(team) + '/' + str(self._year) + str(self._year + 1)
@@ -61,6 +74,7 @@ class NHLQuery2(object):
                 if game_data["gameState"] == "OFF":
                     home_score = game_data["homeTeam"]["score"]
                     away_score = game_data["awayTeam"]["score"]
+                
                 home_team = {"id": game_data["homeTeam"]["abbrev"]}
                 home_team_game = {"team": home_team, "score": home_score}
                 away_team = {"id": game_data["awayTeam"]["abbrev"]}
@@ -82,17 +96,17 @@ class NHLQuery2(object):
             if game_data["gameType"] == 3:
                 home_score = 0
                 away_score = 0
-                status = 1
+                status = self._convert_game_state(game_data["gameState"])
+                link = str(game_data["id"])
                 if game_data["gameState"] == "OFF":
                     home_score = game_data["homeTeam"]["score"]
                     away_score = game_data["awayTeam"]["score"]
-                    status = 7
                 home_team = {"id": game_data["homeTeam"]["abbrev"]}
                 home_team_game = {"team": home_team, "score": home_score}
                 away_team = {"id": game_data["awayTeam"]["abbrev"]}
                 away_team_game = {"team": away_team, "score": away_score}
-                game_status = {"statusCode": status}
-                game = {"teams": {"home": home_team_game, "away": away_team_game}, "gameType": "P", "gameDate": game_data["startTimeUTC"], "status": game_status}
+                game_status = {"statusCode": status, "detailedState": ""}
+                game = {"teams": {"home": home_team_game, "away": away_team_game}, "gameType": "P", "gameDate": game_data["startTimeUTC"], "status": game_status, "link": link}
                 dates.append({"games": [game]})
         schedules = {"dates": dates}
         return schedules
