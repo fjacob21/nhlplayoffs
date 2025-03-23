@@ -210,7 +210,7 @@ class Home extends React.Component{
         }
 
         display() {
-             //console.debug(this.state.matchups);
+             // console.log(this.state.matchups);
              if(this.state.matchups.sc1 == undefined)
                return;
              var nb_round = 4;
@@ -268,7 +268,7 @@ class Home extends React.Component{
                         return (<div className='cell' key={x}><Line dx={cell[0]} dy={cell[1]} /></div>);
                   else if (typeof(cell) == 'number')
                         return (<div className='cell' key={x}><Winner winner={cell} /></div>);
-                  return (<div className='cell' key={x}><GameInfo matchup={this.state.matchups[cell]}/></div>);
+                return (<div className='cell' key={x}><GameInfo matchup={this.state.matchups[cell]}/></div>);
                   //return (<div className='cell' key={x}>{x}</div>);
                }.bind(this));
                return (<div className='row' key={y}>{r}</div>);
@@ -289,7 +289,7 @@ class Home extends React.Component{
                 var tree = this.display();
                 return (
                     <div className='home'>
-                            <div>Welcome to the 2024 NHL playoffs pool 🏒🏒🏒</div>
+                            <div>Welcome to the 2025 NHL playoffs pool 🏒🏒🏒</div>
                             <div className='matchups'> {tree}</div>
                     </div>
                 )

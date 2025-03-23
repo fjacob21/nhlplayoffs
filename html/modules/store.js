@@ -3,7 +3,7 @@ class Store {
                 if(server == undefined)
                         server = '';
                 if(year == undefined)
-                        year = 2023;
+                        year = 2024;
                 this.year = year;
                 this.server = server;
                 this.matchups = {};
@@ -243,6 +243,7 @@ class Store {
         get(verb, success, error, version='v2.0'){
                 $.ajax({
                 type: 'GET',
+                cache: false,
                 url: this.server +"/nhlplayoffs/api/" + version + "/" + verb,
                 success: success,
                 error: error,
