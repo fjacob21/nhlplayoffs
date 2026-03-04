@@ -289,7 +289,7 @@ class Home extends React.Component{
                 var tree = this.display();
                 return (
                     <div className='home'>
-                            <div>Welcome to the 2025 NHL playoffs pool 🏒🏒🏒</div>
+                            <div>Welcome to the 2026 NHL playoffs pool 🏒🏒🏒</div>
                             <div className='matchups'> {tree}</div>
                     </div>
                 )
