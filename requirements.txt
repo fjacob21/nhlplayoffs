@@ -2,6 +2,6 @@ Flask
 Jinja2
 Werkzeug
 gunicorn
-wsgiref
+#wsgiref
 psycopg2-binary
 python-dateutil
